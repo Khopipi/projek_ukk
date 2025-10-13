@@ -5,7 +5,7 @@
 @section('content')
 
     <header class="contact-hero"
-        style="position: relative; padding: 100px 0; background: url('{{ asset('assets/images/my/gedung-sekolah.png') }}') no-repeat center center; background-size: cover;">
+        style="position: relative; padding: 100px 0; background: url('{{ asset('assets/images/my/join-us.png') }}') no-repeat center center; background-size: cover;">
         <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.5);"></div>
         <div class="container">
             <div class="row justify-content-center text-center text-light">
@@ -13,7 +13,7 @@
                     <h1 class="text-white display-4">Hubungi <span class="text-primary">Kami</span></h1>
                     <p class="text-white-75 lead">
                         Silakan hubungi kami untuk pertanyaan, informasi, atau bantuan lebih lanjut terkait proses
-                        pendaftaran siswa baru.
+                        pengaduan atau pengajuan.
                     </p>
                 </div>
             </div>
