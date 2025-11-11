@@ -6,6 +6,7 @@ use App\Http\Controllers\BiodataController;
 use App\Http\Controllers\PendudukController;
 use App\Http\Controllers\PengajuanSuratController;
 use App\Http\Controllers\VerifikasiPengajuanController;
+use App\Http\Controllers\PengaduanController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -98,4 +99,17 @@ Route::middleware(['auth', 'web'])->group(function () {
         Route::get('/biodata', [BiodataController::class, 'index'])->name('user.biodata');
         
     });
+
+    // Dalam Route::middleware(['auth', 'web'])->group(function () {
+    // User routes
+    Route::middleware(['cekRole:user'])->group(function () {
+        // Pengajuan Surat CRUD (Resource Routes)
+        Route::resource('pengajuan', PengajuanSuratController::class);
+        
+        // Pengaduan CRUD (Resource Routes)
+        Route::resource('pengaduan', PengaduanController::class)->except(['edit', 'update']);
+        
+        Route::get('/biodata', [BiodataController::class, 'index'])->name('user.biodata');
+    });
+
 });
