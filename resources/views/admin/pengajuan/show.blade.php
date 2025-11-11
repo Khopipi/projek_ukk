@@ -1,5 +1,5 @@
 @extends('layouts.dashboard')
-@section('title', 'Detail Pengajuan Surat')
+@section('title', 'Detail & Verifikasi Pengajuan')
 @section('content')
     <div class="pc-content">
         <!-- Breadcrumb -->
@@ -15,7 +15,7 @@
                     </div>
                     <div class="col-md-12">
                         <div class="page-header-title">
-                            <h2 class="mb-0">Detail Pengajuan Surat</h2>
+                            <h2 class="mb-0">Detail & Verifikasi Pengajuan</h2>
                         </div>
                     </div>
                 </div>
@@ -38,7 +38,7 @@
         @endif
 
         <div class="row">
-            <!-- Left Column - Info & Actions -->
+            <!-- Left Column - Status & Actions -->
             <div class="col-lg-4">
                 <!-- Status Card -->
                 <div class="card">
@@ -61,7 +61,7 @@
                             <p class="mb-2">
                                 <i class="ti ti-calendar me-2 text-success"></i>
                                 <strong>Tanggal Ajuan:</strong><br>
-                                <span class="ms-4">{{ $pengajuan->created_at->format('d F Y, H:i') }}</span>
+                                <span class="ms-4">{{ optional($pengajuan->created_at)->format('d F Y, H:i') ?? '-' }}</span>
                             </p>
                             
                             @if($pengajuan->admin)
@@ -71,10 +71,34 @@
                                 <span class="ms-4">{{ $pengajuan->admin->name }}</span>
                             </p>
                             @endif
+
+                            @if($pengajuan->tanggal_disetujui)
+                            <p class="mb-2">
+                                <i class="ti ti-check me-2 text-success"></i>
+                                <strong>Disetujui:</strong><br>
+                                <span class="ms-4">{{ $pengajuan->tanggal_disetujui->format('d F Y, H:i') }}</span>
+                            </p>
+                            @endif
+                            
+                            @if($pengajuan->tanggal_ditolak)
+                            <p class="mb-2">
+                                <i class="ti ti-x me-2 text-danger"></i>
+                                <strong>Ditolak:</strong><br>
+                                <span class="ms-4">{{ $pengajuan->tanggal_ditolak->format('d F Y, H:i') }}</span>
+                            </p>
+                            @endif
+                            
+                            @if($pengajuan->tanggal_selesai)
+                            <p class="mb-0">
+                                <i class="ti ti-circle-check me-2 text-primary"></i>
+                                <strong>Selesai:</strong><br>
+                                <span class="ms-4">{{ $pengajuan->tanggal_selesai->format('d F Y, H:i') }}</span>
+                            </p>
+                            @endif
                         </div>
 
                         @if($pengajuan->catatan_admin)
-                        <div class="alert alert-info text-start">
+                        <div class="alert alert-info text-start mt-3">
                             <strong><i class="ti ti-message-circle me-1"></i> Catatan Admin:</strong>
                             <p class="mb-0 mt-2">{{ $pengajuan->catatan_admin }}</p>
                         </div>
@@ -85,57 +109,59 @@
                 <!-- Action Buttons -->
                 <div class="card">
                     <div class="card-header">
-                        <h5>Aksi</h5>
+                        <h5>Aksi Verifikasi</h5>
                     </div>
                     <div class="card-body">
-                        @if($pengajuan->status == 'Menunggu')
-                        <form action="{{ route('admin.pengajuan.proses', $pengajuan->id) }}" method="POST" class="mb-2">
-                            @csrf
-                            <button type="submit" class="btn btn-info w-100">
-                                <i class="ti ti-refresh me-1"></i> Proses Pengajuan
+                        <div class="d-grid gap-2">
+                            @if($pengajuan->status == 'Menunggu')
+                            <form action="{{ route('admin.pengajuan.proses', $pengajuan->id) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="btn btn-warning w-100" onclick="return confirm('Tandai pengajuan ini sedang diproses?')">
+                                    <i class="ti ti-refresh me-1"></i> Tandai Diproses
+                                </button>
+                            </form>
+                            @endif
+
+                            @if(in_array($pengajuan->status, ['Menunggu', 'Diproses']))
+                            <button type="button" class="btn btn-success w-100" data-bs-toggle="modal" data-bs-target="#approveModal">
+                                <i class="ti ti-check me-1"></i> Setujui Pengajuan
                             </button>
-                        </form>
-                        @endif
-
-                        @if(in_array($pengajuan->status, ['Menunggu', 'Diproses']))
-                        <button type="button" class="btn btn-success w-100 mb-2" data-bs-toggle="modal" data-bs-target="#approveModal">
-                            <i class="ti ti-check me-1"></i> Setujui
-                        </button>
-                        
-                        <button type="button" class="btn btn-danger w-100 mb-2" data-bs-toggle="modal" data-bs-target="#rejectModal">
-                            <i class="ti ti-x me-1"></i> Tolak
-                        </button>
-                        @endif
-
-                        @if($pengajuan->status == 'Disetujui')
-                        <button type="button" class="btn btn-primary w-100 mb-2" data-bs-toggle="modal" data-bs-target="#uploadModal">
-                            <i class="ti ti-upload me-1"></i> Upload Surat Hasil
-                        </button>
-                        @endif
-
-                        @if($pengajuan->file_surat_hasil)
-                        <a href="{{ $pengajuan->file_surat_hasil_url }}" target="_blank" class="btn btn-success w-100 mb-2">
-                            <i class="ti ti-download me-1"></i> Lihat Surat Hasil
-                        </a>
-                        
-                        <form action="{{ route('admin.pengajuan.delete-surat', $pengajuan->id) }}" method="POST" onsubmit="return confirm('Yakin hapus file surat?')">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-outline-danger w-100 mb-2">
-                                <i class="ti ti-trash me-1"></i> Hapus File Surat
+                            
+                            <button type="button" class="btn btn-danger w-100" data-bs-toggle="modal" data-bs-target="#rejectModal">
+                                <i class="ti ti-x me-1"></i> Tolak Pengajuan
                             </button>
-                        </form>
-                        @endif
+                            @endif
 
-                        <hr>
-                        
-                        <a href="{{ route('admin.pengajuan.index') }}" class="btn btn-secondary w-100">
-                            <i class="ti ti-arrow-left me-1"></i> Kembali
-                        </a>
+                            @if($pengajuan->status == 'Disetujui')
+                            <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#uploadModal">
+                                <i class="ti ti-upload me-1"></i> Upload Surat Hasil
+                            </button>
+                            @endif
+
+                            @if($pengajuan->file_surat_hasil)
+                            <a href="{{ $pengajuan->file_surat_hasil_url }}" target="_blank" class="btn btn-success w-100">
+                                <i class="ti ti-download me-1"></i> Lihat Surat Hasil
+                            </a>
+                            
+                            <form action="{{ route('admin.pengajuan.delete-surat', $pengajuan->id) }}" method="POST" onsubmit="return confirm('Yakin hapus file surat?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-outline-danger w-100">
+                                    <i class="ti ti-trash me-1"></i> Hapus File Surat
+                                </button>
+                            </form>
+                            @endif
+
+                            <hr>
+                            
+                            <a href="{{ route('admin.pengajuan.index') }}" class="btn btn-secondary w-100">
+                                <i class="ti ti-arrow-left me-1"></i> Kembali
+                            </a>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Info Pemohon -->
+                <!-- Info Pemohon (Akun) -->
                 <div class="card">
                     <div class="card-header">
                         <h5>Info Akun Pemohon</h5>
@@ -153,7 +179,7 @@
                             </div>
                         </div>
                         <p class="mb-1"><strong>Role:</strong> {{ ucfirst($pengajuan->user->role) }}</p>
-                        <p class="mb-0"><strong>Bergabung:</strong> {{ $pengajuan->user->created_at->format('d M Y') }}</p>
+                        <p class="mb-0"><strong>Bergabung:</strong> {{ optional($pengajuan->user->created_at)->format('d M Y') ?? '-' }}</p>
                     </div>
                 </div>
             </div>
@@ -187,7 +213,7 @@
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="text-muted mb-1">Tempat, Tanggal Lahir</label>
-                                <p class="fw-bold">{{ $pengajuan->tempat_lahir_pemohon }}, {{ $pengajuan->tanggal_lahir_pemohon->format('d F Y') }}</p>
+                                <p class="fw-bold">{{ $pengajuan->tempat_lahir_pemohon }}, {{ optional($pengajuan->tanggal_lahir_pemohon)->format('d F Y') ?? '-' }}</p>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="text-muted mb-1">Jenis Kelamin</label>
@@ -379,12 +405,17 @@
 
 @section('scripts_content')
 <script>
-    // Auto-hide alerts
+    // Auto-hide alerts (guard if Bootstrap JS isn't loaded)
     setTimeout(function() {
+        if (typeof bootstrap === 'undefined') return;
         const alerts = document.querySelectorAll('.alert-dismissible');
         alerts.forEach(alert => {
-            const bsAlert = new bootstrap.Alert(alert);
-            bsAlert.close();
+            try {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            } catch (e) {
+                // fail silently
+            }
         });
     }, 5000);
 </script>

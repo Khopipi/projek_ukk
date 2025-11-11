@@ -52,4 +52,12 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    public function pengajuanSurat()
+{
+    return $this->hasMany(PengajuanSurat::class);
+}
+public function pengaduans()
+{
+    return $this->hasMany(Pengaduan::class);
+}
 }
