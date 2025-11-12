@@ -27,7 +27,7 @@
             <div class="col-sm-12">
                 <form action="{{ route('pengajuan.store') }}" method="POST" enctype="multipart/form-data" id="formPengajuan">
                     @csrf
-                    
+
                     <!-- Pilih Jenis Surat -->
                     <div class="card">
                         <div class="card-header">
@@ -66,7 +66,7 @@
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label class="form-label">Keperluan <span class="text-danger">*</span></label>
-                                        <textarea name="keperluan" class="form-control @error('keperluan') is-invalid @enderror" 
+                                        <textarea name="keperluan" class="form-control @error('keperluan') is-invalid @enderror"
                                                   rows="3" required placeholder="Jelaskan keperluan pengajuan surat ini...">{{ old('keperluan') }}</textarea>
                                         @error('keperluan')
                                             <div class="invalid-feedback">{{ $message }}</div>
@@ -87,7 +87,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="form-label">Nama Lengkap <span class="text-danger">*</span></label>
-                                        <input type="text" name="nama_pemohon" class="form-control @error('nama_pemohon') is-invalid @enderror" 
+                                        <input type="text" name="nama_pemohon" class="form-control @error('nama_pemohon') is-invalid @enderror"
                                                value="{{ old('nama_pemohon', Auth::user()->name) }}" required>
                                         @error('nama_pemohon')
                                             <div class="invalid-feedback">{{ $message }}</div>
@@ -98,7 +98,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="form-label">NIK <span class="text-danger">*</span></label>
-                                        <input type="text" name="nik_pemohon" class="form-control @error('nik_pemohon') is-invalid @enderror" 
+                                        <input type="text" name="nik_pemohon" class="form-control @error('nik_pemohon') is-invalid @enderror"
                                                value="{{ old('nik_pemohon') }}" maxlength="16" required>
                                         @error('nik_pemohon')
                                             <div class="invalid-feedback">{{ $message }}</div>
@@ -109,7 +109,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="form-label">Tempat Lahir <span class="text-danger">*</span></label>
-                                        <input type="text" name="tempat_lahir_pemohon" class="form-control @error('tempat_lahir_pemohon') is-invalid @enderror" 
+                                        <input type="text" name="tempat_lahir_pemohon" class="form-control @error('tempat_lahir_pemohon') is-invalid @enderror"
                                                value="{{ old('tempat_lahir_pemohon') }}" required>
                                         @error('tempat_lahir_pemohon')
                                             <div class="invalid-feedback">{{ $message }}</div>
@@ -120,7 +120,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="form-label">Tanggal Lahir <span class="text-danger">*</span></label>
-                                        <input type="date" name="tanggal_lahir_pemohon" class="form-control @error('tanggal_lahir_pemohon') is-invalid @enderror" 
+                                        <input type="date" name="tanggal_lahir_pemohon" class="form-control @error('tanggal_lahir_pemohon') is-invalid @enderror"
                                                value="{{ old('tanggal_lahir_pemohon') }}" required>
                                         @error('tanggal_lahir_pemohon')
                                             <div class="invalid-feedback">{{ $message }}</div>
@@ -145,7 +145,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="form-label">Pekerjaan <span class="text-danger">*</span></label>
-                                        <input type="text" name="pekerjaan_pemohon" class="form-control @error('pekerjaan_pemohon') is-invalid @enderror" 
+                                        <input type="text" name="pekerjaan_pemohon" class="form-control @error('pekerjaan_pemohon') is-invalid @enderror"
                                                value="{{ old('pekerjaan_pemohon') }}" required>
                                         @error('pekerjaan_pemohon')
                                             <div class="invalid-feedback">{{ $message }}</div>
@@ -156,7 +156,7 @@
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label class="form-label">Alamat Lengkap <span class="text-danger">*</span></label>
-                                        <textarea name="alamat_pemohon" class="form-control @error('alamat_pemohon') is-invalid @enderror" 
+                                        <textarea name="alamat_pemohon" class="form-control @error('alamat_pemohon') is-invalid @enderror"
                                                   rows="3" required>{{ old('alamat_pemohon') }}</textarea>
                                         @error('alamat_pemohon')
                                             <div class="invalid-feedback">{{ $message }}</div>
@@ -167,7 +167,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="form-label">No. Telepon <span class="text-danger">*</span></label>
-                                        <input type="text" name="no_telepon_pemohon" class="form-control @error('no_telepon_pemohon') is-invalid @enderror" 
+                                        <input type="text" name="no_telepon_pemohon" class="form-control @error('no_telepon_pemohon') is-invalid @enderror"
                                                value="{{ old('no_telepon_pemohon') }}" maxlength="15" required>
                                         @error('no_telepon_pemohon')
                                             <div class="invalid-feedback">{{ $message }}</div>
@@ -193,7 +193,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="form-label">Foto/Scan KTP <span class="text-danger">*</span></label>
-                                        <input type="file" name="file_ktp" class="form-control @error('file_ktp') is-invalid @enderror" 
+                                        <input type="file" name="file_ktp" class="form-control @error('file_ktp') is-invalid @enderror"
                                                accept=".pdf,.jpg,.jpeg,.png" required>
                                         <small class="text-muted">Format: PDF, JPG, PNG | Max: 2MB</small>
                                         @error('file_ktp')
@@ -205,7 +205,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="form-label">Foto/Scan Kartu Keluarga <span class="text-danger">*</span></label>
-                                        <input type="file" name="file_kk" class="form-control @error('file_kk') is-invalid @enderror" 
+                                        <input type="file" name="file_kk" class="form-control @error('file_kk') is-invalid @enderror"
                                                accept=".pdf,.jpg,.jpeg,.png" required>
                                         <small class="text-muted">Format: PDF, JPG, PNG | Max: 2MB</small>
                                         @error('file_kk')
@@ -222,7 +222,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Dokumen Pendukung 1</label>
-                                        <input type="file" name="file_pendukung_1" class="form-control" 
+                                        <input type="file" name="file_pendukung_1" class="form-control"
                                                accept=".pdf,.jpg,.jpeg,.png">
                                         <small class="text-muted">Format: PDF, JPG, PNG | Max: 2MB</small>
                                     </div>
@@ -231,25 +231,17 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Dokumen Pendukung 2</label>
-                                        <input type="file" name="file_pendukung_2" class="form-control" 
+                                        <input type="file" name="file_pendukung_2" class="form-control"
                                                accept=".pdf,.jpg,.jpeg,.png">
                                         <small class="text-muted">Format: PDF, JPG, PNG | Max: 2MB</small>
                                     </div>
                                 </div>
 
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Dokumen Pendukung 3</label>
-                                        <input type="file" name="file_pendukung_3" class="form-control" 
-                                               accept=".pdf,.jpg,.jpeg,.png">
-                                        <small class="text-muted">Format: PDF, JPG, PNG | Max: 2MB</small>
-                                    </div>
-                                </div>
 
                                 <div class="col-md-12">
                                     <div class="alert alert-warning mt-3">
                                         <i class="ti ti-alert-triangle me-2"></i>
-                                        <strong>Catatan:</strong> Untuk jenis surat tertentu, dokumen pendukung tambahan sangat direkomendasikan. 
+                                        <strong>Catatan:</strong> Untuk jenis surat tertentu, dokumen pendukung tambahan sangat direkomendasikan.
                                         Misalnya: Surat Nikah (foto/scan buku nikah), Surat Warisan (surat keterangan ahli waris), dll.
                                     </div>
                                 </div>

@@ -6,6 +6,7 @@ use App\Http\Controllers\BiodataController;
 use App\Http\Controllers\PendudukController;
 use App\Http\Controllers\PengajuanSuratController;
 use App\Http\Controllers\VerifikasiPengajuanController;
+use App\Http\Controllers\VerifikasiPengaduanController;
 use App\Http\Controllers\PengaduanController;
 
 Route::get('/', function () {
@@ -58,7 +59,7 @@ Route::middleware(['auth', 'web'])->group(function () {
     Route::middleware(['cekRole:admin'])->group(function () {
         // Data Penduduk CRUD
         Route::resource('penduduk', PendudukController::class);
-        
+
         // Export Penduduk (optional)
         Route::get('/penduduk-export', [PendudukController::class, 'export'])->name('penduduk.export');
 
@@ -74,18 +75,30 @@ Route::middleware(['auth', 'web'])->group(function () {
             Route::post('/bulk-action', [VerifikasiPengajuanController::class, 'bulkAction'])->name('bulk');
         });
 
+        // Verifikasi Pengaduan dari User
+        Route::prefix('admin/pengaduan')->name('admin.pengaduan.')->group(function () {
+            Route::get('/', [VerifikasiPengaduanController::class, 'index'])->name('index');
+            Route::get('/{pengaduan}', [VerifikasiPengaduanController::class, 'show'])->name('show');
+            Route::post('/{pengaduan}/proses', [VerifikasiPengaduanController::class, 'proses'])->name('proses');
+            Route::post('/{pengaduan}/tanggapi', [VerifikasiPengaduanController::class, 'tanggapi'])->name('tanggapi');
+            Route::post('/{pengaduan}/selesai', [VerifikasiPengaduanController::class, 'selesai'])->name('selesai');
+            Route::post('/{pengaduan}/tolak', [VerifikasiPengaduanController::class, 'tolak'])->name('tolak');
+            Route::post('/{pengaduan}/update-prioritas', [VerifikasiPengaduanController::class, 'updatePrioritas'])->name('update-prioritas');
+            Route::post('/bulk-action', [VerifikasiPengaduanController::class, 'bulkAction'])->name('bulk');
+        });
+
         Route::get('/verifikasi', function () {
             return view('admin.verifikasi');
         })->name('admin.verifikasi');
-        
+
         Route::get('/seleksi', function () {
             return view('admin.seleksi');
         })->name('admin.seleksi');
-        
+
         Route::get('/pengumuman', function () {
             return view('admin.pengumuman');
         })->name('admin.pengumuman');
-        
+
         Route::get('/laporan', function () {
             return view('admin.laporan');
         })->name('admin.laporan');
@@ -95,9 +108,9 @@ Route::middleware(['auth', 'web'])->group(function () {
     Route::middleware(['cekRole:user'])->group(function () {
         // Pengajuan Surat CRUD (Resource Routes)
         Route::resource('pengajuan', PengajuanSuratController::class);
-        
+
         Route::get('/biodata', [BiodataController::class, 'index'])->name('user.biodata');
-        
+
     });
 
     // Dalam Route::middleware(['auth', 'web'])->group(function () {
@@ -105,10 +118,10 @@ Route::middleware(['auth', 'web'])->group(function () {
     Route::middleware(['cekRole:user'])->group(function () {
         // Pengajuan Surat CRUD (Resource Routes)
         Route::resource('pengajuan', PengajuanSuratController::class);
-        
+
         // Pengaduan CRUD (Resource Routes)
         Route::resource('pengaduan', PengaduanController::class)->except(['edit', 'update']);
-        
+
         Route::get('/biodata', [BiodataController::class, 'index'])->name('user.biodata');
     });
 

@@ -9,9 +9,9 @@
                             <i class="ti ti-hand-rock me-2"></i>Selamat Datang, {{ Auth::user()->name }}!
                         </h2>
                         <p class="text-white-50 mb-3 lead">
-                            Ini adalah dashboard Anda untuk mengelola pengajuan surat dan melihat informasi desa.
+                            Ini adalah dashboard Anda untuk mengelola pengajuan surat dan pengaduan.
                         </p>
-                        
+
                         @if (!Auth::user()->is_verified)
                         <div class="alert alert-warning mb-0">
                             <div class="d-flex align-items-center">
@@ -26,8 +26,11 @@
                             </div>
                         </div>
                         @else
-                        <a href="{{ route('pengajuan.create') }}" class="btn btn-light">
+                        <a href="{{ route('pengajuan.create') }}" class="btn btn-light me-2">
                             <i class="ti ti-plus me-1"></i> Ajukan Surat Baru
+                        </a>
+                        <a href="{{ route('pengaduan.create') }}" class="btn btn-outline-light">
+                            <i class="ti ti-message-circle me-1"></i> Buat Pengaduan
                         </a>
                         @endif
                     </div>
@@ -50,7 +53,7 @@
                         </div>
                     </div>
                     <div class="flex-grow-1 ms-3">
-                        <h6 class="mb-0 text-muted">Menunggu</h6>
+                        <h6 class="mb-0 text-muted">Pengajuan Menunggu</h6>
                         <h3 class="mb-0">
                             {{ Auth::user()->pengajuanSurat()->where('status', 'Menunggu')->count() }}
                         </h3>
@@ -70,7 +73,7 @@
                         </div>
                     </div>
                     <div class="flex-grow-1 ms-3">
-                        <h6 class="mb-0 text-muted">Diproses</h6>
+                        <h6 class="mb-0 text-muted">Sedang Diproses</h6>
                         <h3 class="mb-0">
                             {{ Auth::user()->pengajuanSurat()->where('status', 'Diproses')->count() }}
                         </h3>
@@ -124,7 +127,7 @@
     <div class="col-md-12 col-xl-8">
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <h5><i class="ti ti-file-text me-2"></i>Pengajuan Surat Saya</h5>
+                <h5><i class="ti ti-file-text me-2"></i>Riwayat Pengajuan Surat</h5>
                 <a href="{{ route('pengajuan.index') }}" class="btn btn-sm btn-primary">
                     Lihat Semua <i class="ti ti-arrow-right ms-1"></i>
                 </a>
@@ -160,7 +163,7 @@
                                         </span>
                                     </td>
                                     <td>
-                                        <a href="{{ route('pengajuan.show', $pengajuan->id) }}" 
+                                        <a href="{{ route('pengajuan.show', $pengajuan->id) }}"
                                            class="btn btn-sm btn-info">
                                             <i class="ti ti-eye"></i>
                                         </a>
@@ -194,7 +197,7 @@
         </div>
     </div>
 
-    <!-- Panduan & Status -->
+    <!-- Riwayat Pengaduan & Charts -->
     <div class="col-md-12 col-xl-4">
         <!-- Status Progress -->
         <div class="card">
@@ -222,13 +225,13 @@
                             <span class="fw-bold">{{ $count }}</span>
                         </div>
                         <div class="progress" style="height: 6px;">
-                            <div class="progress-bar 
+                            <div class="progress-bar
                                 @if($status == 'Menunggu') bg-warning
                                 @elseif($status == 'Diproses') bg-info
                                 @elseif($status == 'Disetujui') bg-success
                                 @elseif($status == 'Ditolak') bg-danger
                                 @else bg-primary
-                                @endif" 
+                                @endif"
                                 style="width: {{ ($count / $userTotal * 100) }}%;">
                             </div>
                         </div>
@@ -279,20 +282,71 @@
                             <i class="ti ti-chevron-right"></i>
                         </div>
                     </a>
-                    <a href="#" class="list-group-item list-group-item-action px-0">
+                    <a href="{{ route('pengaduan.index') }}" class="list-group-item list-group-item-action px-0">
                         <div class="d-flex align-items-center">
                             <div class="flex-shrink-0">
-                                <div class="avtar avtar-s bg-light-success">
-                                    <i class="ti ti-help text-success"></i>
+                                <div class="avtar avtar-s bg-light-warning">
+                                    <i class="ti ti-message-circle text-warning"></i>
                                 </div>
                             </div>
                             <div class="flex-grow-1 ms-3">
-                                <h6 class="mb-0">Bantuan & FAQ</h6>
-                                <small class="text-muted">Pertanyaan umum</small>
+                                <h6 class="mb-0">Pengaduan Saya</h6>
+                                <small class="text-muted">Lapor masalah desa</small>
                             </div>
                             <i class="ti ti-chevron-right"></i>
                         </div>
                     </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Riwayat Pengaduan -->
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5><i class="ti ti-message-circle me-2"></i>Riwayat Pengaduan</h5>
+                <a href="{{ route('pengaduan.index') }}" class="btn btn-sm btn-primary">
+                    Lihat Semua <i class="ti ti-arrow-right ms-1"></i>
+                </a>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    @forelse(Auth::user()->pengaduans()->latest()->take(4)->get() as $pengaduan)
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card bg-light-{{ $pengaduan->status == 'Selesai' ? 'success' : ($pengaduan->status == 'Ditolak' ? 'danger' : 'warning') }} mb-md-0">
+                            <div class="card-body">
+                                <div class="d-flex align-items-start">
+                                    <div class="flex-shrink-0">
+                                        <div class="avtar avtar-s bg-{{ $pengaduan->status == 'Selesai' ? 'success' : ($pengaduan->status == 'Ditolak' ? 'danger' : 'warning') }}">
+                                            <i class="ti ti-{{ $pengaduan->status == 'Selesai' ? 'check' : ($pengaduan->status == 'Ditolak' ? 'x' : 'clock') }}"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h6 class="text-{{ $pengaduan->status == 'Selesai' ? 'success' : ($pengaduan->status == 'Ditolak' ? 'danger' : 'warning') }}">
+                                            {{ Str::limit($pengaduan->judul, 30) }}
+                                        </h6>
+                                        <p class="mb-0 small">
+                                            <span class="badge {{ $pengaduan->status_badge }}">{{ $pengaduan->status }}</span><br>
+                                            <i class="ti ti-clock"></i> {{ $pengaduan->created_at->diffForHumans() }}
+                                        </p>
+                                        <a href="{{ route('pengaduan.show', $pengaduan->id) }}" class="btn btn-sm btn-outline-{{ $pengaduan->status == 'Selesai' ? 'success' : ($pengaduan->status == 'Ditolak' ? 'danger' : 'warning') }} mt-2">
+                                            Lihat Detail
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @empty
+                    <div class="col-12 text-center py-4">
+                        <i class="ti ti-inbox f-36 text-muted"></i>
+                        <p class="text-muted mb-2">Belum ada pengaduan</p>
+                        <a href="{{ route('pengaduan.create') }}" class="btn btn-sm btn-primary">
+                            <i class="ti ti-plus me-1"></i> Buat Pengaduan
+                        </a>
+                    </div>
+                    @endforelse
                 </div>
             </div>
         </div>

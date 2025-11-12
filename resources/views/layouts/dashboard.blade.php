@@ -3,15 +3,13 @@
     <!-- [Head] start -->
 
     <head>
-        <title>@yield('title')</title>
+        <title>@yield('title') - Desa Sruni</title>
         <!-- [Meta] -->
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="description"
-            content="Mantis is made using Bootstrap 5 design framework. Download the free admin template & use it for your project.">
-        <meta name="keywords"
-            content="Mantis, Dashboard UI Kit, Bootstrap 5, Admin Template, Admin Dashboard, CRM, CMS, Bootstrap Admin Template">
+        <meta name="description" content="Aplikasi Management Desa Sruni - Sistem Informasi Pelayanan Desa">
+        <meta name="keywords" content="Desa Sruni, Pelayanan Desa, Pengajuan Surat, Pengaduan Desa">
         <meta name="author" content="CodedThemes">
 
         <!-- [Favicon] icon -->
@@ -113,87 +111,6 @@
                         </li>
                     </ul>
                 </div>
-                <!-- [Mobile Media Block end] -->
-                <div class="ms-auto">
-                    <ul class="list-unstyled">
-                        <li class="dropdown pc-h-item">
-                            <a class="pc-head-link dropdown-toggle arrow-none me-0" data-bs-toggle="dropdown"
-                                href="#" role="button" aria-haspopup="false" aria-expanded="false">
-                                <i class="ti ti-mail"></i>
-                            </a>
-                            <div class="dropdown-menu dropdown-notification dropdown-menu-end pc-h-dropdown">
-                                <div class="dropdown-header d-flex align-items-center justify-content-between">
-                                    <h5 class="m-0">Message</h5>
-                                    <a href="#!" class="pc-head-link bg-transparent"><i
-                                            class="ti ti-x text-danger"></i></a>
-                                </div>
-                                <div class="dropdown-divider"></div>
-                                <div class="dropdown-header px-0 text-wrap header-notification-scroll position-relative"
-                                    style="max-height: calc(100vh - 215px)">
-                                    <div class="list-group list-group-flush w-100">
-                                        <a class="list-group-item list-group-item-action">
-                                            <div class="d-flex">
-                                                <div class="flex-shrink-0">
-                                                    <img src="../assets/images/user/avatar-2.jpg" alt="user-image"
-                                                        class="user-avtar">
-                                                </div>
-                                                <div class="flex-grow-1 ms-1">
-                                                    <span class="float-end text-muted">3:00 AM</span>
-                                                    <p class="text-body mb-1">It's <b>Cristina danny's</b> birthday
-                                                        today.</p>
-                                                    <span class="text-muted">2 min ago</span>
-                                                </div>
-                                            </div>
-                                        </a>
-                                        <a class="list-group-item list-group-item-action">
-                                            <div class="d-flex">
-                                                <div class="flex-shrink-0">
-                                                    <img src="../assets/images/user/avatar-1.jpg" alt="user-image"
-                                                        class="user-avtar">
-                                                </div>
-                                                <div class="flex-grow-1 ms-1">
-                                                    <span class="float-end text-muted">6:00 PM</span>
-                                                    <p class="text-body mb-1"><b>Aida Burg</b> commented your post.</p>
-                                                    <span class="text-muted">5 August</span>
-                                                </div>
-                                            </div>
-                                        </a>
-                                        <a class="list-group-item list-group-item-action">
-                                            <div class="d-flex">
-                                                <div class="flex-shrink-0">
-                                                    <img src="../assets/images/user/avatar-3.jpg" alt="user-image"
-                                                        class="user-avtar">
-                                                </div>
-                                                <div class="flex-grow-1 ms-1">
-                                                    <span class="float-end text-muted">2:45 PM</span>
-                                                    <p class="text-body mb-1"><b>There was a failure to your setup.</b>
-                                                    </p>
-                                                    <span class="text-muted">7 hours ago</span>
-                                                </div>
-                                            </div>
-                                        </a>
-                                        <a class="list-group-item list-group-item-action">
-                                            <div class="d-flex">
-                                                <div class="flex-shrink-0">
-                                                    <img src="../assets/images/user/avatar-4.jpg" alt="user-image"
-                                                        class="user-avtar">
-                                                </div>
-                                                <div class="flex-grow-1 ms-1">
-                                                    <span class="float-end text-muted">9:10 PM</span>
-                                                    <p class="text-body mb-1"><b>Cristina Danny </b> invited to join
-                                                        <b> Meeting.</b>
-                                                    </p>
-                                                    <span class="text-muted">Daily scrum meeting time</span>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="dropdown-divider"></div>
-                                <div class="text-center py-2">
-                                    <a href="#!" class="link-primary">View all</a>
-                                </div>
-                            </div>
                         </li>
                         <li class="dropdown pc-h-item header-user-profile">
                             <a class="pc-head-link dropdown-toggle arrow-none me-0" data-bs-toggle="dropdown"
@@ -216,28 +133,13 @@
 
                                     </div>
                                 </div>
-                                <ul class="nav drp-tabs nav-fill nav-tabs" id="mydrpTab" role="tablist">
-                                    <li class="nav-item" role="presentation">
-                                        <button class="nav-link active" id="drp-t1" data-bs-toggle="tab"
-                                            data-bs-target="#drp-tab-1" type="button" role="tab"
-                                            aria-controls="drp-tab-1" aria-selected="true"><i class="ti ti-user"></i>
-                                            Profile</button>
-                                    </li>
-                                    <li class="nav-item" role="presentation">
-                                        <button class="nav-link" id="drp-t2" data-bs-toggle="tab"
-                                            data-bs-target="#drp-tab-2" type="button" role="tab"
-                                            aria-controls="drp-tab-2" aria-selected="false"><i
-                                                class="ti ti-settings"></i> Setting</button>
-                                    </li>
-                                </ul>
+
+
+                                
                                 <div class="tab-content" id="mysrpTabContent">
                                     <div class="tab-pane fade show active" id="drp-tab-1" role="tabpanel"
                                         aria-labelledby="drp-t1" tabindex="0">
 
-                                        <a href="/myprofile" class="dropdown-item">
-                                            <i class="ti ti-user"></i>
-                                            <span>My Profile</span>
-                                        </a>
 
                                         <form method="POST" action="{{ route('logout') }}">
                                             @csrf
@@ -249,18 +151,7 @@
 
 
                                     </div>
-                                    <div class="tab-pane fade" id="drp-tab-2" role="tabpanel"
-                                        aria-labelledby="drp-t2" tabindex="0">
-                                        <a href="/contact-us" class="dropdown-item">
-                                            <i class="ti ti-help"></i>
-                                            <span>Support</span>
-                                        </a>
-                                        <a href="#!" class="dropdown-item">
-                                            <i class="ti ti-user"></i>
-                                            <span>Account Settings</span>
-                                        </a>
 
-                                    </div>
                                 </div>
                             </div>
                         </li>
@@ -277,22 +168,21 @@
             @yield('content')
         </div>
         <!-- [ Main Content ] end -->
-        <footer class="pc-footer">
-            <div class="footer-wrapper container-fluid">
-                <div class="row">
-                    <div class="col-sm my-1">
-                        <p class="m-0">Mantis &#9829; crafted by Team <a
-                                href="https://themeforest.net/user/codedthemes" target="_blank">Codedthemes</a>
-                            Distributed by <a href="https://themewagon.com/">ThemeWagon</a>.</p>
-                    </div>
-                    <div class="col-auto my-1">
-                        <ul class="list-inline footer-link mb-0">
-                            <li class="list-inline-item"><a href="../index.html">Home</a></li>
-                        </ul>
-                    </div>
-                </div>
+       <footer class="pc-footer">
+    <div class="footer-wrapper container-fluid">
+        <div class="row">
+            <div class="col-sm my-1">
+                <p class="m-0">© {{ date('Y') }} Aplikasi Desa Sruni. Hak Cipta Dilindungi.</p>
             </div>
-        </footer>
+            <div class="col-auto my-1">
+                <ul class="list-inline footer-link mb-0">
+                    <li class="list-inline-item"><a href="/">Home</a></li>
+                    <li class="list-inline-item"><a href="/contact-us">Kontak</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</footer>
 
         <!-- [Page Specific JS] start -->
         <script src="{{ asset('assets/js/plugins/apexcharts.min.js') }}"></script>

@@ -150,9 +150,8 @@
                 <div class="container">
                     <div class="row align-items-center">
                         <div class="col my-1">
-                            <p class="text-white mb-0">© {{ date('Y') }} Desa Sruni. Hak Cipta
-                                Dilindungi.</p>
-                        </div>
+    <p class="text-white mb-0">© {{ date('Y') }} Desa Sruni. Hak Cipta Dilindungi.</p>
+</div>
                         <div class="col-auto my-1">
                             <ul class="list-inline footer-sos-link mb-0">
                                 <li class="list-inline-item"><a href="#"><i

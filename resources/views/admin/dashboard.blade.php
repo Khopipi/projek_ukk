@@ -69,14 +69,14 @@
                 <div class="d-flex align-items-center">
                     <div class="flex-shrink-0">
                         <div class="avtar avtar-l">
-                            <i class="ti ti-file-text f-28"></i>
+                            <i class="ti ti-message-circle f-28"></i>
                         </div>
                     </div>
                     <div class="flex-grow-1 ms-3">
-                        <h6 class="mb-0 text-white">Total Pengajuan</h6>
+                        <h6 class="mb-0 text-white">Pengaduan Aktif</h6>
                         <h3 class="mb-0 text-white">
-                            {{ \App\Models\PengajuanSurat::count() }}
-                            <small class="f-16">Surat</small>
+                            {{ \App\Models\Pengaduan::whereIn('status', ['Menunggu', 'Diproses'])->count() }}
+                            <small class="f-16">Laporan</small>
                         </h3>
                     </div>
                 </div>
@@ -100,6 +100,13 @@
                         </a>
                     </div>
                     <div class="col-md-3 col-sm-6">
+                        <a href="{{ route('admin.pengaduan.index') }}?status=Menunggu" class="btn btn-outline-danger w-100 d-flex flex-column align-items-center py-3">
+                            <i class="ti ti-message-circle f-36 mb-2"></i>
+                            <span>Tanggapi Pengaduan</span>
+                            <small class="text-muted">{{ \App\Models\Pengaduan::where('status', 'Menunggu')->count() }} baru</small>
+                        </a>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
                         <a href="{{ route('penduduk.create') }}" class="btn btn-outline-primary w-100 d-flex flex-column align-items-center py-3">
                             <i class="ti ti-user-plus f-36 mb-2"></i>
                             <span>Tambah Penduduk</span>
@@ -111,13 +118,6 @@
                             <i class="ti ti-upload f-36 mb-2"></i>
                             <span>Upload Surat Hasil</span>
                             <small class="text-muted">{{ \App\Models\PengajuanSurat::where('status', 'Disetujui')->count() }} disetujui</small>
-                        </a>
-                    </div>
-                    <div class="col-md-3 col-sm-6">
-                        <a href="{{ route('penduduk.index') }}" class="btn btn-outline-info w-100 d-flex flex-column align-items-center py-3">
-                            <i class="ti ti-database f-36 mb-2"></i>
-                            <span>Lihat Data Penduduk</span>
-                            <small class="text-muted">{{ \App\Models\Penduduk::count() }} data</small>
                         </a>
                     </div>
                 </div>
@@ -170,7 +170,7 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <a href="{{ route('admin.pengajuan.show', $pengajuan->id) }}" 
+                                    <a href="{{ route('admin.pengajuan.show', $pengajuan->id) }}"
                                        class="btn btn-sm btn-info">
                                         <i class="ti ti-eye"></i>
                                     </a>
@@ -216,13 +216,13 @@
                         <span class="fw-bold">{{ $count }}</span>
                     </div>
                     <div class="progress" style="height: 6px;">
-                        <div class="progress-bar 
+                        <div class="progress-bar
                             @if($status == 'Menunggu') bg-warning
                             @elseif($status == 'Diproses') bg-info
                             @elseif($status == 'Disetujui') bg-success
                             @elseif($status == 'Ditolak') bg-danger
                             @else bg-primary
-                            @endif" 
+                            @endif"
                             style="width: {{ $total > 0 ? ($count / $total * 100) : 0 }}%;">
                         </div>
                     </div>
@@ -259,6 +259,80 @@
         </div>
     </div>
 
+    <!-- Pengaduan Terbaru -->
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5><i class="ti ti-message-circle me-2"></i>Pengaduan Terbaru</h5>
+                <a href="{{ route('admin.pengaduan.index') }}" class="btn btn-sm btn-primary">
+                    Lihat Semua <i class="ti ti-arrow-right ms-1"></i>
+                </a>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Nomor</th>
+                                <th>Pelapor</th>
+                                <th>Kategori</th>
+                                <th>Judul</th>
+                                <th>Prioritas</th>
+                                <th>Status</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse(\App\Models\Pengaduan::with('user')->latest()->take(5)->get() as $pengaduan)
+                            <tr>
+                                <td><strong>{{ $pengaduan->nomor_pengaduan }}</strong></td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="avtar avtar-xs bg-light-danger me-2">
+                                            <i class="ti ti-user f-14"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0">{{ $pengaduan->user->name }}</h6>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <i class="{{ $pengaduan->kategori_icon }} me-1"></i>
+                                    {{ $pengaduan->kategori }}
+                                </td>
+                                <td>{{ Str::limit($pengaduan->judul, 30) }}</td>
+                                <td>
+                                    <span class="badge {{ $pengaduan->prioritas_badge }}">
+                                        {{ $pengaduan->prioritas }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge {{ $pengaduan->status_badge }}">
+                                        {{ $pengaduan->status }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <a href="{{ route('admin.pengaduan.show', $pengaduan->id) }}"
+                                       class="btn btn-sm btn-info">
+                                        <i class="ti ti-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="7" class="text-center py-4">
+                                    <i class="ti ti-inbox f-36 text-muted"></i>
+                                    <p class="text-muted mb-0">Belum ada pengaduan</p>
+                                </td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Aktivitas Terbaru -->
     <div class="col-12">
         <div class="card">
@@ -290,6 +364,77 @@
                     </div>
                     @endforeach
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Status Pengaduan Chart -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="ti ti-chart-donut me-2"></i>Status Pengaduan</h5>
+            </div>
+            <div class="card-body">
+                @php
+                    $pengaduanStats = [
+                        'Menunggu' => \App\Models\Pengaduan::where('status', 'Menunggu')->count(),
+                        'Diproses' => \App\Models\Pengaduan::where('status', 'Diproses')->count(),
+                        'Selesai' => \App\Models\Pengaduan::where('status', 'Selesai')->count(),
+                        'Ditolak' => \App\Models\Pengaduan::where('status', 'Ditolak')->count(),
+                    ];
+                    $pengaduanTotal = array_sum($pengaduanStats);
+                @endphp
+
+                @foreach($pengaduanStats as $status => $count)
+                <div class="mb-3">
+                    <div class="d-flex align-items-center justify-content-between mb-1">
+                        <span>{{ $status }}</span>
+                        <span class="fw-bold">{{ $count }}</span>
+                    </div>
+                    <div class="progress" style="height: 6px;">
+                        <div class="progress-bar
+                            @if($status == 'Menunggu') bg-warning
+                            @elseif($status == 'Diproses') bg-info
+                            @elseif($status == 'Selesai') bg-success
+                            @else bg-danger
+                            @endif"
+                            style="width: {{ $pengaduanTotal > 0 ? ($count / $pengaduanTotal * 100) : 0 }}%;">
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+        </div>
+    </div>
+
+    <!-- Kategori Pengaduan Populer -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="ti ti-category me-2"></i>Kategori Pengaduan</h5>
+            </div>
+            <div class="card-body">
+                @php
+                    $kategoriPengaduan = \App\Models\Pengaduan::select('kategori', \DB::raw('count(*) as total'))
+                        ->groupBy('kategori')
+                        ->orderBy('total', 'desc')
+                        ->take(7)
+                        ->get();
+                @endphp
+
+                <ul class="list-group list-group-flush">
+                    @forelse($kategoriPengaduan as $item)
+                    <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                        <span>
+                            <i class="ti ti-point-filled me-1 text-primary"></i>
+                            {{ $item->kategori }}
+                        </span>
+                        <span class="badge bg-danger rounded-pill">{{ $item->total }}</span>
+                    </li>
+                    @empty
+                    <li class="list-group-item text-center text-muted">Belum ada data</li>
+                    @endforelse
+                </ul>
             </div>
         </div>
     </div>
