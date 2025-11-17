@@ -233,6 +233,8 @@
                 history.replaceState(null, null, window.location.pathname);
             }
         </script>
+        {{-- Page-specific scripts from child views --}}
+        @yield('scripts_content')
     </body>
     <!-- [Body] end -->
 

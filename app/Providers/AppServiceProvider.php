@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\URL;
 
 use Illuminate\Support\Facades\Event;
 
@@ -37,5 +38,13 @@ class AppServiceProvider extends ServiceProvider
         Event::listen(function (\SocialiteProviders\Manager\SocialiteWasCalled $event) {
             $event->extendSocialite('discord', \SocialiteProviders\Discord\Provider::class);
         });
+
+        //         if ($this->app->environment('local')) {
+        //         URL::forceRootUrl(config('app.url'));
+        //         URL::forceScheme('https');
+        // }
+
     }
+
+
 }

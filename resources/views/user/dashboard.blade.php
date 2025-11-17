@@ -1,3 +1,5 @@
+@include('partials.welcome-navbar')
+
 <div class="row">
     <!-- Welcome Card -->
     <div class="col-12">

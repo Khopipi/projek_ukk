@@ -81,6 +81,14 @@ class PengajuanSuratController extends Controller
             'file_pendukung_1' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
             'file_pendukung_2' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
             'file_pendukung_3' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            // Dokumen khusus per jenis surat
+            'doc_buku_nikah' => 'required_if:jenis_surat,Surat Nikah|nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'doc_kehilangan' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'doc_sertifikat' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'doc_ahli_waris' => 'required_if:jenis_surat,Surat Warisan|nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'doc_rt_rw' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'doc_surat_kelahiran' => 'required_if:jenis_surat,Surat Kelahiran|nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'doc_bukti_penghasilan' => 'required_if:jenis_surat,Surat Keterangan Tidak Mampu|nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
             'data_tambahan' => 'nullable|array'
         ]);
 
@@ -109,6 +117,21 @@ class PengajuanSuratController extends Controller
                 $filename = time() . "_pendukung{$i}_" . $file->getClientOriginalName();
                 $file->storeAs('public/pengajuan', $filename);
                 $validated[$fieldName] = $filename;
+            }
+        }
+
+        // Handle doc_* fields and store them into data_tambahan array
+        $docFields = ['doc_buku_nikah','doc_kehilangan','doc_sertifikat','doc_ahli_waris','doc_rt_rw','doc_surat_kelahiran','doc_bukti_penghasilan'];
+        if (!isset($validated['data_tambahan']) || !is_array($validated['data_tambahan'])) {
+            $validated['data_tambahan'] = [];
+        }
+
+        foreach ($docFields as $doc) {
+            if ($request->hasFile($doc)) {
+                $file = $request->file($doc);
+                $filename = time() . '_' . $doc . '_' . $file->getClientOriginalName();
+                $file->storeAs('public/pengajuan', $filename);
+                $validated['data_tambahan'][$doc] = $filename;
             }
         }
 
@@ -192,6 +215,14 @@ class PengajuanSuratController extends Controller
             'file_pendukung_1' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
             'file_pendukung_2' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
             'file_pendukung_3' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            // Dokumen khusus per jenis surat
+            'doc_buku_nikah' => 'required_if:jenis_surat,Surat Nikah|nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'doc_kehilangan' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'doc_sertifikat' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'doc_ahli_waris' => 'required_if:jenis_surat,Surat Warisan|nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'doc_rt_rw' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'doc_surat_kelahiran' => 'required_if:jenis_surat,Surat Kelahiran|nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'doc_bukti_penghasilan' => 'required_if:jenis_surat,Surat Keterangan Tidak Mampu|nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
             'data_tambahan' => 'nullable|array'
         ]);
 
@@ -228,6 +259,26 @@ class PengajuanSuratController extends Controller
                 $filename = time() . "_pendukung{$i}_" . $file->getClientOriginalName();
                 $file->storeAs('public/pengajuan', $filename);
                 $validated[$fieldName] = $filename;
+            }
+        }
+
+        // Handle doc_* fields in data_tambahan and delete old docs if replaced
+        $docFields = ['doc_buku_nikah','doc_kehilangan','doc_sertifikat','doc_ahli_waris','doc_rt_rw','doc_surat_kelahiran','doc_bukti_penghasilan'];
+        if (!isset($validated['data_tambahan']) || !is_array($validated['data_tambahan'])) {
+            $validated['data_tambahan'] = $pengajuan->data_tambahan ?? [];
+        }
+
+        foreach ($docFields as $doc) {
+            if ($request->hasFile($doc)) {
+                // delete old file if exists in data_tambahan
+                $oldFile = $pengajuan->data_tambahan[$doc] ?? null;
+                if ($oldFile) {
+                    Storage::delete('public/pengajuan/' . $oldFile);
+                }
+                $file = $request->file($doc);
+                $filename = time() . '_' . $doc . '_' . $file->getClientOriginalName();
+                $file->storeAs('public/pengajuan', $filename);
+                $validated['data_tambahan'][$doc] = $filename;
             }
         }
 

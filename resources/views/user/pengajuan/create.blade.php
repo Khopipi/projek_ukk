@@ -65,14 +65,24 @@
 
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label class="form-label">Keperluan <span class="text-danger">*</span></label>
-                                        <textarea name="keperluan" class="form-control @error('keperluan') is-invalid @enderror"
-                                                  rows="3" required placeholder="Jelaskan keperluan pengajuan surat ini...">{{ old('keperluan') }}</textarea>
+                                        <label class="form-label">Keperluan / Keterangan <span class="text-danger">*</span></label>
+                                        <textarea name="keperluan" class="form-control @error('keperluan') is-invalid @enderror" rows="2" required>{{ old('keperluan') }}</textarea>
                                         @error('keperluan')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
                                 </div>
+
+
+                                <!-- Debug/Status for dynamic rendering (hidden in production) -->
+                                <div id="dynamic-debug" style="display:block;margin-bottom:8px;font-size:13px;color:#6c757d;
+                                    "></div>
+
+                                <!-- Form dinamis berdasarkan jenis surat -->
+                                <div id="dynamic-form-fields"></div>
+
+                                <!-- Field dinamis berdasarkan jenis surat -->
+                                <div id="dynamic-fields"></div>
                             </div>
                         </div>
                     </div>
@@ -264,22 +274,203 @@
 
 @section('scripts_content')
 <script>
-    // Auto-hide alerts after 5 seconds
+    // Auto-hide alerts after 5 seconds and render dynamic fields
     document.addEventListener('DOMContentLoaded', function() {
-        const alerts = document.querySelectorAll('.alert-dismissible');
-        alerts.forEach(function(alert) {
-            setTimeout(function() {
-                const bsAlert = new bootstrap.Alert(alert);
-                bsAlert.close();
-            }, 5000);
-        });
-    });
+        try {
+            const alerts = document.querySelectorAll('.alert-dismissible');
+            alerts.forEach(function(alert) {
+                setTimeout(function() {
+                    if (window.bootstrap && typeof window.bootstrap.Alert === 'function') {
+                        const bsAlert = new bootstrap.Alert(alert);
+                        bsAlert.close();
+                    } else {
+                        alert.style.display = 'none';
+                    }
+                }, 5000);
+            });
+        } catch (e) {
+            console.warn('Alert auto-hide skipped:', e);
+        }
 
-    // Disable submit button after form submission to prevent double submit
-    document.getElementById('formPengajuan').addEventListener('submit', function() {
-        const submitBtn = this.querySelector('button[type="submit"]');
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Mengirim...';
+        // Dinamis field dan dokumen berdasarkan jenis surat
+        const jenisSuratField = document.getElementById('jenis_surat');
+        const dynamicFields = document.getElementById('dynamic-form-fields');
+        const dynamicDocs = document.getElementById('dynamic-fields');
+
+        // Konfigurasi tiap jenis surat: fields (input/textarea) dan dokumen yang harus diupload
+        const suratConfig = {
+            'Surat Nikah': {
+                fields: [
+                    { label: 'Nama Suami', name: 'nama_suami', type: 'text', required: true },
+                    { label: 'Nama Istri', name: 'nama_istri', type: 'text', required: true },
+                    { label: 'Tanggal Pernikahan', name: 'tanggal_nikah', type: 'date', required: true },
+                    { label: 'Tempat Pernikahan', name: 'tempat_nikah', type: 'text', required: true }
+                ],
+                docs: [
+                    { label: 'Foto/Scan Buku Nikah (jika ada)', name: 'doc_buku_nikah', required: false }
+                ]
+            },
+            'Pembuatan KTP': {
+                fields: [
+                    { label: 'Alasan Pembuatan KTP (baru/hilang/perubahan)', name: 'alasan_ktp', type: 'text', required: true }
+                ],
+                docs: [
+                    { label: 'Surat Keterangan Kehilangan (jika hilang)', name: 'doc_kehilangan', required: false }
+                ]
+            },
+            'Surat Tanah': {
+                fields: [
+                    { label: 'Alamat Tanah', name: 'alamat_tanah', type: 'text', required: true },
+                    { label: 'Luas Tanah (m2)', name: 'luas_tanah', type: 'text', required: false }
+                ],
+                docs: [
+                    { label: 'Foto/Scan Sertifikat atau Bukti Kepemilikan (opsional)', name: 'doc_sertifikat', required: false }
+                ]
+            },
+            'Surat Warisan': {
+                fields: [
+                    { label: 'Nama Almarhum', name: 'nama_almarhum', type: 'text', required: true },
+                    { label: 'Hubungan dengan Almarhum', name: 'hubungan_almarhum', type: 'text', required: true },
+                    { label: 'Daftar Penerima Waris (nama & hubungan)', name: 'daftar_penerima', type: 'textarea', required: true }
+                ],
+                docs: [
+                    { label: 'Surat Keterangan Ahli Waris (opsional)', name: 'doc_ahli_waris', required: false }
+                ]
+            },
+            'Surat Domisili': {
+                fields: [
+                    { label: 'Alamat Domisili', name: 'alamat_domisili', type: 'text', required: true },
+                    { label: 'RT/RW', name: 'rt_rw', type: 'text', required: true }
+                ],
+                docs: [
+                    { label: 'Surat Pernyataan RT/RW (opsional)', name: 'doc_rt_rw', required: false }
+                ]
+            },
+            'Surat Kelahiran': {
+                fields: [
+                    { label: 'Nama Bayi', name: 'nama_bayi', type: 'text', required: true },
+                    { label: 'Tanggal Lahir Bayi', name: 'tanggal_lahir_bayi', type: 'date', required: true },
+                    { label: 'Tempat Lahir Bayi', name: 'tempat_lahir_bayi', type: 'text', required: false },
+                    { label: 'Jenis Kelamin Bayi', name: 'jenis_kelamin_bayi', type: 'text', required: false }
+                ],
+                docs: [
+                    { label: 'Foto/Scan Surat Kelahiran (opsional)', name: 'doc_surat_kelahiran', required: false }
+                ]
+            },
+            'Surat Keterangan Tidak Mampu': {
+                fields: [
+                    { label: 'Keterangan Tambahan', name: 'keterangan_tidak_mampu', type: 'textarea', required: false }
+                ],
+                docs: [
+                    { label: 'Foto/Scan Bukti Penghasilan (opsional)', name: 'doc_bukti_penghasilan', required: false }
+                ]
+            }
+        };
+
+        function renderSurat(jenis) {
+            if (!dynamicFields || !dynamicDocs) return;
+            dynamicFields.innerHTML = '';
+            dynamicDocs.innerHTML = '';
+
+            if (!jenis || !suratConfig[jenis]) {
+                // show hint
+                return;
+            }
+
+            // Render input fields
+            suratConfig[jenis].fields.forEach(field => {
+                let fieldHtml = '';
+                fieldHtml += '<div class="col-md-12">';
+                fieldHtml += '<div class="form-group">';
+                fieldHtml += `<label class="form-label">${field.label}`;
+                if (field.required) fieldHtml += ' <span class="text-danger">*</span>';
+                fieldHtml += '</label>';
+
+                if (field.type === 'textarea') {
+                    fieldHtml += `<textarea name="${field.name}" class="form-control" rows="2"`;
+                    if (field.required) fieldHtml += ' required';
+                    fieldHtml += `>{{ old('${field.name}') }}</textarea>`;
+                } else {
+                    fieldHtml += `<input type="${field.type}" name="${field.name}" class="form-control"`;
+                    fieldHtml += ` value="{{ old('${field.name}') }}"`;
+                    if (field.required) fieldHtml += ' required';
+                    fieldHtml += '>';
+                }
+
+                fieldHtml += '</div></div>';
+                dynamicFields.insertAdjacentHTML('beforeend', fieldHtml);
+            });
+
+            // Render required/optional document upload fields
+            if (suratConfig[jenis].docs && suratConfig[jenis].docs.length) {
+                dynamicDocs.insertAdjacentHTML('beforeend', '<div class="col-md-12"><hr><h6 class="mb-3">Dokumen Khusus Untuk Jenis Surat Ini</h6></div>');
+                suratConfig[jenis].docs.forEach(doc => {
+                    let docHtml = '';
+                    docHtml += '<div class="col-md-6">';
+                    docHtml += '<div class="form-group">';
+                    docHtml += `<label class="form-label">${doc.label}`;
+                    if (doc.required) docHtml += ' <span class="text-danger">*</span>';
+                    docHtml += '</label>';
+                    docHtml += `<input type="file" name="${doc.name}" class="form-control" accept=",.pdf,.jpg,.jpeg,.png"`;
+                    if (doc.required) docHtml += ' required';
+                    docHtml += '>';
+                    docHtml += '<small class="text-muted">Format: PDF, JPG, PNG | Max: 2MB</small>';
+                    docHtml += '</div></div>';
+                    dynamicDocs.insertAdjacentHTML('beforeend', docHtml);
+                });
+            }
+        }
+
+        // guard: only attach listener if element exists
+        const debugDiv = document.getElementById('dynamic-debug');
+        function debug(msg) {
+            if (debugDiv) {
+                debugDiv.textContent = msg;
+            }
+            if (console && console.log) console.log('[dynamic-form] ' + msg);
+        }
+
+        debug('script loaded');
+
+        if (jenisSuratField) {
+            debug('select found');
+            jenisSuratField.addEventListener('change', function() {
+                try {
+                    debug('changed -> ' + this.value);
+                    renderSurat(this.value);
+                    debug('rendered for ' + this.value);
+                } catch (e) {
+                    console.error('Error rendering fields for', this.value, e);
+                }
+            });
+
+            // Render saat ada nilai (misal setelah validasi gagal)
+            if (jenisSuratField.value) {
+                try {
+                    debug('initial value -> ' + jenisSuratField.value);
+                    renderSurat(jenisSuratField.value);
+                    debug('initial rendered for ' + jenisSuratField.value);
+                } catch (e) {
+                    console.error('Error rendering initial fields:', e);
+                    debug('error: ' + e.message);
+                }
+            }
+        } else {
+            console.warn('jenis_surat select not found; dynamic fields disabled');
+            debug('select not found');
+        }
+
+        // Disable submit button after form submission to prevent double submit (guarded)
+        const form = document.getElementById('formPengajuan');
+        if (form) {
+            form.addEventListener('submit', function() {
+                const submitBtn = this.querySelector('button[type="submit"]');
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Mengirim...';
+                }
+            });
+        }
     });
 </script>
 @endsection
