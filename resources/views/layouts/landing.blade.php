@@ -77,10 +77,6 @@
                             <a class="nav-link {{ request()->is('dashboard') ? 'active' : '' }}"
                                 href="/dashboard">Dashboard</a>
                         </li>
-                        <li class="nav-item pe-1">
-                            <a class="nav-link {{ request()->is('contact-us') ? 'active' : '' }}"
-                                href="/contact-us">Contact Us</a>
-                        </li>
 
                         @if (auth()->check())
                             <li class="nav-item">

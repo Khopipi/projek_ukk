@@ -9,12 +9,15 @@ use App\Http\Controllers\VerifikasiPengajuanController;
 use App\Http\Controllers\VerifikasiPengaduanController;
 use App\Http\Controllers\PengaduanController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Landing page routes - accessible to everyone (guest or authenticated)
+Route::middleware(['web', 'public'])->group(function () {
+    Route::get('/', function () {
+        return view('welcome');
+    })->name('welcome');
 
-Route::get('/contact-us', function () {
-    return view('contact');
+    Route::get('/welcome', function () {
+        return view('welcome');
+    })->name('welcome.index');
 });
 
 Route::get('/verify-email', [AuthController::class, 'showVerifyForm'])->name('verify.form');

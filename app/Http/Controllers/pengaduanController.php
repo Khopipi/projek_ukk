@@ -69,7 +69,7 @@ class PengaduanController extends Controller
 			if ($request->hasFile($fieldName)) {
 				$file = $request->file($fieldName);
 				$filename = time() . "_foto{$i}_" . $file->getClientOriginalName();
-				$file->storeAs('public/pengaduan', $filename);
+				$file->storeAs('public/pengaduan', $filename, 'public');
 				$validated[$fieldName] = $filename;
 			}
 		}
@@ -108,7 +108,7 @@ class PengaduanController extends Controller
 		$files = [$pengaduan->foto_1, $pengaduan->foto_2, $pengaduan->foto_3];
 		foreach ($files as $file) {
 			if ($file) {
-				Storage::delete('public/pengaduan/' . $file);
+				Storage::disk('public')->delete('pengaduan/' . $file);
 			}
 		}
 

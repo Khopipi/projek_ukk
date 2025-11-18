@@ -193,50 +193,95 @@
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            @if($pengaduan->foto_1)
+                            @if($pengaduan->foto_1 && $pengaduan->foto_1_url)
                             <div class="col-md-4 mb-3">
-                                <a href="{{ $pengaduan->foto_1_url }}" target="_blank">
+                                <div class="position-relative overflow-hidden rounded border bg-light" style="aspect-ratio: 1;">
                                     <img src="{{ $pengaduan->foto_1_url }}"
                                          alt="Foto 1"
-                                         class="img-fluid rounded border"
-                                         style="max-height: 200px; width: 100%; object-fit: cover;">
-                                </a>
-                                <div class="text-center mt-2">
-                                    <a href="{{ $pengaduan->foto_1_url }}" target="_blank" class="btn btn-sm btn-outline-primary">
-                                        <i class="ti ti-eye me-1"></i> Lihat Full
+                                         class="img-fluid w-100 h-100"
+                                         style="object-fit: cover; cursor: pointer;"
+                                         data-bs-toggle="modal" 
+                                         data-bs-target="#fotoModal1">
+                                </div>
+                                <div class="d-grid gap-2 mt-2">
+                                    <button class="btn btn-sm btn-outline-primary" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#fotoModal1">
+                                        <i class="ti ti-eye me-1"></i> Lihat Fullscreen
+                                    </button>
+                                    <a href="{{ $pengaduan->foto_1_url }}" 
+                                       download="pengaduan-{{ $pengaduan->nomor_pengaduan }}-foto-1"
+                                       class="btn btn-sm btn-outline-success">
+                                        <i class="ti ti-download me-1"></i> Download
                                     </a>
+                                </div>
+                            </div>
+                            @else
+                            <div class="col-md-4 mb-3">
+                                <div class="alert alert-warning text-center">
+                                    <i class="ti ti-photo-off"></i> File tidak ditemukan
                                 </div>
                             </div>
                             @endif
 
-                            @if($pengaduan->foto_2)
+                            @if($pengaduan->foto_2 && $pengaduan->foto_2_url)
                             <div class="col-md-4 mb-3">
-                                <a href="{{ $pengaduan->foto_2_url }}" target="_blank">
+                                <div class="position-relative overflow-hidden rounded border bg-light" style="aspect-ratio: 1;">
                                     <img src="{{ $pengaduan->foto_2_url }}"
                                          alt="Foto 2"
-                                         class="img-fluid rounded border"
-                                         style="max-height: 200px; width: 100%; object-fit: cover;">
-                                </a>
-                                <div class="text-center mt-2">
-                                    <a href="{{ $pengaduan->foto_2_url }}" target="_blank" class="btn btn-sm btn-outline-primary">
-                                        <i class="ti ti-eye me-1"></i> Lihat Full
+                                         class="img-fluid w-100 h-100"
+                                         style="object-fit: cover; cursor: pointer;"
+                                         data-bs-toggle="modal" 
+                                         data-bs-target="#fotoModal2">
+                                </div>
+                                <div class="d-grid gap-2 mt-2">
+                                    <button class="btn btn-sm btn-outline-primary" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#fotoModal2">
+                                        <i class="ti ti-eye me-1"></i> Lihat Fullscreen
+                                    </button>
+                                    <a href="{{ $pengaduan->foto_2_url }}" 
+                                       download="pengaduan-{{ $pengaduan->nomor_pengaduan }}-foto-2"
+                                       class="btn btn-sm btn-outline-success">
+                                        <i class="ti ti-download me-1"></i> Download
                                     </a>
+                                </div>
+                            </div>
+                            @else
+                            <div class="col-md-4 mb-3">
+                                <div class="alert alert-warning text-center">
+                                    <i class="ti ti-photo-off"></i> File tidak ditemukan
                                 </div>
                             </div>
                             @endif
 
-                            @if($pengaduan->foto_3)
+                            @if($pengaduan->foto_3 && $pengaduan->foto_3_url)
                             <div class="col-md-4 mb-3">
-                                <a href="{{ $pengaduan->foto_3_url }}" target="_blank">
+                                <div class="position-relative overflow-hidden rounded border bg-light" style="aspect-ratio: 1;">
                                     <img src="{{ $pengaduan->foto_3_url }}"
                                          alt="Foto 3"
-                                         class="img-fluid rounded border"
-                                         style="max-height: 200px; width: 100%; object-fit: cover;">
-                                </a>
-                                <div class="text-center mt-2">
-                                    <a href="{{ $pengaduan->foto_3_url }}" target="_blank" class="btn btn-sm btn-outline-primary">
-                                        <i class="ti ti-eye me-1"></i> Lihat Full
+                                         class="img-fluid w-100 h-100"
+                                         style="object-fit: cover; cursor: pointer;"
+                                         data-bs-toggle="modal" 
+                                         data-bs-target="#fotoModal3">
+                                </div>
+                                <div class="d-grid gap-2 mt-2">
+                                    <button class="btn btn-sm btn-outline-primary" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#fotoModal3">
+                                        <i class="ti ti-eye me-1"></i> Lihat Fullscreen
+                                    </button>
+                                    <a href="{{ $pengaduan->foto_3_url }}" 
+                                       download="pengaduan-{{ $pengaduan->nomor_pengaduan }}-foto-3"
+                                       class="btn btn-sm btn-outline-success">
+                                        <i class="ti ti-download me-1"></i> Download
                                     </a>
+                                </div>
+                            </div>
+                            @else
+                            <div class="col-md-4 mb-3">
+                                <div class="alert alert-warning text-center">
+                                    <i class="ti ti-photo-off"></i> File tidak ditemukan
                                 </div>
                             </div>
                             @endif
@@ -319,6 +364,16 @@
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
+                        @if($errors->any())
+                        <div class="alert alert-danger">
+                            <ul class="mb-0">
+                                @foreach($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                        @endif
+
                         <div class="alert alert-info">
                             <strong>{{ $pengaduan->nomor_pengaduan }}</strong><br>
                             {{ $pengaduan->judul }}
@@ -334,8 +389,11 @@
                         </div>
                         <div class="form-group">
                             <label class="form-label">Tanggapan <span class="text-danger">*</span></label>
-                            <textarea name="tanggapan_admin" class="form-control" rows="4" required
-                                      placeholder="Berikan tanggapan...">{{ $pengaduan->tanggapan_admin }}</textarea>
+                            <textarea name="tanggapan_admin" class="form-control @error('tanggapan_admin') is-invalid @enderror" rows="4" required
+                                      placeholder="Berikan tanggapan...">{{ old('tanggapan_admin', $pengaduan->tanggapan_admin) }}</textarea>
+                            @error('tanggapan_admin')
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -362,6 +420,16 @@
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
+                        @if($errors->any())
+                        <div class="alert alert-danger">
+                            <ul class="mb-0">
+                                @foreach($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                        @endif
+
                         <p>Apakah Anda yakin masalah ini sudah diselesaikan?</p>
                         <div class="alert alert-success">
                             <strong>{{ $pengaduan->nomor_pengaduan }}</strong><br>
@@ -369,8 +437,11 @@
                         </div>
                         <div class="form-group">
                             <label class="form-label">Laporan Penyelesaian <span class="text-danger">*</span></label>
-                            <textarea name="tanggapan_admin" class="form-control" rows="4" required
-                                      placeholder="Jelaskan hasil penyelesaian pengaduan..."></textarea>
+                            <textarea name="tanggapan_admin" class="form-control @error('tanggapan_admin') is-invalid @enderror" rows="4" required
+                                      placeholder="Jelaskan hasil penyelesaian pengaduan...">{{ old('tanggapan_admin') }}</textarea>
+                            @error('tanggapan_admin')
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -397,6 +468,16 @@
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
+                        @if($errors->any())
+                        <div class="alert alert-danger">
+                            <ul class="mb-0">
+                                @foreach($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                        @endif
+
                         <p>Apakah Anda yakin ingin menolak pengaduan ini?</p>
                         <div class="alert alert-warning">
                             <strong>{{ $pengaduan->nomor_pengaduan }}</strong><br>
@@ -404,8 +485,11 @@
                         </div>
                         <div class="form-group">
                             <label class="form-label">Alasan Penolakan <span class="text-danger">*</span></label>
-                            <textarea name="tanggapan_admin" class="form-control" rows="4" required
-                                      placeholder="Jelaskan alasan penolakan..."></textarea>
+                            <textarea name="tanggapan_admin" class="form-control @error('tanggapan_admin') is-invalid @enderror" 
+                                      rows="4" required placeholder="Jelaskan alasan penolakan...">{{ old('tanggapan_admin') }}</textarea>
+                            @error('tanggapan_admin')
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -419,4 +503,104 @@
         </div>
     </div>
     @endif
+@endsection
+
+@section('scripts_content')
+<!-- Foto Modals -->
+@if($pengaduan->foto_1 && $pengaduan->foto_1_url)
+<div class="modal fade" id="fotoModal1" tabindex="-1">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content bg-dark">
+            <div class="modal-header bg-dark border-secondary">
+                <h5 class="modal-title text-white">Foto 1 - {{ $pengaduan->nomor_pengaduan }}</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body d-flex align-items-center justify-content-center bg-dark p-0">
+                <img src="{{ $pengaduan->foto_1_url }}"
+                     alt="Foto 1"
+                     class="img-fluid"
+                     style="max-height: 85vh; max-width: 100%; object-fit: contain;">
+            </div>
+            <div class="modal-footer bg-dark border-secondary">
+                <a href="{{ $pengaduan->foto_1_url }}" 
+                   download="pengaduan-{{ $pengaduan->nomor_pengaduan }}-foto-1"
+                   class="btn btn-success">
+                    <i class="ti ti-download me-1"></i> Download
+                </a>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>
+@endif
+
+@if($pengaduan->foto_2 && $pengaduan->foto_2_url)
+<div class="modal fade" id="fotoModal2" tabindex="-1">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content bg-dark">
+            <div class="modal-header bg-dark border-secondary">
+                <h5 class="modal-title text-white">Foto 2 - {{ $pengaduan->nomor_pengaduan }}</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body d-flex align-items-center justify-content-center bg-dark p-0">
+                <img src="{{ $pengaduan->foto_2_url }}"
+                     alt="Foto 2"
+                     class="img-fluid"
+                     style="max-height: 85vh; max-width: 100%; object-fit: contain;">
+            </div>
+            <div class="modal-footer bg-dark border-secondary">
+                <a href="{{ $pengaduan->foto_2_url }}" 
+                   download="pengaduan-{{ $pengaduan->nomor_pengaduan }}-foto-2"
+                   class="btn btn-success">
+                    <i class="ti ti-download me-1"></i> Download
+                </a>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>
+@endif
+
+@if($pengaduan->foto_3 && $pengaduan->foto_3_url)
+<div class="modal fade" id="fotoModal3" tabindex="-1">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content bg-dark">
+            <div class="modal-header bg-dark border-secondary">
+                <h5 class="modal-title text-white">Foto 3 - {{ $pengaduan->nomor_pengaduan }}</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body d-flex align-items-center justify-content-center bg-dark p-0">
+                <img src="{{ $pengaduan->foto_3_url }}"
+                     alt="Foto 3"
+                     class="img-fluid"
+                     style="max-height: 85vh; max-width: 100%; object-fit: contain;">
+            </div>
+            <div class="modal-footer bg-dark border-secondary">
+                <a href="{{ $pengaduan->foto_3_url }}" 
+                   download="pengaduan-{{ $pengaduan->nomor_pengaduan }}-foto-3"
+                   class="btn btn-success">
+                    <i class="ti ti-download me-1"></i> Download
+                </a>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>
+@endif
+
+<script>
+    // Auto-hide alerts
+    setTimeout(function() {
+        if (typeof bootstrap === 'undefined') return;
+        const alerts = document.querySelectorAll('.alert-dismissible');
+        alerts.forEach(alert => {
+            try {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            } catch (e) {
+                // fail silently
+            }
+        });
+    }, 5000);
+</script>
 @endsection

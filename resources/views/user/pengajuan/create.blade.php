@@ -74,10 +74,6 @@
                                 </div>
 
 
-                                <!-- Debug/Status for dynamic rendering (hidden in production) -->
-                                <div id="dynamic-debug" style="display:block;margin-bottom:8px;font-size:13px;color:#6c757d;
-                                    "></div>
-
                                 <!-- Form dinamis berdasarkan jenis surat -->
                                 <div id="dynamic-form-fields"></div>
 
@@ -422,23 +418,11 @@
         }
 
         // guard: only attach listener if element exists
-        const debugDiv = document.getElementById('dynamic-debug');
-        function debug(msg) {
-            if (debugDiv) {
-                debugDiv.textContent = msg;
-            }
-            if (console && console.log) console.log('[dynamic-form] ' + msg);
-        }
-
-        debug('script loaded');
-
+        const jenisSuratField = document.getElementById('jenis_surat');
         if (jenisSuratField) {
-            debug('select found');
             jenisSuratField.addEventListener('change', function() {
                 try {
-                    debug('changed -> ' + this.value);
                     renderSurat(this.value);
-                    debug('rendered for ' + this.value);
                 } catch (e) {
                     console.error('Error rendering fields for', this.value, e);
                 }
@@ -447,17 +431,11 @@
             // Render saat ada nilai (misal setelah validasi gagal)
             if (jenisSuratField.value) {
                 try {
-                    debug('initial value -> ' + jenisSuratField.value);
                     renderSurat(jenisSuratField.value);
-                    debug('initial rendered for ' + jenisSuratField.value);
                 } catch (e) {
                     console.error('Error rendering initial fields:', e);
-                    debug('error: ' + e.message);
                 }
             }
-        } else {
-            console.warn('jenis_surat select not found; dynamic fields disabled');
-            debug('select not found');
         }
 
         // Disable submit button after form submission to prevent double submit (guarded)
