@@ -45,7 +45,13 @@ class AuthController extends Controller
         // Attempt login
         if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
-            return redirect()->intended('dashboard');
+
+            // Redirect berdasarkan role
+            if (Auth::user()->role === 'admin') {
+                return redirect()->intended('/admin/dashboard');
+            }
+
+            return redirect()->intended('/dashboard');
         }
 
         // Jika gagal
@@ -93,6 +99,9 @@ class AuthController extends Controller
             // Email & Password
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6|confirmed',
+
+            // Agreement
+            'agreement' => 'required|accepted',
         ], [
             // Custom error messages
             'nik.required' => 'NIK wajib diisi',
@@ -124,6 +133,8 @@ class AuthController extends Controller
             'password.required' => 'Password wajib diisi',
             'password.min' => 'Password minimal 6 karakter',
             'password.confirmed' => 'Konfirmasi password tidak cocok',
+            'agreement.required' => 'Anda harus menyetujui pernyataan data',
+            'agreement.accepted' => 'Anda harus menyetujui pernyataan data',
         ]);
 
         // Buat user baru
@@ -157,14 +168,120 @@ class AuthController extends Controller
 
             // Email & Password
             'email' => $request->email,
-            'password' => bcrypt($request->password),
+            'password' => Hash::make($request->password),
             'role' => 'user',
         ]);
 
-        // Set session dengan NIK yang terdaftar
-        $request->session()->flash('registered_nik', $request->nik);
-
         return redirect()->route('login')->with('success', 'Registrasi berhasil! Silakan login dengan NIK Anda.');
     }
-}
 
+    /**
+     * Logout user
+     */
+    public function logout(Request $request)
+    {
+        Auth::logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect('/login')->with('success', 'Anda berhasil logout.');
+    }
+
+    /**
+     * Show forgot password form
+     */
+    public function showForgotPasswordForm()
+    {
+        return view('auth.forgot-password');
+    }
+
+    /**
+     * Send reset password link
+     */
+    public function sendResetLink(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|exists:users,email'
+        ], [
+            'email.required' => 'Email wajib diisi',
+            'email.email' => 'Format email tidak valid',
+            'email.exists' => 'Email tidak terdaftar'
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        // Generate token
+        $token = Str::random(64);
+
+        // Store token in password_reset_tokens table
+        DB::table('password_reset_tokens')->updateOrInsert(
+            ['email' => $request->email],
+            [
+                'token' => Hash::make($token),
+                'created_at' => now()
+            ]
+        );
+
+        // Send email
+        $resetLink = url('/reset-password/' . $token . '?email=' . urlencode($request->email));
+        $expireAt = now()->addHours(1);
+
+        try {
+            Mail::to($user->email)->send(new ResetPasswordMail($user->name, $resetLink, $expireAt));
+            return back()->with('success', 'Link reset password telah dikirim ke email Anda!');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Gagal mengirim email. Silakan coba lagi.');
+        }
+    }
+
+    /**
+     * Show reset password form
+     */
+    public function showResetPasswordForm($token)
+    {
+        return view('auth.reset-password', ['token' => $token]);
+    }
+
+    /**
+     * Reset password
+     */
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|exists:users,email',
+            'password' => 'required|string|min:6|confirmed',
+            'token' => 'required'
+        ], [
+            'email.required' => 'Email wajib diisi',
+            'email.exists' => 'Email tidak terdaftar',
+            'password.required' => 'Password wajib diisi',
+            'password.min' => 'Password minimal 6 karakter',
+            'password.confirmed' => 'Konfirmasi password tidak cocok'
+        ]);
+
+        // Verify token
+        $passwordReset = DB::table('password_reset_tokens')
+            ->where('email', $request->email)
+            ->first();
+
+        if (!$passwordReset) {
+            return back()->withErrors(['email' => 'Token reset password tidak valid!']);
+        }
+
+        // Check if token expired (1 hour)
+        if (now()->diffInMinutes($passwordReset->created_at) > 60) {
+            return back()->withErrors(['email' => 'Token reset password sudah kadaluarsa!']);
+        }
+
+        // Update password
+        User::where('email', $request->email)->update([
+            'password' => Hash::make($request->password)
+        ]);
+
+        // Delete token
+        DB::table('password_reset_tokens')->where('email', $request->email)->delete();
+
+        return redirect('/login')->with('success', 'Password berhasil direset! Silakan login dengan password baru.');
+    }
+}
