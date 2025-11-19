@@ -13,28 +13,33 @@
         <meta name="author" content="CodedThemes">
 
         <!-- [Favicon] icon -->
-
         <link rel="icon" href="{{ asset('assets/images/favicon.svg') }}" type="image/x-icon">
+
         <!-- [Google Font] Family -->
         <link rel="stylesheet"
             href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&display=swap"
             id="main-font-link">
+
         <!-- [Tabler Icons] https://tablericons.com -->
         <link rel="stylesheet" href="{{ asset('assets/fonts/tabler-icons.min.css') }}">
+
         <!-- [Feather Icons] https://feathericons.com -->
         <link rel="stylesheet" href="{{ asset('assets/fonts/feather.css') }}">
+
         <!-- [Font Awesome Icons] https://fontawesome.com/icons -->
         <link rel="stylesheet" href="{{ asset('assets/fonts/fontawesome.css') }}">
+
         <!-- [Material Icons] https://fonts.google.com/icons -->
         <link rel="stylesheet" href="{{ asset('assets/fonts/material.css') }}">
+
         <!-- [Template CSS Files] -->
         <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}" id="main-style-link">
         <link rel="stylesheet" href="{{ asset('assets/css/style-preset.css') }}">
 
     </head>
     <!-- [Head] end -->
-    <!-- [Body] Start -->
 
+    <!-- [Body] Start -->
     <body data-pc-preset="preset-1" data-pc-direction="ltr" data-pc-theme="light">
         <!-- [ Pre-loader ] start -->
         <div class="loader-bg">
@@ -43,13 +48,14 @@
             </div>
         </div>
         <!-- [ Pre-loader ] End -->
+
         <!-- [ Sidebar Menu ] start -->
         <nav class="pc-sidebar">
             <div class="navbar-wrapper">
                 <div class="m-header justify-content-center">
                     <a href="/" class="b-brand text-dark text-capitalize fw-bold">
                         <!-- ========   Change your logo from here   ============ -->
-                        <span class="fs-4">{{ auth()->user()->role }} Dashboard</span>
+                        <span class="fs-4">{{ Auth::check() ? ucfirst(Auth::user()->role) : 'User' }} Dashboard</span>
                     </a>
                 </div>
                 <div class="navbar-content">
@@ -60,21 +66,24 @@
                                 <span class="pc-mtext">Dashboard</span>
                             </a>
                         </li>
-                        @if (auth()->user()->role === 'admin')
-                            @include('admin.sidebar')
-                        @else
-                            @include('user.sidebar')
-                        @endif
 
-
-
-
+                        @auth
+                            @if (Auth::user()->role === 'admin')
+                                @include('admin.sidebar')
+                            @else
+                                @include('user.sidebar')
+                            @endif
+                        @endauth
+                    </ul>
                 </div>
             </div>
         </nav>
-        <!-- [ Sidebar Menu ] end --> <!-- [ Header Topbar ] start -->
+        <!-- [ Sidebar Menu ] end -->
+
+        <!-- [ Header Topbar ] start -->
         <header class="pc-header">
-            <div class="header-wrapper"> <!-- [Mobile Media Block] start -->
+            <div class="header-wrapper">
+                <!-- [Mobile Media Block] start -->
                 <div class="me-auto pc-mob-drp">
                     <ul class="list-unstyled">
                         <!-- ======= Menu collapse Icon ===== -->
@@ -111,47 +120,68 @@
                         </li>
                     </ul>
                 </div>
-                        </li>
+
+                <!-- [Mobile Media Block] end -->
+                <div class="ms-auto">
+                    <ul class="list-unstyled">
                         <li class="dropdown pc-h-item header-user-profile">
                             <a class="pc-head-link dropdown-toggle arrow-none me-0" data-bs-toggle="dropdown"
                                 href="#" role="button" aria-haspopup="false" data-bs-auto-close="outside"
                                 aria-expanded="false">
-                                <img src="{{ $avatar }}" alt="user-image" class="user-avtar">
-                                <span>{{ $name }}</span>
+                                @auth
+                                    <img src="{{ Auth::user()->avatar ?? asset('assets/images/user/avatar-1.jpg') }}"
+                                         alt="user-image" class="user-avtar">
+                                    <span>{{ Auth::user()->name }}</span>
+                                @else
+                                    <img src="{{ asset('assets/images/user/avatar-1.jpg') }}"
+                                         alt="user-image" class="user-avtar">
+                                    <span>Guest</span>
+                                @endauth
                             </a>
                             <div class="dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown">
                                 <div class="dropdown-header">
                                     <div class="d-flex mb-1 align-items-center">
                                         <div class="flex-shrink-0">
-                                            <img src="{{ $avatar }}" alt="user-image"
-                                                class="user-avtar wid-35">
+                                            @auth
+                                                <img src="{{ Auth::user()->avatar ?? asset('assets/images/user/avatar-1.jpg') }}"
+                                                     alt="user-image" class="user-avtar wid-35">
+                                            @else
+                                                <img src="{{ asset('assets/images/user/avatar-1.jpg') }}"
+                                                     alt="user-image" class="user-avtar wid-35">
+                                            @endauth
                                         </div>
                                         <div class="flex-grow-1 ms-3">
-                                            <h6 class="mb-1">{{ $name }}</h6>
-                                            <span>{{ $role }}</span>
+                                            @auth
+                                                <h6 class="mb-1">{{ Auth::user()->name }}</h6>
+                                                <span>{{ ucfirst(Auth::user()->role) }}</span>
+                                            @else
+                                                <h6 class="mb-1">Guest</h6>
+                                                <span>Not Logged In</span>
+                                            @endauth
                                         </div>
-
                                     </div>
                                 </div>
 
-
-                                
                                 <div class="tab-content" id="mysrpTabContent">
                                     <div class="tab-pane fade show active" id="drp-tab-1" role="tabpanel"
                                         aria-labelledby="drp-t1" tabindex="0">
 
-
-                                        <form method="POST" action="{{ route('logout') }}">
-                                            @csrf
-                                            <button type="submit" class="dropdown-item">
-                                                <i class="ti ti-power"></i>
-                                                <span>Logout</span>
-                                            </button>
-                                        </form>
-
+                                        @auth
+                                            <form method="POST" action="{{ route('logout') }}">
+                                                @csrf
+                                                <button type="submit" class="dropdown-item">
+                                                    <i class="ti ti-power"></i>
+                                                    <span>Logout</span>
+                                                </button>
+                                            </form>
+                                        @else
+                                            <a href="{{ route('login') }}" class="dropdown-item">
+                                                <i class="ti ti-login"></i>
+                                                <span>Login</span>
+                                            </a>
+                                        @endauth
 
                                     </div>
-
                                 </div>
                             </div>
                         </li>
@@ -161,33 +191,35 @@
         </header>
         <!-- [ Header ] end -->
 
-
-
         <!-- [ Main Content ] start -->
         <div class="pc-container">
             @yield('content')
         </div>
         <!-- [ Main Content ] end -->
-       <footer class="pc-footer">
-    <div class="footer-wrapper container-fluid">
-        <div class="row">
-            <div class="col-sm my-1">
-                <p class="m-0">© {{ date('Y') }} Aplikasi Desa Sruni. Hak Cipta Dilindungi.</p>
+
+        <!-- [ Footer ] start -->
+        <footer class="pc-footer">
+            <div class="footer-wrapper container-fluid">
+                <div class="row">
+                    <div class="col-sm my-1">
+                        <p class="m-0">© {{ date('Y') }} Aplikasi Desa Sruni. Hak Cipta Dilindungi.</p>
+                    </div>
+                    <div class="col-auto my-1">
+                        <ul class="list-inline footer-link mb-0">
+                            <li class="list-inline-item"><a href="/">Home</a></li>
+                            <li class="list-inline-item"><a href="/contact-us">Kontak</a></li>
+                        </ul>
+                    </div>
+                </div>
             </div>
-            <div class="col-auto my-1">
-                <ul class="list-inline footer-link mb-0">
-                    <li class="list-inline-item"><a href="/">Home</a></li>
-                    <li class="list-inline-item"><a href="/contact-us">Kontak</a></li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</footer>
+        </footer>
+        <!-- [ Footer ] end -->
 
         <!-- [Page Specific JS] start -->
         <script src="{{ asset('assets/js/plugins/apexcharts.min.js') }}"></script>
         <script src="{{ asset('assets/js/pages/dashboard-default.js') }}"></script>
         <!-- [Page Specific JS] end -->
+
         <!-- Required Js -->
         <script src="{{ asset('assets/js/plugins/popper.min.js') }}"></script>
         <script src="{{ asset('assets/js/plugins/simplebar.min.js') }}"></script>
@@ -196,43 +228,32 @@
         <script src="{{ asset('assets/js/pcoded.js') }}"></script>
         <script src="{{ asset('assets/js/plugins/feather.min.js') }}"></script>
 
-
-
-
-
         <script>
             layout_change('light');
         </script>
-
-
-
 
         <script>
             change_box_container('false');
         </script>
 
-
-
         <script>
             layout_rtl_change('false');
         </script>
-
 
         <script>
             preset_change("preset-1");
         </script>
 
-
         <script>
             font_change("Public-Sans");
         </script>
-
 
         <script>
             if (window.location.hash === '#_=_') {
                 history.replaceState(null, null, window.location.pathname);
             }
         </script>
+
         {{-- Page-specific scripts from child views --}}
         @yield('scripts_content')
     </body>

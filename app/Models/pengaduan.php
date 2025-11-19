@@ -56,7 +56,7 @@ class Pengaduan extends Model
         $prefix = 'ADU';
         $date = date('Ymd');
         $lastNumber = self::whereDate('created_at', today())->count() + 1;
-        
+
         return $prefix . '/' . $date . '/' . str_pad($lastNumber, 4, '0', STR_PAD_LEFT);
     }
 

@@ -39,7 +39,7 @@
                     @error('nik')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
-                    <small class="text-muted">Contoh: 3578012345678901</small>
+                    <small class="text-muted">NIK:16 Angka</small>
                 </div>
 
                 <div class="form-group mb-3">

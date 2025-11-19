@@ -200,16 +200,16 @@
                                          alt="Foto 1"
                                          class="img-fluid w-100 h-100"
                                          style="object-fit: cover; cursor: pointer;"
-                                         data-bs-toggle="modal" 
+                                         data-bs-toggle="modal"
                                          data-bs-target="#fotoModal1">
                                 </div>
                                 <div class="d-grid gap-2 mt-2">
-                                    <button class="btn btn-sm btn-outline-primary" 
-                                            data-bs-toggle="modal" 
+                                    <button class="btn btn-sm btn-outline-primary"
+                                            data-bs-toggle="modal"
                                             data-bs-target="#fotoModal1">
                                         <i class="ti ti-eye me-1"></i> Lihat Fullscreen
                                     </button>
-                                    <a href="{{ $pengaduan->foto_1_url }}" 
+                                    <a href="{{ $pengaduan->foto_1_url }}"
                                        download="pengaduan-{{ $pengaduan->nomor_pengaduan }}-foto-1"
                                        class="btn btn-sm btn-outline-success">
                                         <i class="ti ti-download me-1"></i> Download
@@ -231,16 +231,16 @@
                                          alt="Foto 2"
                                          class="img-fluid w-100 h-100"
                                          style="object-fit: cover; cursor: pointer;"
-                                         data-bs-toggle="modal" 
+                                         data-bs-toggle="modal"
                                          data-bs-target="#fotoModal2">
                                 </div>
                                 <div class="d-grid gap-2 mt-2">
-                                    <button class="btn btn-sm btn-outline-primary" 
-                                            data-bs-toggle="modal" 
+                                    <button class="btn btn-sm btn-outline-primary"
+                                            data-bs-toggle="modal"
                                             data-bs-target="#fotoModal2">
                                         <i class="ti ti-eye me-1"></i> Lihat Fullscreen
                                     </button>
-                                    <a href="{{ $pengaduan->foto_2_url }}" 
+                                    <a href="{{ $pengaduan->foto_2_url }}"
                                        download="pengaduan-{{ $pengaduan->nomor_pengaduan }}-foto-2"
                                        class="btn btn-sm btn-outline-success">
                                         <i class="ti ti-download me-1"></i> Download
@@ -262,16 +262,16 @@
                                          alt="Foto 3"
                                          class="img-fluid w-100 h-100"
                                          style="object-fit: cover; cursor: pointer;"
-                                         data-bs-toggle="modal" 
+                                         data-bs-toggle="modal"
                                          data-bs-target="#fotoModal3">
                                 </div>
                                 <div class="d-grid gap-2 mt-2">
-                                    <button class="btn btn-sm btn-outline-primary" 
-                                            data-bs-toggle="modal" 
+                                    <button class="btn btn-sm btn-outline-primary"
+                                            data-bs-toggle="modal"
                                             data-bs-target="#fotoModal3">
                                         <i class="ti ti-eye me-1"></i> Lihat Fullscreen
                                     </button>
-                                    <a href="{{ $pengaduan->foto_3_url }}" 
+                                    <a href="{{ $pengaduan->foto_3_url }}"
                                        download="pengaduan-{{ $pengaduan->nomor_pengaduan }}-foto-3"
                                        class="btn btn-sm btn-outline-success">
                                         <i class="ti ti-download me-1"></i> Download
@@ -485,7 +485,7 @@
                         </div>
                         <div class="form-group">
                             <label class="form-label">Alasan Penolakan <span class="text-danger">*</span></label>
-                            <textarea name="tanggapan_admin" class="form-control @error('tanggapan_admin') is-invalid @enderror" 
+                            <textarea name="tanggapan_admin" class="form-control @error('tanggapan_admin') is-invalid @enderror"
                                       rows="4" required placeholder="Jelaskan alasan penolakan...">{{ old('tanggapan_admin') }}</textarea>
                             @error('tanggapan_admin')
                             <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -522,7 +522,7 @@
                      style="max-height: 85vh; max-width: 100%; object-fit: contain;">
             </div>
             <div class="modal-footer bg-dark border-secondary">
-                <a href="{{ $pengaduan->foto_1_url }}" 
+                <a href="{{ $pengaduan->foto_1_url }}"
                    download="pengaduan-{{ $pengaduan->nomor_pengaduan }}-foto-1"
                    class="btn btn-success">
                     <i class="ti ti-download me-1"></i> Download
@@ -549,7 +549,7 @@
                      style="max-height: 85vh; max-width: 100%; object-fit: contain;">
             </div>
             <div class="modal-footer bg-dark border-secondary">
-                <a href="{{ $pengaduan->foto_2_url }}" 
+                <a href="{{ $pengaduan->foto_2_url }}"
                    download="pengaduan-{{ $pengaduan->nomor_pengaduan }}-foto-2"
                    class="btn btn-success">
                     <i class="ti ti-download me-1"></i> Download
@@ -576,7 +576,7 @@
                      style="max-height: 85vh; max-width: 100%; object-fit: contain;">
             </div>
             <div class="modal-footer bg-dark border-secondary">
-                <a href="{{ $pengaduan->foto_3_url }}" 
+                <a href="{{ $pengaduan->foto_3_url }}"
                    download="pengaduan-{{ $pengaduan->nomor_pengaduan }}-foto-3"
                    class="btn btn-success">
                     <i class="ti ti-download me-1"></i> Download

@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BiodataController;
 use App\Http\Controllers\PendudukController;
@@ -59,33 +60,30 @@ Route::middleware(['auth'])->group(function () {
 
     // Dashboard - Semua user yang login
     Route::get('/dashboard', function () {
-        if (auth()->user()->role === 'admin') {
-            return view('admin.dashboard');
-        }
-        return view('user.dashboard');
+        // Set common variables
+        $name = Auth::user()->name;
+        $role = ucfirst(Auth::user()->role);
+        $avatar = Auth::user()->avatar ?? asset('assets/images/user/avatar-1.jpg');
+
+        return view('dashboard', compact('name', 'role', 'avatar'));
     })->name('dashboard');
 
     // Logout
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-    // My Profile - Semua user
-    Route::get('/myprofile', function () {
-        return view('myprofile');
-    })->name('myprofile');
-
     // ============================================
     // ADMIN ROUTES
     // ============================================
-    Route::middleware(['cekRole:admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::middleware(['cekRole:admin'])->group(function () {
 
-        // Data Penduduk CRUD
-        Route::resource('penduduk', PendudukController::class)->except(['index', 'create', 'store', 'show', 'edit', 'update', 'destroy']);
+        // Data Penduduk CRUD (tanpa prefix - route utama untuk admin)
+        Route::resource('penduduk', PendudukController::class);
 
         // Export Penduduk
         Route::get('/penduduk-export', [PendudukController::class, 'export'])->name('penduduk.export');
 
         // Verifikasi Pengajuan Surat
-        Route::prefix('pengajuan')->name('pengajuan.')->group(function () {
+        Route::prefix('admin/pengajuan')->name('admin.pengajuan.')->group(function () {
             Route::get('/', [VerifikasiPengajuanController::class, 'index'])->name('index');
             Route::get('/{pengajuan}', [VerifikasiPengajuanController::class, 'show'])->name('show');
             Route::post('/{pengajuan}/proses', [VerifikasiPengajuanController::class, 'proses'])->name('proses');
@@ -97,7 +95,7 @@ Route::middleware(['auth'])->group(function () {
         });
 
         // Verifikasi Pengaduan
-        Route::prefix('pengaduan')->name('pengaduan.')->group(function () {
+        Route::prefix('admin/pengaduan')->name('admin.pengaduan.')->group(function () {
             Route::get('/', [VerifikasiPengaduanController::class, 'index'])->name('index');
             Route::get('/{pengaduan}', [VerifikasiPengaduanController::class, 'show'])->name('show');
             Route::post('/{pengaduan}/proses', [VerifikasiPengaduanController::class, 'proses'])->name('proses');
@@ -109,21 +107,23 @@ Route::middleware(['auth'])->group(function () {
         });
 
         // Admin Menu Lainnya
-        Route::get('/verifikasi', function () {
-            return view('admin.verifikasi');
-        })->name('verifikasi');
+        Route::prefix('admin')->name('admin.')->group(function () {
+            Route::get('/verifikasi', function () {
+                return view('admin.verifikasi');
+            })->name('verifikasi');
 
-        Route::get('/seleksi', function () {
-            return view('admin.seleksi');
-        })->name('seleksi');
+            Route::get('/seleksi', function () {
+                return view('admin.seleksi');
+            })->name('seleksi');
 
-        Route::get('/pengumuman', function () {
-            return view('admin.pengumuman');
-        })->name('pengumuman');
+            Route::get('/pengumuman', function () {
+                return view('admin.pengumuman');
+            })->name('pengumuman');
 
-        Route::get('/laporan', function () {
-            return view('admin.laporan');
-        })->name('laporan');
+            Route::get('/laporan', function () {
+                return view('admin.laporan');
+            })->name('laporan');
+        });
     });
 
     // ============================================
@@ -141,11 +141,4 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/biodata', [BiodataController::class, 'index'])->name('user.biodata');
     });
 
-});
-
-// ============================================
-// DATA PENDUDUK ROUTES (Admin Only)
-// ============================================
-Route::middleware(['auth', 'cekRole:admin'])->group(function () {
-    Route::resource('penduduk', PendudukController::class);
 });
