@@ -124,30 +124,73 @@
                 <!-- [Mobile Media Block] end -->
                 <div class="ms-auto">
                     <ul class="list-unstyled">
-                        <li class="dropdown pc-h-item header-user-profile">
-                            <a class="pc-head-link dropdown-toggle arrow-none me-0" data-bs-toggle="dropdown"
-                                href="#" role="button" aria-haspopup="false" data-bs-auto-close="outside"
-                                aria-expanded="false">
-                                @auth
-                                    <img src="{{ Auth::user()->avatar ?? asset('assets/images/user/avatar-1.jpg') }}"
-                                         alt="user-image" class="user-avtar">
-                                    <span>{{ Auth::user()->name }}</span>
-                                @else
-                                    <img src="{{ asset('assets/images/user/avatar-1.jpg') }}"
-                                         alt="user-image" class="user-avtar">
-                                    <span>Guest</span>
-                                @endauth
-                            </a>
+                                <li class="dropdown pc-h-item header-user-profile">
+                                    <a class="pc-head-link dropdown-toggle arrow-none me-0" data-bs-toggle="dropdown"
+                                        href="#" role="button" aria-haspopup="false" data-bs-auto-close="outside"
+                                        aria-expanded="false">
+                                        @auth
+                                            @php
+                                                // header avatar fallback: use uploaded avatar or generate a small gender-aware SVG
+                                                $hdrAvatar = Auth::user()->avatar ?? null;
+                                                if (!$hdrAvatar) {
+                                                    $name = Auth::user()->name;
+                                                    $gender = Auth::user()->jenis_kelamin ?? null;
+                                                    $initials = collect(explode(' ', trim($name)))->map(function($p){ return strtoupper(substr($p,0,1)); })->take(2)->join('');
+                                                    $bg = '#6a11cb';
+                                                    $fg = '#ffffff';
+                                                    if ($gender) {
+                                                        if (stripos($gender, 'laki') !== false || stripos($gender, 'l') === 0) {
+                                                            $bg = '#2575fc';
+                                                        } elseif (stripos($gender, 'perempuan') !== false || stripos($gender, 'p') === 0) {
+                                                            $bg = '#ff6b81';
+                                                        }
+                                                    }
+                                                    $size = 64;
+                                                    $svg = "<svg xmlns='http://www.w3.org/2000/svg' width='$size' height='$size' viewBox='0 0 $size $size'>".
+                                                           "<rect width='100%' height='100%' rx='50%' fill='$bg'/>".
+                                                           "<text x='50%' y='54%' font-family='Arial, Helvetica, sans-serif' font-size='".($size*0.36)."' fill='$fg' text-anchor='middle' dominant-baseline='middle'>".$initials."</text>".
+                                                           "</svg>";
+                                                    $hdrAvatar = 'data:image/svg+xml;utf8,'.rawurlencode($svg);
+                                                }
+                                            @endphp
+                                            <img src="{{ $hdrAvatar }}" alt="user-image" class="user-avtar">
+                                            <span>{{ Auth::user()->name }}</span>
+                                        @else
+                                            <img src="{{ asset('assets/images/user/avatar-1.jpg') }}" alt="user-image" class="user-avtar">
+                                            <span>Guest</span>
+                                        @endauth
+                                    </a>
                             <div class="dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown">
                                 <div class="dropdown-header">
                                     <div class="d-flex mb-1 align-items-center">
                                         <div class="flex-shrink-0">
                                             @auth
-                                                <img src="{{ Auth::user()->avatar ?? asset('assets/images/user/avatar-1.jpg') }}"
-                                                     alt="user-image" class="user-avtar wid-35">
+                                                @php
+                                                    $thumb = Auth::user()->avatar ?? null;
+                                                    if (!$thumb) {
+                                                        $name = Auth::user()->name;
+                                                        $gender = Auth::user()->jenis_kelamin ?? null;
+                                                        $initials = collect(explode(' ', trim($name)))->map(function($p){ return strtoupper(substr($p,0,1)); })->take(2)->join('');
+                                                        $bg = '#6a11cb';
+                                                        $fg = '#ffffff';
+                                                        if ($gender) {
+                                                            if (stripos($gender, 'laki') !== false || stripos($gender, 'l') === 0) {
+                                                                $bg = '#2575fc';
+                                                            } elseif (stripos($gender, 'perempuan') !== false || stripos($gender, 'p') === 0) {
+                                                                $bg = '#ff6b81';
+                                                            }
+                                                        }
+                                                        $size = 48;
+                                                        $svg = "<svg xmlns='http://www.w3.org/2000/svg' width='$size' height='$size' viewBox='0 0 $size $size'>".
+                                                               "<rect width='100%' height='100%' rx='50%' fill='$bg'/>".
+                                                               "<text x='50%' y='54%' font-family='Arial, Helvetica, sans-serif' font-size='".($size*0.36)."' fill='$fg' text-anchor='middle' dominant-baseline='middle'>".$initials."</text>".
+                                                               "</svg>";
+                                                        $thumb = 'data:image/svg+xml;utf8,'.rawurlencode($svg);
+                                                    }
+                                                @endphp
+                                                <img src="{{ $thumb }}" alt="user-image" class="user-avtar wid-35">
                                             @else
-                                                <img src="{{ asset('assets/images/user/avatar-1.jpg') }}"
-                                                     alt="user-image" class="user-avtar wid-35">
+                                                <img src="{{ asset('assets/images/user/avatar-1.jpg') }}" alt="user-image" class="user-avtar wid-35">
                                             @endauth
                                         </div>
                                         <div class="flex-grow-1 ms-3">

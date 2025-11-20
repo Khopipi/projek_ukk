@@ -9,6 +9,7 @@ use App\Http\Controllers\PengajuanSuratController;
 use App\Http\Controllers\VerifikasiPengajuanController;
 use App\Http\Controllers\VerifikasiPengaduanController;
 use App\Http\Controllers\PengaduanController;
+use App\Http\Controllers\ProfileController;
 
 // ============================================
 // LANDING PAGE - Public Access
@@ -68,6 +69,9 @@ Route::middleware(['auth'])->group(function () {
         return view('dashboard', compact('name', 'role', 'avatar'));
     })->name('dashboard');
 
+    // My Profile (untuk semua user yang login)
+    Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+
     // Logout
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
@@ -123,6 +127,9 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/laporan', function () {
                 return view('admin.laporan');
             })->name('laporan');
+
+            // Admin profile
+            Route::get('/profile', [ProfileController::class, 'adminShow'])->name('profile.show');
         });
     });
 
