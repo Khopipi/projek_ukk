@@ -141,18 +141,18 @@ class Pengaduan extends Model
     public function getFoto1UrlAttribute()
     {
         if (!$this->foto_1) return null;
-        return asset('storage/pengaduan/' . $this->foto_1);
+        return route('pengaduan.file', ['filename' => $this->foto_1]);
     }
 
     public function getFoto2UrlAttribute()
     {
         if (!$this->foto_2) return null;
-        return asset('storage/pengaduan/' . $this->foto_2);
+        return route('pengaduan.file', ['filename' => $this->foto_2]);
     }
 
     public function getFoto3UrlAttribute()
     {
         if (!$this->foto_3) return null;
-        return asset('storage/pengaduan/' . $this->foto_3);
+        return route('pengaduan.file', ['filename' => $this->foto_3]);
     }
 }

@@ -40,10 +40,10 @@
                                 {{ $pengaduan->status }}
                             </span>
                         </div>
-                        
+
                         <h4 class="mb-1">{{ $pengaduan->nomor_pengaduan }}</h4>
                         <p class="text-muted mb-3">Nomor Pengaduan</p>
-                        
+
                         <div class="text-start mb-3">
                             <p class="mb-2">
                                 <i class="{{ $pengaduan->kategori_icon }} me-2 text-primary"></i>
@@ -55,7 +55,7 @@
                                 <strong>Tanggal Laporan:</strong><br>
                                 <span class="ms-4">{{ $pengaduan->created_at->format('d F Y, H:i') }}</span>
                             </p>
-                            
+
                             @if($pengaduan->lokasi)
                             <p class="mb-2">
                                 <i class="ti ti-map-pin me-2 text-info"></i>
@@ -63,7 +63,7 @@
                                 <span class="ms-4">{{ $pengaduan->lokasi }}</span>
                             </p>
                             @endif
-                            
+
                             @if($pengaduan->tanggal_ditanggapi)
                             <p class="mb-2">
                                 <i class="ti ti-message-circle me-2 text-success"></i>
@@ -71,7 +71,7 @@
                                 <span class="ms-4">{{ $pengaduan->tanggal_ditanggapi->format('d F Y, H:i') }}</span>
                             </p>
                             @endif
-                            
+
                             @if($pengaduan->tanggal_selesai)
                             <p class="mb-0">
                                 <i class="ti ti-circle-check me-2 text-primary"></i>
@@ -100,7 +100,7 @@
                             <a href="{{ route('pengaduan.index') }}" class="btn btn-secondary">
                                 <i class="ti ti-arrow-left me-1"></i> Kembali
                             </a>
-                            
+
                             @if(in_array($pengaduan->status, ['Menunggu', 'Ditolak']))
                             <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
                                 <i class="ti ti-trash me-1"></i> Hapus Pengaduan
@@ -134,14 +134,15 @@
                         <div class="row">
                             @if($pengaduan->foto_1)
                             <div class="col-md-4 mb-3">
-                                <a href="{{ $pengaduan->foto_1_url }}" target="_blank">
-                                    <img src="{{ $pengaduan->foto_1_url }}" 
-                                         alt="Foto 1" 
-                                         class="img-fluid rounded border" 
+                                @php $f1 = $pengaduan->foto_1; @endphp
+                                <a href="{{ url('/pengaduan/file/' . rawurlencode($f1)) }}" target="_blank">
+                                    <img src="{{ url('/pengaduan/file/' . rawurlencode($f1)) }}"
+                                         alt="Foto 1"
+                                         class="img-fluid rounded border"
                                          style="max-height: 200px; width: 100%; object-fit: cover;">
                                 </a>
                                 <div class="text-center mt-2">
-                                    <a href="{{ $pengaduan->foto_1_url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                    <a href="{{ url('/pengaduan/file/' . rawurlencode($f1)) }}" target="_blank" class="btn btn-sm btn-outline-primary">
                                         <i class="ti ti-eye me-1"></i> Lihat Full
                                     </a>
                                 </div>
@@ -150,14 +151,15 @@
 
                             @if($pengaduan->foto_2)
                             <div class="col-md-4 mb-3">
-                                <a href="{{ $pengaduan->foto_2_url }}" target="_blank">
-                                    <img src="{{ $pengaduan->foto_2_url }}" 
-                                         alt="Foto 2" 
-                                         class="img-fluid rounded border" 
+                                @php $f2 = $pengaduan->foto_2; @endphp
+                                <a href="{{ url('/pengaduan/file/' . rawurlencode($f2)) }}" target="_blank">
+                                    <img src="{{ url('/pengaduan/file/' . rawurlencode($f2)) }}"
+                                         alt="Foto 2"
+                                         class="img-fluid rounded border"
                                          style="max-height: 200px; width: 100%; object-fit: cover;">
                                 </a>
                                 <div class="text-center mt-2">
-                                    <a href="{{ $pengaduan->foto_2_url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                    <a href="{{ url('/pengaduan/file/' . rawurlencode($f2)) }}" target="_blank" class="btn btn-sm btn-outline-primary">
                                         <i class="ti ti-eye me-1"></i> Lihat Full
                                     </a>
                                 </div>
@@ -166,14 +168,15 @@
 
                             @if($pengaduan->foto_3)
                             <div class="col-md-4 mb-3">
-                                <a href="{{ $pengaduan->foto_3_url }}" target="_blank">
-                                    <img src="{{ $pengaduan->foto_3_url }}" 
-                                         alt="Foto 3" 
-                                         class="img-fluid rounded border" 
+                                @php $f3 = $pengaduan->foto_3; @endphp
+                                <a href="{{ url('/pengaduan/file/' . rawurlencode($f3)) }}" target="_blank">
+                                    <img src="{{ url('/pengaduan/file/' . rawurlencode($f3)) }}"
+                                         alt="Foto 3"
+                                         class="img-fluid rounded border"
                                          style="max-height: 200px; width: 100%; object-fit: cover;">
                                 </a>
                                 <div class="text-center mt-2">
-                                    <a href="{{ $pengaduan->foto_3_url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                    <a href="{{ url('/pengaduan/file/' . rawurlencode($f3)) }}" target="_blank" class="btn btn-sm btn-outline-primary">
                                         <i class="ti ti-eye me-1"></i> Lihat Full
                                     </a>
                                 </div>

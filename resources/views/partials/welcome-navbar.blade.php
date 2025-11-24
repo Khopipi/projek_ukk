@@ -14,18 +14,34 @@
                     </div>
                 </div>
 
-                <div class="d-flex align-items-center">
+                    <div class="d-flex align-items-center">
                     <a href="{{ route('pengajuan.create') }}" class="btn btn-lg btn-light text-primary me-2 shadow-sm">
                         <i class="ti ti-plus me-1"></i> Ajukan Surat
                     </a>
                     <a href="{{ route('pengaduan.create') }}" class="btn btn-lg btn-outline-light text-white me-2" style="border-color: rgba(255,255,255,0.35);">
                         <i class="ti ti-message-circle me-1"></i> Buat Pengaduan
                     </a>
-                    @if (Route::has('profile.show'))
-                        <a href="{{ route('profile.show') }}" class="btn btn-lg btn-white bg-white text-primary" style="padding:10px 14px;">
-                            <i class="ti ti-user"></i>
-                        </a>
-                    @endif
+                    @auth
+                        @if (Route::has('profile.show'))
+                            <a href="{{ route('profile.show') }}" class="btn btn-lg btn-white bg-white text-primary me-2" style="padding:10px 14px;">
+                                <i class="ti ti-user"></i>
+                            </a>
+                        @endif
+
+                        {{-- Visible logout button (placed next to Profile) --}}
+                        <form method="POST" action="{{ route('logout') }}" class="m-0">
+                            @csrf
+                            <button type="submit" class="btn btn-lg btn-outline-light text-white" style="border-color: rgba(255,255,255,0.35);">
+                                <i class="ti ti-power me-1"></i> Logout
+                            </button>
+                        </form>
+                    @else
+                        @if (Route::has('login'))
+                            <a href="{{ route('login') }}" class="btn btn-lg btn-outline-light text-white me-2" style="border-color: rgba(255,255,255,0.35);">
+                                <i class="ti ti-login me-1"></i> Login
+                            </a>
+                        @endif
+                    @endauth
                 </div>
             </div>
         </div>

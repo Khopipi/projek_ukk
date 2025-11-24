@@ -6,6 +6,8 @@ use App\Models\Pengaduan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class PengaduanController extends Controller
 {
@@ -68,8 +70,13 @@ class PengaduanController extends Controller
 			$fieldName = "foto_{$i}";
 			if ($request->hasFile($fieldName)) {
 				$file = $request->file($fieldName);
-				$filename = time() . "_foto{$i}_" . $file->getClientOriginalName();
-				$file->storeAs('public/pengaduan', $filename, 'public');
+				// Sanitize original filename to avoid spaces or problematic chars
+				$originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+				$safeName = Str::slug($originalName);
+				$ext = $file->getClientOriginalExtension();
+				$filename = time() . "_foto{$i}_" . $safeName . '.' . $ext;
+				// Store on the public disk under folder 'pengaduan'. Use public disk.
+				$file->storeAs('pengaduan', $filename, 'public');
 				$validated[$fieldName] = $filename;
 			}
 		}
@@ -90,6 +97,165 @@ class PengaduanController extends Controller
 		}
 
 		return view('user.pengaduan.show', compact('pengaduan'));
+	}
+
+	/**
+	 * Serve an image file for a pengaduan.
+	 * Tries multiple strategies: exact DB match, partial match, disk-based similarity, and "best guess" fallback.
+	 * Allows admins to access any user's files; regular users only their own.
+	 */
+	public function file($filename)
+	{
+		$filenameToServe = null;
+		$decoded = urldecode($filename);
+		$candidates = [$filename, $decoded];
+
+		// Strategy 1: Try exact match in DB
+		foreach ($candidates as $candidate) {
+			$q = Pengaduan::query();
+			if (!Auth::user() || Auth::user()->role !== 'admin') {
+				$q->where('user_id', Auth::id());
+			}
+			$pengaduan = $q->where(function($q2) use ($candidate) {
+				$q2->where('foto_1', $candidate)
+				   ->orWhere('foto_2', $candidate)
+				   ->orWhere('foto_3', $candidate);
+			})->first();
+
+			if ($pengaduan) {
+				$filenameToServe = $candidate;
+				break;
+			}
+		}
+
+		// Strategy 2: Try partial match (LIKE) in DB
+		if (empty($filenameToServe)) {
+			$q = Pengaduan::query();
+			if (!Auth::user() || Auth::user()->role !== 'admin') {
+				$q->where('user_id', Auth::id());
+			}
+			$pengaduan = $q->where(function($q2) use ($filename) {
+				$q2->where('foto_1', 'like', "%{$filename}%")
+				   ->orWhere('foto_2', 'like', "%{$filename}%")
+				   ->orWhere('foto_3', 'like', "%{$filename}%");
+			})->first();
+
+			if ($pengaduan) {
+				foreach (['foto_1', 'foto_2', 'foto_3'] as $col) {
+					if ($pengaduan->$col && str_contains($pengaduan->$col, $filename)) {
+						$filenameToServe = $pengaduan->$col;
+						break;
+					}
+				}
+			}
+		}
+
+		// Strategy 3: Disk-based normalized similarity match
+		if (empty($filenameToServe)) {
+			$normalize = function($s) {
+				return strtolower(preg_replace('/[^A-Za-z0-9]/', '', (string) $s));
+			};
+			$reqNorm = $normalize($decoded);
+
+			$files = Storage::disk('public')->files('pengaduan');
+			foreach ($files as $f) {
+				$base = basename($f);
+				if ($base === $decoded || $base === $filename) {
+					$filenameToServe = $base;
+					break;
+				}
+
+				$storageNorm = $normalize($base);
+				if ($reqNorm && $storageNorm && (strpos($storageNorm, $reqNorm) !== false || strpos($reqNorm, $storageNorm) !== false)) {
+					$filenameToServe = $base;
+					Log::info("Pengaduan file match: requested='{$decoded}' matched_to='{$base}'");
+					break;
+				}
+			}
+		}
+
+		// Strategy 4: "Best guess" fallback – search storage for any file that looks similar
+		// This helps when filenames don't match DB exactly (e.g., old uploads with different names)
+		if (empty($filenameToServe)) {
+			// Extract any numeric timestamp or key identifiers from the requested filename
+			if (preg_match('/(\d+).*foto[123]/i', $decoded, $matches)) {
+				$timestamp = $matches[1];
+				$files = Storage::disk('public')->files('pengaduan');
+				foreach ($files as $f) {
+					$base = basename($f);
+					// Match if storage file contains the same timestamp
+					if (strpos($base, $timestamp) !== false) {
+						$filenameToServe = $base;
+						Log::info("Pengaduan file best-guess: requested='{$decoded}' matched_to='{$base}' via timestamp");
+						break;
+					}
+				}
+			}
+		}
+
+		// Final attempt: check if the file exists on disk directly
+		if (empty($filenameToServe)) {
+			$possiblePaths = [
+				'pengaduan/' . $decoded,
+				'pengaduan/' . $filename,
+			];
+			foreach ($possiblePaths as $p) {
+				if (Storage::disk('public')->exists($p)) {
+					$filenameToServe = basename($p);
+					Log::info("Pengaduan file found on disk: {$p}");
+					break;
+				}
+			}
+		}
+
+		// If no match found, abort 404
+		if (empty($filenameToServe)) {
+			Log::warning("Pengaduan file not found: requested='{$decoded}', user=" . Auth::id());
+			abort(404);
+		}
+
+		// Serve the file
+		$path = storage_path('app/public/pengaduan/' . $filenameToServe);
+		if (!file_exists($path)) {
+			// Try via Storage disk as fallback
+			if (Storage::disk('public')->exists('pengaduan/' . $filenameToServe)) {
+				$path = Storage::disk('public')->path('pengaduan/' . $filenameToServe);
+			} else {
+				abort(404);
+			}
+		}
+
+		return response()->file($path);
+	}
+
+	/**
+	 * Debug helper: return pengaduan filenames for current user and storage files list.
+	 * Accessible only to authenticated users (route is in auth + cekRole:user group).
+	 */
+	public function debugFiles()
+	{
+		// For admins, show all pengaduan; for users, show only theirs
+		$query = Pengaduan::query();
+		if (!Auth::user() || Auth::user()->role !== 'admin') {
+			$query->where('user_id', Auth::id());
+		}
+		$pengaduans = $query->get(['id', 'user_id', 'foto_1', 'foto_2', 'foto_3']);
+		$storageFiles = Storage::disk('public')->files('pengaduan');
+
+		// Normalize storage file names (just basename)
+		$storageBasenames = array_map(function($p) {
+			return basename($p);
+		}, $storageFiles);
+
+		return response()->json([
+			'pengaduan_files' => $pengaduans->map(function($p) { return [
+				'id' => $p->id,
+				'foto_1' => $p->foto_1,
+				'foto_2' => $p->foto_2,
+				'foto_3' => $p->foto_3,
+			]; }),
+			'storage_files' => $storageBasenames,
+		]);
 	}
 
 	/**

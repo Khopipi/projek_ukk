@@ -284,4 +284,98 @@ class AuthController extends Controller
 
         return redirect('/login')->with('success', 'Password berhasil direset! Silakan login dengan password baru.');
     }
+
+    /**
+     * Show email verification / OTP form
+     */
+    public function showVerifyForm(Request $request)
+    {
+        // If there's no email in session, try to set from authenticated user
+        if (!session('verify_email')) {
+            if (Auth::check()) {
+                session(['verify_email' => Auth::user()->email]);
+            }
+        }
+
+        // Provide resend timer settings to the view
+        $timeResendOtp = 60; // seconds before allowing resend
+        $cooldown = 0; // client-side will handle countdown; default 0
+
+        return view('auth.verify-email', compact('timeResendOtp', 'cooldown'));
+    }
+
+    /**
+     * Send OTP to given email (for verification)
+     */
+    public function sendOtp(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|exists:users,email'
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        // Generate 6 digit OTP
+        $otp = rand(100000, 999999);
+
+        // Store hashed OTP and expiry (10 minutes)
+        $user->otp_code = Hash::make((string) $otp);
+        $user->otp_expires_at = now()->addMinutes(10);
+        $user->save();
+
+        // Send email with OTP
+        try {
+            $expireAt = $user->otp_expires_at;
+            Mail::to($user->email)->send(new SendOtpMail('Email Verification', $user->name, $otp, $expireAt));
+        } catch (\Exception $e) {
+            return back()->with('error', 'Gagal mengirim OTP ke email. Silakan coba lagi.');
+        }
+
+        // Save email to session for verification flow
+        session(['verify_email' => $user->email]);
+
+        return back()->with('success', 'Kode verifikasi telah dikirim ke ' . $user->email);
+    }
+
+    /**
+     * Verify OTP and mark user as verified
+     */
+    public function verify(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|exists:users,email',
+            'otp' => 'required|string|size:6'
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user) {
+            return back()->withErrors(['email' => 'Email tidak ditemukan']);
+        }
+
+        if (!$user->otp_code || !$user->otp_expires_at) {
+            return back()->withErrors(['otp' => 'Tidak ada kode OTP yang dikirim. Silakan minta kirim ulang.']);
+        }
+
+        if (now()->greaterThan($user->otp_expires_at)) {
+            return back()->withErrors(['otp' => 'Kode OTP sudah kadaluarsa. Silakan minta kode baru.']);
+        }
+
+        if (!Hash::check($request->otp, $user->otp_code)) {
+            return back()->withErrors(['otp' => 'Kode OTP salah.']);
+        }
+
+        // Mark verified
+        $user->is_verified = true;
+        $user->otp_code = null;
+        $user->otp_expires_at = null;
+        $user->save();
+
+        // If the user is the currently authenticated user, good; else optionally log them in
+        if (Auth::check() && Auth::user()->id === $user->id) {
+            // nothing
+        }
+
+        return redirect()->route('dashboard')->with('success', 'Email berhasil diverifikasi.');
+    }
 }

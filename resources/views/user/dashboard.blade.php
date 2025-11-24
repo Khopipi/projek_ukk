@@ -1,49 +1,13 @@
 @include('partials.welcome-navbar')
 
 <div class="row">
-    <!-- Welcome Card -->
-    <div class="col-12">
-        <div class="card bg-gradient" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-            <div class="card-body text-white">
-                <div class="row align-items-center">
-                    <div class="col-md-8">
-                        <h2 class="text-white mb-2">
-                            <i class="ti ti-hand-rock me-2"></i>Selamat Datang, {{ Auth::user()->name }}!
-                        </h2>
-                        <p class="text-white-50 mb-3 lead">
-                            Ini adalah dashboard Anda untuk mengelola pengajuan surat dan pengaduan.
-                        </p>
-
-                        @if (!Auth::user()->is_verified)
-                        <div class="alert alert-warning mb-0">
-                            <div class="d-flex align-items-center">
-                                <i class="ti ti-alert-triangle fs-4 me-2"></i>
-                                <div class="flex-grow-1">
-                                    <strong>Email belum diverifikasi!</strong>
-                                    <p class="mb-0">Verifikasi email untuk mengakses semua fitur.</p>
-                                </div>
-                                <a href="{{ route('verify.form') }}" class="btn btn-warning btn-sm ms-2">
-                                    Verifikasi Sekarang
-                                </a>
-                            </div>
-                        </div>
-                        @else
-                        <a href="{{ route('pengajuan.create') }}" class="btn btn-light me-2">
-                            <i class="ti ti-plus me-1"></i> Ajukan Surat Baru
-                        </a>
-                        <a href="{{ route('pengaduan.create') }}" class="btn btn-outline-light">
-                            <i class="ti ti-message-circle me-1"></i> Buat Pengaduan
-                        </a>
-                        @endif
-                    </div>
-                    <div class="col-md-4 text-center d-none d-md-block">
-                        <i class="ti ti-home-2 opacity-25" style="font-size: 10rem;"></i>
-                    </div>
-                </div>
-            </div>
+    <div class="col-12 mb-3">
+        <div class="d-flex justify-content-end">
+            <a href="{{ route('user.profile.show') }}" class="btn btn-outline-primary me-2">
+                <i class="ti ti-user me-1"></i> Profil Saya
+            </a>
         </div>
     </div>
-
     <!-- Quick Stats -->
     <div class="col-md-6 col-xl-3">
         <div class="card">

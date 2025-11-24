@@ -293,6 +293,19 @@
         const dynamicFields = document.getElementById('dynamic-form-fields');
         const dynamicDocs = document.getElementById('dynamic-fields');
 
+        // ambil nilai lama dari server (jika ada) untuk prefill ketika render oleh JS
+        const oldValues = @json(old());
+
+        function escapeHtml(unsafe) {
+            if (unsafe === null || unsafe === undefined) return '';
+            return String(unsafe)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
         // Konfigurasi tiap jenis surat: fields (input/textarea) dan dokumen yang harus diupload
         const suratConfig = {
             'Surat Nikah': {
@@ -369,12 +382,13 @@
             dynamicDocs.innerHTML = '';
 
             if (!jenis || !suratConfig[jenis]) {
-                // show hint
+                // show hint (no specific fields)
                 return;
             }
 
             // Render input fields
             suratConfig[jenis].fields.forEach(field => {
+                const val = oldValues && oldValues[field.name] ? oldValues[field.name] : '';
                 let fieldHtml = '';
                 fieldHtml += '<div class="col-md-12">';
                 fieldHtml += '<div class="form-group">';
@@ -383,14 +397,9 @@
                 fieldHtml += '</label>';
 
                 if (field.type === 'textarea') {
-                    fieldHtml += `<textarea name="${field.name}" class="form-control" rows="2"`;
-                    if (field.required) fieldHtml += ' required';
-                    fieldHtml += `>{{ old('${field.name}') }}</textarea>`;
+                    fieldHtml += `<textarea name="${field.name}" class="form-control" rows="2" ${field.required ? 'required' : ''}>${escapeHtml(val)}</textarea>`;
                 } else {
-                    fieldHtml += `<input type="${field.type}" name="${field.name}" class="form-control"`;
-                    fieldHtml += ` value="{{ old('${field.name}') }}"`;
-                    if (field.required) fieldHtml += ' required';
-                    fieldHtml += '>';
+                    fieldHtml += `<input type="${field.type}" name="${field.name}" class="form-control" value="${escapeHtml(val)}" ${field.required ? 'required' : ''}>`;
                 }
 
                 fieldHtml += '</div></div>';
@@ -407,9 +416,7 @@
                     docHtml += `<label class="form-label">${doc.label}`;
                     if (doc.required) docHtml += ' <span class="text-danger">*</span>';
                     docHtml += '</label>';
-                    docHtml += `<input type="file" name="${doc.name}" class="form-control" accept=",.pdf,.jpg,.jpeg,.png"`;
-                    if (doc.required) docHtml += ' required';
-                    docHtml += '>';
+                    docHtml += `<input type="file" name="${doc.name}" class="form-control" accept=".pdf,.jpg,.jpeg,.png" ${doc.required ? 'required' : ''}>`;
                     docHtml += '<small class="text-muted">Format: PDF, JPG, PNG | Max: 2MB</small>';
                     docHtml += '</div></div>';
                     dynamicDocs.insertAdjacentHTML('beforeend', docHtml);
@@ -417,8 +424,7 @@
             }
         }
 
-        // guard: only attach listener if element exists
-        const jenisSuratField = document.getElementById('jenis_surat');
+        // attach listener and render initial if needed
         if (jenisSuratField) {
             jenisSuratField.addEventListener('change', function() {
                 try {
@@ -428,7 +434,6 @@
                 }
             });
 
-            // Render saat ada nilai (misal setelah validasi gagal)
             if (jenisSuratField.value) {
                 try {
                     renderSurat(jenisSuratField.value);

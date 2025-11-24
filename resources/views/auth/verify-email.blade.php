@@ -34,6 +34,7 @@
 
                 <form action="{{ route('verify.otp') }}" method="POST" id="verifyForm">
                     @csrf
+                    <input type="hidden" name="email" value="{{ session('verify_email') }}">
                     <div class="row text-center">
                         @for ($i = 0; $i < 6; $i++)
                             <div class="col">

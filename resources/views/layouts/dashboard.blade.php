@@ -129,12 +129,13 @@
                                 href="#" role="button" aria-haspopup="false" data-bs-auto-close="outside"
                                 aria-expanded="false">
                                 @auth
-                                    <img src="{{ Auth::user()->avatar ?? asset('assets/images/user/avatar-1.jpg') }}"
-                                         alt="user-image" class="user-avtar">
+                                    <img src="{{ Auth::user()->avatar ? asset('storage/' . Auth::user()->avatar) : asset('assets/images/user/avatar-1.jpg') }}"
+                                         alt="" class="user-avtar"
+                                         onerror="this.onerror=null;this.src='{{ asset('assets/images/user/avatar-1.jpg') }}'">
                                     <span>{{ Auth::user()->name }}</span>
                                 @else
                                     <img src="{{ asset('assets/images/user/avatar-1.jpg') }}"
-                                         alt="user-image" class="user-avtar">
+                                         alt="" class="user-avtar">
                                     <span>Guest</span>
                                 @endauth
                             </a>
@@ -143,11 +144,12 @@
                                     <div class="d-flex mb-1 align-items-center">
                                         <div class="flex-shrink-0">
                                             @auth
-                                                <img src="{{ Auth::user()->avatar ?? asset('assets/images/user/avatar-1.jpg') }}"
-                                                     alt="user-image" class="user-avtar wid-35">
+                                                <img src="{{ Auth::user()->avatar ? asset('storage/' . Auth::user()->avatar) : asset('assets/images/user/avatar-1.jpg') }}"
+                                                     alt="" class="user-avtar wid-35"
+                                                     onerror="this.onerror=null;this.src='{{ asset('assets/images/user/avatar-1.jpg') }}'">
                                             @else
                                                 <img src="{{ asset('assets/images/user/avatar-1.jpg') }}"
-                                                     alt="user-image" class="user-avtar wid-35">
+                                                     alt="" class="user-avtar wid-35">
                                             @endauth
                                         </div>
                                         <div class="flex-grow-1 ms-3">

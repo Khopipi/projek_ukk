@@ -9,6 +9,7 @@ use App\Http\Controllers\PengajuanSuratController;
 use App\Http\Controllers\VerifikasiPengajuanController;
 use App\Http\Controllers\VerifikasiPengaduanController;
 use App\Http\Controllers\PengaduanController;
+use App\Http\Controllers\UserProfileController;
 
 // ============================================
 // LANDING PAGE - Public Access
@@ -70,6 +71,10 @@ Route::middleware(['auth'])->group(function () {
 
     // Logout
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+    // Route to stream pengaduan files (serve via controller to ensure headers/permissions)
+    // Allow dots and other characters in the filename segment
+    Route::get('/pengaduan/file/{filename}', [PengaduanController::class, 'file'])->where('filename', '.*')->name('pengaduan.file');
 
     // ============================================
     // ADMIN ROUTES
@@ -135,10 +140,22 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('pengajuan', PengajuanSuratController::class);
 
         // Pengaduan CRUD (tanpa edit & update)
+
+        // Debug route: list pengaduan file names (only for the authenticated user) and storage files
+        Route::get('/pengaduan/debug-files', [PengaduanController::class, 'debugFiles'])->name('pengaduan.debug-files');
+
         Route::resource('pengaduan', PengaduanController::class)->except(['edit', 'update']);
 
         // Biodata
         Route::get('/biodata', [BiodataController::class, 'index'])->name('user.biodata');
+
+        // My Profile (user)
+        // Show profile (read-only)
+        Route::get('/profile', [UserProfileController::class, 'show'])->name('user.profile.show');
+        // Edit profile form
+        Route::get('/profile/edit', [UserProfileController::class, 'edit'])->name('user.profile.edit');
+        // Update profile
+        Route::post('/profile', [UserProfileController::class, 'update'])->name('user.profile.update');
     });
 
 });
