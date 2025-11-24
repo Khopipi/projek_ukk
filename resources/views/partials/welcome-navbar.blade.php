@@ -4,8 +4,32 @@
             <div class="d-flex flex-column flex-md-row align-items-center justify-content-between gap-3">
                 <div class="d-flex align-items-center">
                     <div class="me-3">
-                        <div class="rounded-circle bg-white d-flex align-items-center justify-content-center" style="width:64px;height:64px;">
-                            <i class="ti ti-user f-28 text-primary"></i>
+                        {{-- Avatar with circular frame and subtle border/shadow --}}
+                        @php
+                            // Build avatar url: prefer uploaded avatar, otherwise generate SVG placeholder by gender
+                            $avatarUrl = Auth::user()->avatar ?? null;
+                            $initials = collect(explode(' ', trim(Auth::user()->name)))->map(function($p){return strtoupper(substr($p,0,1));})->take(2)->join('');
+                            if (!$avatarUrl) {
+                                $gender = Auth::user()->jenis_kelamin ?? null;
+                                $bg = '#6a11cb';
+                                if ($gender) {
+                                    if (stripos($gender, 'laki') !== false || stripos($gender, 'l') === 0) {
+                                        $bg = '#2575fc';
+                                    } elseif (stripos($gender, 'perempuan') !== false || stripos($gender, 'p') === 0) {
+                                        $bg = '#ff6b81';
+                                    }
+                                }
+                                $size = 140;
+                                $svg = "<svg xmlns='http://www.w3.org/2000/svg' width='$size' height='$size' viewBox='0 0 $size $size'>".
+                                       "<rect width='100%' height='100%' rx='50%' fill='$bg'/>".
+                                       "<text x='50%' y='54%' font-family='Arial, Helvetica, sans-serif' font-size='".($size*0.36)."' fill='#ffffff' text-anchor='middle' dominant-baseline='middle'>".$initials."</text>".
+                                       "</svg>";
+                                $avatarUrl = 'data:image/svg+xml;utf8,'.rawurlencode($svg);
+                            }
+                        @endphp
+                        <div class="rounded-circle bg-white d-flex align-items-center justify-content-center" style="width:72px;height:72px;box-shadow:0 6px 18px rgba(0,0,0,0.18);overflow:hidden;border:3px solid rgba(255,255,255,0.12);">
+                            <img src="{{ $avatarUrl }}" alt="avatar" onerror="this.style.display='none'" style="width:100%;height:100%;object-fit:cover;">
+                            <div style="position:absolute;color:#3b82f6;font-weight:700;font-size:1.15rem;">{{ $initials }}</div>
                         </div>
                     </div>
                     <div class="text-white">

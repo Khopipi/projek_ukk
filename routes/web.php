@@ -72,10 +72,6 @@ Route::middleware(['auth'])->group(function () {
     // Logout
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-    // Route to stream pengaduan files (serve via controller to ensure headers/permissions)
-    // Allow dots and other characters in the filename segment
-    Route::get('/pengaduan/file/{filename}', [PengaduanController::class, 'file'])->where('filename', '.*')->name('pengaduan.file');
-
     // ============================================
     // ADMIN ROUTES
     // ============================================
