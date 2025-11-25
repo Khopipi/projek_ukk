@@ -188,7 +188,7 @@
                                 <label class="text-muted mb-2">
                                     <i class="ti ti-id me-1"></i> Foto/Scan KTP
                                 </label>
-                                @if($pengajuan->file_ktp)
+                                @if($pengajuan->file_ktp_url)
                                 <div>
                                     <a href="{{ $pengajuan->file_ktp_url }}" target="_blank" class="btn btn-sm btn-outline-primary">
                                         <i class="ti ti-eye me-1"></i> Lihat Dokumen
@@ -203,7 +203,7 @@
                                 <label class="text-muted mb-2">
                                     <i class="ti ti-users me-1"></i> Foto/Scan KK
                                 </label>
-                                @if($pengajuan->file_kk)
+                                @if($pengajuan->file_kk_url)
                                 <div>
                                     <a href="{{ $pengajuan->file_kk_url }}" target="_blank" class="btn btn-sm btn-outline-primary">
                                         <i class="ti ti-eye me-1"></i> Lihat Dokumen
@@ -214,23 +214,44 @@
                                 @endif
                             </div>
 
-                            @for($i = 1; $i <= 3; $i++)
-                                @php
-                                    $field = "file_pendukung_{$i}";
-                                @endphp
-                                @if($pengajuan->$field)
-                                <div class="col-md-4 mb-3">
-                                    <label class="text-muted mb-2">
-                                        <i class="ti ti-file me-1"></i> Dokumen Pendukung {{ $i }}
-                                    </label>
-                                    <div>
-                                        <a href="{{ asset('storage/pengajuan/' . $pengajuan->$field) }}" target="_blank" class="btn btn-sm btn-outline-info">
-                                            <i class="ti ti-eye me-1"></i> Lihat
-                                        </a>
-                                    </div>
+                            @if($pengajuan->file_pendukung_1_url)
+                            <div class="col-md-4 mb-3">
+                                <label class="text-muted mb-2">
+                                    <i class="ti ti-file me-1"></i> Dokumen Pendukung 1
+                                </label>
+                                <div>
+                                    <a href="{{ $pengajuan->file_pendukung_1_url }}" target="_blank" class="btn btn-sm btn-outline-info">
+                                        <i class="ti ti-eye me-1"></i> Lihat
+                                    </a>
                                 </div>
-                                @endif
-                            @endfor
+                            </div>
+                            @endif
+
+                            @if($pengajuan->file_pendukung_2_url)
+                            <div class="col-md-4 mb-3">
+                                <label class="text-muted mb-2">
+                                    <i class="ti ti-file me-1"></i> Dokumen Pendukung 2
+                                </label>
+                                <div>
+                                    <a href="{{ $pengajuan->file_pendukung_2_url }}" target="_blank" class="btn btn-sm btn-outline-info">
+                                        <i class="ti ti-eye me-1"></i> Lihat
+                                    </a>
+                                </div>
+                            </div>
+                            @endif
+
+                            @if($pengajuan->file_pendukung_3_url)
+                            <div class="col-md-4 mb-3">
+                                <label class="text-muted mb-2">
+                                    <i class="ti ti-file me-1"></i> Dokumen Pendukung 3
+                                </label>
+                                <div>
+                                    <a href="{{ $pengajuan->file_pendukung_3_url }}" target="_blank" class="btn btn-sm btn-outline-info">
+                                        <i class="ti ti-eye me-1"></i> Lihat
+                                    </a>
+                                </div>
+                            </div>
+                            @endif
                         </div>
                     </div>
                 </div>

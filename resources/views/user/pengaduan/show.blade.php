@@ -134,15 +134,14 @@
                         <div class="row">
                             @if($pengaduan->foto_1)
                             <div class="col-md-4 mb-3">
-                                @php $f1 = $pengaduan->foto_1; @endphp
-                                <a href="{{ url('/pengaduan/file/' . rawurlencode($f1)) }}" target="_blank">
-                                    <img src="{{ url('/pengaduan/file/' . rawurlencode($f1)) }}"
+                                <a href="{{ $pengaduan->foto_1_url }}" target="_blank">
+                                    <img src="{{ $pengaduan->foto_1_url }}"
                                          alt="Foto 1"
                                          class="img-fluid rounded border"
                                          style="max-height: 200px; width: 100%; object-fit: cover;">
                                 </a>
                                 <div class="text-center mt-2">
-                                    <a href="{{ url('/pengaduan/file/' . rawurlencode($f1)) }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                    <a href="{{ $pengaduan->foto_1_url }}" target="_blank" class="btn btn-sm btn-outline-primary">
                                         <i class="ti ti-eye me-1"></i> Lihat Full
                                     </a>
                                 </div>
@@ -151,15 +150,14 @@
 
                             @if($pengaduan->foto_2)
                             <div class="col-md-4 mb-3">
-                                @php $f2 = $pengaduan->foto_2; @endphp
-                                <a href="{{ url('/pengaduan/file/' . rawurlencode($f2)) }}" target="_blank">
-                                    <img src="{{ url('/pengaduan/file/' . rawurlencode($f2)) }}"
+                                <a href="{{ $pengaduan->foto_2_url }}" target="_blank">
+                                    <img src="{{ $pengaduan->foto_2_url }}"
                                          alt="Foto 2"
                                          class="img-fluid rounded border"
                                          style="max-height: 200px; width: 100%; object-fit: cover;">
                                 </a>
                                 <div class="text-center mt-2">
-                                    <a href="{{ url('/pengaduan/file/' . rawurlencode($f2)) }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                    <a href="{{ $pengaduan->foto_2_url }}" target="_blank" class="btn btn-sm btn-outline-primary">
                                         <i class="ti ti-eye me-1"></i> Lihat Full
                                     </a>
                                 </div>
@@ -168,15 +166,14 @@
 
                             @if($pengaduan->foto_3)
                             <div class="col-md-4 mb-3">
-                                @php $f3 = $pengaduan->foto_3; @endphp
-                                <a href="{{ url('/pengaduan/file/' . rawurlencode($f3)) }}" target="_blank">
-                                    <img src="{{ url('/pengaduan/file/' . rawurlencode($f3)) }}"
+                                <a href="{{ $pengaduan->foto_3_url }}" target="_blank">
+                                    <img src="{{ $pengaduan->foto_3_url }}"
                                          alt="Foto 3"
                                          class="img-fluid rounded border"
                                          style="max-height: 200px; width: 100%; object-fit: cover;">
                                 </a>
                                 <div class="text-center mt-2">
-                                    <a href="{{ url('/pengaduan/file/' . rawurlencode($f3)) }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                    <a href="{{ $pengaduan->foto_3_url }}" target="_blank" class="btn btn-sm btn-outline-primary">
                                         <i class="ti ti-eye me-1"></i> Lihat Full
                                     </a>
                                 </div>

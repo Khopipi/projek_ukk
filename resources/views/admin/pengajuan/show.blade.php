@@ -278,23 +278,53 @@
                                 @endif
                             </div>
 
-                            @for($i = 1; $i <= 3; $i++)
-                                @php
-                                    $field = "file_pendukung_{$i}";
-                                @endphp
-                                @if($pengajuan->$field)
-                                <div class="col-md-4 mb-3">
-                                    <label class="text-muted mb-2">
-                                        <i class="ti ti-file me-1"></i> Dokumen Pendukung {{ $i }}
-                                    </label>
-                                    <div>
-                                        <a href="{{ asset('storage/pengajuan/' . $pengajuan->$field) }}" target="_blank" class="btn btn-sm btn-outline-info">
-                                            <i class="ti ti-eye me-1"></i> Lihat
-                                        </a>
-                                    </div>
+                            @if($pengajuan->file_pendukung_1_url)
+                            <div class="col-md-4 mb-3">
+                                <label class="text-muted mb-2">
+                                    <i class="ti ti-file me-1"></i> Dokumen Pendukung 1
+                                </label>
+                                <div>
+                                    <a href="{{ $pengajuan->file_pendukung_1_url }}" target="_blank" class="btn btn-sm btn-outline-info">
+                                        <i class="ti ti-eye me-1"></i> Lihat
+                                    </a>
+                                    <a href="{{ $pengajuan->file_pendukung_1_url }}" download class="btn btn-sm btn-outline-success">
+                                        <i class="ti ti-download me-1"></i> Download
+                                    </a>
                                 </div>
-                                @endif
-                            @endfor
+                            </div>
+                            @endif
+
+                            @if($pengajuan->file_pendukung_2_url)
+                            <div class="col-md-4 mb-3">
+                                <label class="text-muted mb-2">
+                                    <i class="ti ti-file me-1"></i> Dokumen Pendukung 2
+                                </label>
+                                <div>
+                                    <a href="{{ $pengajuan->file_pendukung_2_url }}" target="_blank" class="btn btn-sm btn-outline-info">
+                                        <i class="ti ti-eye me-1"></i> Lihat
+                                    </a>
+                                    <a href="{{ $pengajuan->file_pendukung_2_url }}" download class="btn btn-sm btn-outline-success">
+                                        <i class="ti ti-download me-1"></i> Download
+                                    </a>
+                                </div>
+                            </div>
+                            @endif
+
+                            @if($pengajuan->file_pendukung_3_url)
+                            <div class="col-md-4 mb-3">
+                                <label class="text-muted mb-2">
+                                    <i class="ti ti-file me-1"></i> Dokumen Pendukung 3
+                                </label>
+                                <div>
+                                    <a href="{{ $pengajuan->file_pendukung_3_url }}" target="_blank" class="btn btn-sm btn-outline-info">
+                                        <i class="ti ti-eye me-1"></i> Lihat
+                                    </a>
+                                    <a href="{{ $pengajuan->file_pendukung_3_url }}" download class="btn btn-sm btn-outline-success">
+                                        <i class="ti ti-download me-1"></i> Download
+                                    </a>
+                                </div>
+                            </div>
+                            @endif
                         </div>
                     </div>
                 </div>

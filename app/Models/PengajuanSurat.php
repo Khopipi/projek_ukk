@@ -142,16 +142,34 @@ class PengajuanSurat extends Model
      */
     public function getFileKtpUrlAttribute()
     {
-        return $this->file_ktp ? asset('storage/pengajuan/' . $this->file_ktp) : null;
+        return $this->file_ktp ? route('pengajuan.file', $this->file_ktp) : null;
     }
 
     public function getFileKkUrlAttribute()
     {
-        return $this->file_kk ? asset('storage/pengajuan/' . $this->file_kk) : null;
+        return $this->file_kk ? route('pengajuan.file', $this->file_kk) : null;
     }
 
     public function getFileSuratHasilUrlAttribute()
     {
         return $this->file_surat_hasil ? asset('storage/surat_hasil/' . $this->file_surat_hasil) : null;
+    }
+
+    /**
+     * Get file pendukung URLs
+     */
+    public function getFilePendukung1UrlAttribute()
+    {
+        return $this->file_pendukung_1 ? route('pengajuan.file', $this->file_pendukung_1) : null;
+    }
+
+    public function getFilePendukung2UrlAttribute()
+    {
+        return $this->file_pendukung_2 ? route('pengajuan.file', $this->file_pendukung_2) : null;
+    }
+
+    public function getFilePendukung3UrlAttribute()
+    {
+        return $this->file_pendukung_3 ? route('pengajuan.file', $this->file_pendukung_3) : null;
     }
 }

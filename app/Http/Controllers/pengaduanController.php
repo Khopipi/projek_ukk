@@ -65,19 +65,26 @@ class PengaduanController extends Controller
 		]);
 
 		$validated['user_id'] = Auth::id();
+		$timestamp = time(); // Use fixed timestamp for all files in this upload
 
 		for ($i = 1; $i <= 3; $i++) {
 			$fieldName = "foto_{$i}";
 			if ($request->hasFile($fieldName)) {
 				$file = $request->file($fieldName);
-				// Sanitize original filename to avoid spaces or problematic chars
-				$originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-				$safeName = Str::slug($originalName);
+				// Keep original filename and just prepend timestamp
+				$originalName = $file->getClientOriginalName();
 				$ext = $file->getClientOriginalExtension();
-				$filename = time() . "_foto{$i}_" . $safeName . '.' . $ext;
-				// Store on the public disk under folder 'pengaduan'. Use public disk.
-				$file->storeAs('pengaduan', $filename, 'public');
-				$validated[$fieldName] = $filename;
+				
+				// Create unique filename with timestamp only, keep original name readable
+				$filename = $timestamp . '_foto' . $i . '_' . uniqid() . '.' . $ext;
+				
+				// Store on the public disk under folder 'pengaduan'
+				if ($file->storeAs('pengaduan', $filename, 'public')) {
+					$validated[$fieldName] = $filename;
+					Log::info("Pengaduan file uploaded: {$filename}");
+				} else {
+					Log::error("Failed to upload pengaduan file: {$fieldName}");
+				}
 			}
 		}
 
@@ -100,132 +107,112 @@ class PengaduanController extends Controller
 	}
 
 	/**
+	 * Download file from pengaduan storage
+	 */
+	public function download($filename)
+	{
+		$filePath = 'pengaduan/' . $filename;
+		
+		// Check if file exists
+		if (!Storage::disk('public')->exists($filePath)) {
+			abort(404, 'File not found');
+		}
+
+		// Get full path using DIRECTORY_SEPARATOR for cross-platform compatibility
+		$fullPath = storage_path(implode(DIRECTORY_SEPARATOR, ['app', 'public', 'pengaduan', $filename]));
+
+		// Return file for download
+		return response()->download($fullPath, $filename);
+	}
+
+	/**
 	 * Serve an image file for a pengaduan.
-	 * Tries multiple strategies: exact DB match, partial match, disk-based similarity, and "best guess" fallback.
+	 * Serves files from storage/app/public/pengaduan/ folder.
 	 * Allows admins to access any user's files; regular users only their own.
 	 */
 	public function file($filename)
 	{
-		$filenameToServe = null;
-		$decoded = urldecode($filename);
-		$candidates = [$filename, $decoded];
+		try {
+			$filenameToServe = null;
+			$decoded = urldecode($filename);
+			Log::info("Attempting to serve pengaduan file: requested='{$filename}', decoded='{$decoded}'");
 
-		// Strategy 1: Try exact match in DB
-		foreach ($candidates as $candidate) {
-			$q = Pengaduan::query();
-			if (!Auth::user() || Auth::user()->role !== 'admin') {
-				$q->where('user_id', Auth::id());
+			// Authorization check: Admin can access all, users only their own
+			$query = Pengaduan::query();
+			if (Auth::user() && Auth::user()->role !== 'admin') {
+				$query->where('user_id', Auth::id());
 			}
-			$pengaduan = $q->where(function($q2) use ($candidate) {
-				$q2->where('foto_1', $candidate)
-				   ->orWhere('foto_2', $candidate)
-				   ->orWhere('foto_3', $candidate);
-			})->first();
 
-			if ($pengaduan) {
-				$filenameToServe = $candidate;
-				break;
-			}
-		}
-
-		// Strategy 2: Try partial match (LIKE) in DB
-		if (empty($filenameToServe)) {
-			$q = Pengaduan::query();
-			if (!Auth::user() || Auth::user()->role !== 'admin') {
-				$q->where('user_id', Auth::id());
-			}
-			$pengaduan = $q->where(function($q2) use ($filename) {
-				$q2->where('foto_1', 'like', "%{$filename}%")
-				   ->orWhere('foto_2', 'like', "%{$filename}%")
-				   ->orWhere('foto_3', 'like', "%{$filename}%");
+			// Strategy 1: Try exact match in DB
+			$pengaduan = $query->where(function($q) use ($decoded, $filename) {
+				$q->where('foto_1', $decoded)
+				  ->orWhere('foto_1', $filename)
+				  ->orWhere('foto_2', $decoded)
+				  ->orWhere('foto_2', $filename)
+				  ->orWhere('foto_3', $decoded)
+				  ->orWhere('foto_3', $filename);
 			})->first();
 
 			if ($pengaduan) {
 				foreach (['foto_1', 'foto_2', 'foto_3'] as $col) {
-					if ($pengaduan->$col && str_contains($pengaduan->$col, $filename)) {
+					if ($pengaduan->$col === $decoded || $pengaduan->$col === $filename) {
 						$filenameToServe = $pengaduan->$col;
+						Log::info("Pengaduan file exact match found in DB: {$filenameToServe}");
 						break;
 					}
 				}
 			}
-		}
 
-		// Strategy 3: Disk-based normalized similarity match
-		if (empty($filenameToServe)) {
-			$normalize = function($s) {
-				return strtolower(preg_replace('/[^A-Za-z0-9]/', '', (string) $s));
-			};
-			$reqNorm = $normalize($decoded);
-
-			$files = Storage::disk('public')->files('pengaduan');
-			foreach ($files as $f) {
-				$base = basename($f);
-				if ($base === $decoded || $base === $filename) {
-					$filenameToServe = $base;
-					break;
-				}
-
-				$storageNorm = $normalize($base);
-				if ($reqNorm && $storageNorm && (strpos($storageNorm, $reqNorm) !== false || strpos($reqNorm, $storageNorm) !== false)) {
-					$filenameToServe = $base;
-					Log::info("Pengaduan file match: requested='{$decoded}' matched_to='{$base}'");
-					break;
+			// Strategy 2: Direct file existence check
+			if (empty($filenameToServe)) {
+				$possiblePaths = [
+					'pengaduan/' . $decoded,
+					'pengaduan/' . $filename,
+				];
+				
+				foreach ($possiblePaths as $path) {
+					if (Storage::disk('public')->exists($path)) {
+						$filenameToServe = basename($path);
+						Log::info("Pengaduan file found on disk directly: {$filenameToServe}");
+						break;
+					}
 				}
 			}
-		}
 
-		// Strategy 4: "Best guess" fallback – search storage for any file that looks similar
-		// This helps when filenames don't match DB exactly (e.g., old uploads with different names)
-		if (empty($filenameToServe)) {
-			// Extract any numeric timestamp or key identifiers from the requested filename
-			if (preg_match('/(\d+).*foto[123]/i', $decoded, $matches)) {
-				$timestamp = $matches[1];
+			// Strategy 3: List files in storage and try to match
+			if (empty($filenameToServe)) {
 				$files = Storage::disk('public')->files('pengaduan');
 				foreach ($files as $f) {
 					$base = basename($f);
-					// Match if storage file contains the same timestamp
-					if (strpos($base, $timestamp) !== false) {
+					if ($base === $decoded || $base === $filename) {
 						$filenameToServe = $base;
-						Log::info("Pengaduan file best-guess: requested='{$decoded}' matched_to='{$base}' via timestamp");
+						Log::info("Pengaduan file found via storage listing: {$base}");
 						break;
 					}
 				}
 			}
-		}
 
-		// Final attempt: check if the file exists on disk directly
-		if (empty($filenameToServe)) {
-			$possiblePaths = [
-				'pengaduan/' . $decoded,
-				'pengaduan/' . $filename,
-			];
-			foreach ($possiblePaths as $p) {
-				if (Storage::disk('public')->exists($p)) {
-					$filenameToServe = basename($p);
-					Log::info("Pengaduan file found on disk: {$p}");
-					break;
-				}
+			// If still not found, abort
+			if (empty($filenameToServe)) {
+				Log::warning("Pengaduan file not found - requested: '{$decoded}', user: " . (Auth::id() ?? 'guest'));
+				abort(404, "File tidak ditemukan: {$decoded}");
 			}
-		}
 
-		// If no match found, abort 404
-		if (empty($filenameToServe)) {
-			Log::warning("Pengaduan file not found: requested='{$decoded}', user=" . Auth::id());
-			abort(404);
-		}
-
-		// Serve the file
-		$path = storage_path('app/public/pengaduan/' . $filenameToServe);
-		if (!file_exists($path)) {
-			// Try via Storage disk as fallback
-			if (Storage::disk('public')->exists('pengaduan/' . $filenameToServe)) {
-				$path = Storage::disk('public')->path('pengaduan/' . $filenameToServe);
-			} else {
-				abort(404);
+			// Serve the file from storage
+			$path = storage_path(implode(DIRECTORY_SEPARATOR, ['app', 'public', 'pengaduan', $filenameToServe]));
+			
+			if (!file_exists($path)) {
+				Log::error("File path does not exist: {$path}");
+				abort(404, "File tidak dapat diakses: {$filenameToServe}");
 			}
-		}
 
-		return response()->file($path);
+			Log::info("Serving pengaduan file: {$path}");
+			return response()->file($path);
+
+		} catch (\Exception $e) {
+			Log::error("Error serving pengaduan file: " . $e->getMessage());
+			abort(500, "Terjadi kesalahan saat mengakses file");
+		}
 	}
 
 	/**

@@ -6,6 +6,7 @@ use App\Models\PengajuanSurat;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 class PengajuanSuratController extends Controller
 {
@@ -94,18 +95,24 @@ class PengajuanSuratController extends Controller
 
         $validated['user_id'] = Auth::id();
 
+        // Ensure pengajuan directory exists
+        $storageDir = storage_path('app/public/pengajuan');
+        if (!file_exists($storageDir)) {
+            mkdir($storageDir, 0755, true);
+        }
+
         // Handle file uploads
         if ($request->hasFile('file_ktp')) {
             $file = $request->file('file_ktp');
-            $filename = time() . '_ktp_' . $file->getClientOriginalName();
-            $file->storeAs('public/pengajuan', $filename);
+            $filename = time() . '_ktp_' . str_replace(' ', '_', $file->getClientOriginalName());
+            Storage::disk('public')->putFileAs('pengajuan', $file, $filename);
             $validated['file_ktp'] = $filename;
         }
 
         if ($request->hasFile('file_kk')) {
             $file = $request->file('file_kk');
-            $filename = time() . '_kk_' . $file->getClientOriginalName();
-            $file->storeAs('public/pengajuan', $filename);
+            $filename = time() . '_kk_' . str_replace(' ', '_', $file->getClientOriginalName());
+            Storage::disk('public')->putFileAs('pengajuan', $file, $filename);
             $validated['file_kk'] = $filename;
         }
 
@@ -114,8 +121,8 @@ class PengajuanSuratController extends Controller
             $fieldName = "file_pendukung_{$i}";
             if ($request->hasFile($fieldName)) {
                 $file = $request->file($fieldName);
-                $filename = time() . "_pendukung{$i}_" . $file->getClientOriginalName();
-                $file->storeAs('public/pengajuan', $filename);
+                $filename = time() . "_pendukung{$i}_" . str_replace(' ', '_', $file->getClientOriginalName());
+                Storage::disk('public')->putFileAs('pengajuan', $file, $filename);
                 $validated[$fieldName] = $filename;
             }
         }
@@ -129,8 +136,8 @@ class PengajuanSuratController extends Controller
         foreach ($docFields as $doc) {
             if ($request->hasFile($doc)) {
                 $file = $request->file($doc);
-                $filename = time() . '_' . $doc . '_' . $file->getClientOriginalName();
-                $file->storeAs('public/pengajuan', $filename);
+                $filename = time() . '_' . $doc . '_' . str_replace(' ', '_', $file->getClientOriginalName());
+                Storage::disk('public')->putFileAs('pengajuan', $file, $filename);
                 $validated['data_tambahan'][$doc] = $filename;
             }
         }
@@ -323,5 +330,28 @@ class PengajuanSuratController extends Controller
 
         return redirect()->route('pengajuan.index')
             ->with('success', 'Pengajuan surat berhasil dihapus!');
+    }
+
+    /**
+     * Serve file from pengajuan storage
+     */
+    public function file($filename)
+    {
+        $filePath = 'pengajuan/' . $filename;
+        
+        // Check if file exists in storage
+        if (!Storage::disk('public')->exists($filePath)) {
+            abort(404, 'File not found');
+        }
+
+        // Get full path using DIRECTORY_SEPARATOR for cross-platform compatibility
+        $fullPath = storage_path(implode(DIRECTORY_SEPARATOR, ['app', 'public', 'pengajuan', $filename]));
+
+        if (!file_exists($fullPath)) {
+            abort(404, 'File not found');
+        }
+
+        // Return file for view/download
+        return response()->file($fullPath);
     }
 }

@@ -193,7 +193,7 @@
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            @if($pengaduan->foto_1 && $pengaduan->foto_1_url)
+                            @if($pengaduan->foto_1)
                             <div class="col-md-4 mb-3">
                                 <div class="position-relative overflow-hidden rounded border bg-light" style="aspect-ratio: 1;">
                                     <img src="{{ $pengaduan->foto_1_url }}"
@@ -209,8 +209,7 @@
                                             data-bs-target="#fotoModal1">
                                         <i class="ti ti-eye me-1"></i> Lihat Fullscreen
                                     </button>
-                                    <a href="{{ $pengaduan->foto_1_url }}"
-                                       download="pengaduan-{{ $pengaduan->nomor_pengaduan }}-foto-1"
+                                    <a href="{{ route('pengaduan.download', $pengaduan->foto_1) }}"
                                        class="btn btn-sm btn-outline-success">
                                         <i class="ti ti-download me-1"></i> Download
                                     </a>
@@ -224,7 +223,7 @@
                             </div>
                             @endif
 
-                            @if($pengaduan->foto_2 && $pengaduan->foto_2_url)
+                            @if($pengaduan->foto_2)
                             <div class="col-md-4 mb-3">
                                 <div class="position-relative overflow-hidden rounded border bg-light" style="aspect-ratio: 1;">
                                     <img src="{{ $pengaduan->foto_2_url }}"
@@ -240,8 +239,7 @@
                                             data-bs-target="#fotoModal2">
                                         <i class="ti ti-eye me-1"></i> Lihat Fullscreen
                                     </button>
-                                    <a href="{{ $pengaduan->foto_2_url }}"
-                                       download="pengaduan-{{ $pengaduan->nomor_pengaduan }}-foto-2"
+                                    <a href="{{ route('pengaduan.download', $pengaduan->foto_2) }}"
                                        class="btn btn-sm btn-outline-success">
                                         <i class="ti ti-download me-1"></i> Download
                                     </a>
@@ -255,7 +253,7 @@
                             </div>
                             @endif
 
-                            @if($pengaduan->foto_3 && $pengaduan->foto_3_url)
+                            @if($pengaduan->foto_3)
                             <div class="col-md-4 mb-3">
                                 <div class="position-relative overflow-hidden rounded border bg-light" style="aspect-ratio: 1;">
                                     <img src="{{ $pengaduan->foto_3_url }}"
@@ -271,8 +269,7 @@
                                             data-bs-target="#fotoModal3">
                                         <i class="ti ti-eye me-1"></i> Lihat Fullscreen
                                     </button>
-                                    <a href="{{ $pengaduan->foto_3_url }}"
-                                       download="pengaduan-{{ $pengaduan->nomor_pengaduan }}-foto-3"
+                                    <a href="{{ route('pengaduan.download', $pengaduan->foto_3) }}"
                                        class="btn btn-sm btn-outline-success">
                                         <i class="ti ti-download me-1"></i> Download
                                     </a>
@@ -522,8 +519,7 @@
                      style="max-height: 85vh; max-width: 100%; object-fit: contain;">
             </div>
             <div class="modal-footer bg-dark border-secondary">
-                <a href="{{ $pengaduan->foto_1_url }}"
-                   download="pengaduan-{{ $pengaduan->nomor_pengaduan }}-foto-1"
+                <a href="{{ route('pengaduan.download', $pengaduan->foto_1) }}"
                    class="btn btn-success">
                     <i class="ti ti-download me-1"></i> Download
                 </a>
@@ -549,8 +545,7 @@
                      style="max-height: 85vh; max-width: 100%; object-fit: contain;">
             </div>
             <div class="modal-footer bg-dark border-secondary">
-                <a href="{{ $pengaduan->foto_2_url }}"
-                   download="pengaduan-{{ $pengaduan->nomor_pengaduan }}-foto-2"
+                <a href="{{ route('pengaduan.download', $pengaduan->foto_2) }}"
                    class="btn btn-success">
                     <i class="ti ti-download me-1"></i> Download
                 </a>
@@ -576,8 +571,7 @@
                      style="max-height: 85vh; max-width: 100%; object-fit: contain;">
             </div>
             <div class="modal-footer bg-dark border-secondary">
-                <a href="{{ $pengaduan->foto_3_url }}"
-                   download="pengaduan-{{ $pengaduan->nomor_pengaduan }}-foto-3"
+                <a href="{{ route('pengaduan.download', $pengaduan->foto_3) }}"
                    class="btn btn-success">
                     <i class="ti ti-download me-1"></i> Download
                 </a>

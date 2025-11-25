@@ -195,7 +195,8 @@
                                 <strong>Informasi:</strong> File yang diupload harus berformat PDF, JPG, JPEG, atau PNG dengan ukuran maksimal 2MB
                             </div>
 
-                            <div class="row">
+                            <div class="row" id="base-documents">
+                                <!-- Base documents will be shown for non-Surat Nikah types -->
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="form-label">Foto/Scan KTP <span class="text-danger">*</span></label>
@@ -310,13 +311,25 @@
         const suratConfig = {
             'Surat Nikah': {
                 fields: [
-                    { label: 'Nama Suami', name: 'nama_suami', type: 'text', required: true },
-                    { label: 'Nama Istri', name: 'nama_istri', type: 'text', required: true },
-                    { label: 'Tanggal Pernikahan', name: 'tanggal_nikah', type: 'date', required: true },
+                    { label: 'Nama Calon Pengantin Pria', name: 'nama_calon_pria', type: 'text', required: true },
+                    { label: 'Nama Calon Pengantin Wanita', name: 'nama_calon_wanita', type: 'text', required: true },
+                    { label: 'Tanggal Pernikahan Rencana', name: 'tanggal_nikah_rencana', type: 'date', required: true },
                     { label: 'Tempat Pernikahan', name: 'tempat_nikah', type: 'text', required: true }
                 ],
                 docs: [
-                    { label: 'Foto/Scan Buku Nikah (jika ada)', name: 'doc_buku_nikah', required: false }
+                    { label: 'Surat Pengantar dari RT/RW', name: 'doc_surat_pengantar_rtrw', required: true },
+                    { label: 'Surat Pengantar dari Kelurahan', name: 'doc_surat_pengantar_kelurahan', required: true },
+                    { label: 'Formulir N1 (Permohonan Pencatatan Perkawinan)', name: 'doc_formulir_n1', required: true },
+                    { label: 'Formulir N2 (Pernyataan Calon Pengantin)', name: 'doc_formulir_n2', required: true },
+                    { label: 'Formulir N4 (Daftar Riwayat Hidup)', name: 'doc_formulir_n4', required: true },
+                    { label: 'Foto/Scan KTP Calon Pengantin Pria', name: 'doc_ktp_pria', required: true },
+                    { label: 'Foto/Scan KTP Calon Pengantin Wanita', name: 'doc_ktp_wanita', required: true },
+                    { label: 'Kartu Keluarga (KK) Calon Pria', name: 'doc_kk_pria', required: true },
+                    { label: 'Kartu Keluarga (KK) Calon Wanita', name: 'doc_kk_wanita', required: true },
+                    { label: 'Akta Kelahiran Calon Pria', name: 'doc_akta_lahir_pria', required: true },
+                    { label: 'Akta Kelahiran Calon Wanita', name: 'doc_akta_lahir_wanita', required: true },
+                    { label: 'Pas Foto Calon Pengantin Pria (4x6)', name: 'doc_pas_foto_pria', required: true },
+                    { label: 'Pas Foto Calon Pengantin Wanita (4x6)', name: 'doc_pas_foto_wanita', required: true }
                 ]
             },
             'Pembuatan KTP': {
@@ -381,6 +394,26 @@
             dynamicFields.innerHTML = '';
             dynamicDocs.innerHTML = '';
 
+            // Tampilkan/sembunyikan base documents berdasarkan jenis surat
+            const baseDocuments = document.getElementById('base-documents');
+            if (baseDocuments) {
+                if (jenis === 'Surat Nikah') {
+                    // Sembunyikan base documents untuk Surat Nikah (sudah ada di dokumen khusus)
+                    baseDocuments.style.display = 'none';
+                    // Hapus required dari field dasar
+                    baseDocuments.querySelectorAll('input[name="file_ktp"], input[name="file_kk"]').forEach(input => {
+                        input.removeAttribute('required');
+                    });
+                } else {
+                    // Tampilkan base documents untuk jenis surat lain
+                    baseDocuments.style.display = 'block';
+                    // Tambahkan required ke field dasar
+                    baseDocuments.querySelectorAll('input[name="file_ktp"], input[name="file_kk"]').forEach(input => {
+                        input.setAttribute('required', 'required');
+                    });
+                }
+            }
+
             if (!jenis || !suratConfig[jenis]) {
                 // show hint (no specific fields)
                 return;
@@ -408,8 +441,8 @@
 
             // Render required/optional document upload fields
             if (suratConfig[jenis].docs && suratConfig[jenis].docs.length) {
-                dynamicDocs.insertAdjacentHTML('beforeend', '<div class="col-md-12"><hr><h6 class="mb-3">Dokumen Khusus Untuk Jenis Surat Ini</h6></div>');
-                suratConfig[jenis].docs.forEach(doc => {
+                dynamicDocs.insertAdjacentHTML('beforeend', '<div class="col-md-12"><hr><h6 class="mb-3">Dokumen Khusus Untuk Jenis Surat Ini</h6><p class="text-muted small">Semua dokumen wajib diupload</p></div>');
+                suratConfig[jenis].docs.forEach((doc, index) => {
                     let docHtml = '';
                     docHtml += '<div class="col-md-6">';
                     docHtml += '<div class="form-group">';

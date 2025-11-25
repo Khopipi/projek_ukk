@@ -136,23 +136,35 @@ class Pengaduan extends Model
     }
 
     /**
-     * Get foto URL
+     * Get foto 1 URL - gunakan route file serving
      */
     public function getFoto1UrlAttribute()
     {
-        if (!$this->foto_1) return null;
-        return route('pengaduan.file', ['filename' => $this->foto_1]);
+        if (!$this->foto_1) {
+            return null;
+        }
+        return route('pengaduan.file', $this->foto_1);
     }
 
+    /**
+     * Get foto 2 URL - gunakan route file serving
+     */
     public function getFoto2UrlAttribute()
     {
-        if (!$this->foto_2) return null;
-        return route('pengaduan.file', ['filename' => $this->foto_2]);
+        if (!$this->foto_2) {
+            return null;
+        }
+        return route('pengaduan.file', $this->foto_2);
     }
 
+    /**
+     * Get foto 3 URL - gunakan route file serving
+     */
     public function getFoto3UrlAttribute()
     {
-        if (!$this->foto_3) return null;
-        return route('pengaduan.file', ['filename' => $this->foto_3]);
+        if (!$this->foto_3) {
+            return null;
+        }
+        return route('pengaduan.file', $this->foto_3);
     }
 }

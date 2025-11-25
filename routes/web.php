@@ -55,6 +55,15 @@ Route::post('/send-otp', [AuthController::class, 'sendOtp'])->name('send.otp');
 Route::post('/verify-email', [AuthController::class, 'verify'])->name('verify.otp');
 
 // ============================================
+// FILE SERVING ROUTES - Require authentication
+// ============================================
+Route::middleware(['auth'])->group(function () {
+    Route::get('/pengajuan/file/{filename}', [PengajuanSuratController::class, 'file'])->name('pengajuan.file');
+    Route::get('/pengaduan/file/{filename}', [PengaduanController::class, 'file'])->name('pengaduan.file');
+    Route::get('/pengaduan/download/{filename}', [PengaduanController::class, 'download'])->name('pengaduan.download');
+});
+
+// ============================================
 // AUTHENTICATED ROUTES - Harus login
 // ============================================
 Route::middleware(['auth'])->group(function () {
@@ -77,6 +86,11 @@ Route::middleware(['auth'])->group(function () {
     // ============================================
     Route::middleware(['cekRole:admin'])->group(function () {
 
+        // Admin Dashboard
+        Route::get('/admin/dashboard', function () {
+            return view('admin.dashboard');
+        })->name('admin.dashboard');
+
         // Data Penduduk CRUD (tanpa prefix - route utama untuk admin)
         Route::resource('penduduk', PendudukController::class);
 
@@ -93,6 +107,8 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/{pengajuan}/upload-surat', [VerifikasiPengajuanController::class, 'uploadSurat'])->name('upload-surat');
             Route::delete('/{pengajuan}/delete-surat', [VerifikasiPengajuanController::class, 'deleteSurat'])->name('delete-surat');
             Route::post('/bulk-action', [VerifikasiPengajuanController::class, 'bulkAction'])->name('bulk-action');
+            // Pengajuan file serving route
+            Route::get('/file/{filename}', [PengajuanSuratController::class, 'file'])->name('file');
         });
 
         // Verifikasi Pengaduan
