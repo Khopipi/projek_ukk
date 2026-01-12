@@ -3,9 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\PengajuanSurat;
+use App\Models\DownloadHistory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\PengajuanHasilMail;
 
 class VerifikasiPengajuanController extends Controller
 {
@@ -72,9 +76,14 @@ class VerifikasiPengajuanController extends Controller
             return back()->with('error', 'Pengajuan ini sudah diproses sebelumnya.');
         }
 
+        // Record diproses timestamp inside data_tambahan for tracking
+        $data = $pengajuan->data_tambahan ?? [];
+        $data['ts_diproses'] = now()->toDateTimeString();
+
         $pengajuan->update([
             'status' => 'Diproses',
-            'diproses_oleh' => Auth::id()
+            'diproses_oleh' => Auth::id(),
+            'data_tambahan' => $data
         ]);
 
         return back()->with('success', 'Status pengajuan berhasil diubah menjadi Diproses.');
@@ -159,6 +168,184 @@ class VerifikasiPengajuanController extends Controller
     }
 
     /**
+     * Preview surat dalam HTML sebelum generate PDF
+     */
+    public function previewSurat(PengajuanSurat $pengajuan)
+    {
+        return view('admin.pengajuan.preview-surat', compact('pengajuan'));
+    }
+
+    /**
+     * Download PDF with tracking history
+     */
+    public function downloadPdf(PengajuanSurat $pengajuan)
+    {
+        // Check if PDF exists
+        if (!$pengajuan->file_surat_hasil) {
+            return back()->with('error', 'PDF surat hasil belum tersedia. Silakan generate terlebih dahulu.');
+        }
+
+        $filePath = storage_path('app/public/surat_hasil/' . $pengajuan->file_surat_hasil);
+
+        if (!file_exists($filePath)) {
+            return back()->with('error', 'File PDF tidak ditemukan.');
+        }
+
+        try {
+            // Log download history
+            DownloadHistory::create([
+                'pengajuan_surat_id' => $pengajuan->id,
+                'user_id' => Auth::id(),
+                'filename' => $pengajuan->file_surat_hasil,
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent()
+            ]);
+
+            // Create safe filename for download (remove special characters)
+            $downloadName = preg_replace('/[^A-Za-z0-9\-_.]/', '_', $pengajuan->nomor_pengajuan) . '.pdf';
+
+            // Download file
+            return response()->download($filePath, $downloadName);
+        } catch (\Throwable $e) {
+            Log::error('Download PDF failed: ' . $e->getMessage());
+            return back()->with('error', 'Gagal download file: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Generate a PDF document for the pengajuan (Surat Hasil) and save it.
+     */
+    public function generateSurat(PengajuanSurat $pengajuan)
+    {
+        // Check for PDF generation library availability
+        if (!class_exists(\Barryvdh\DomPDF\Facade::class) && !class_exists(\Dompdf\Dompdf::class)) {
+            return back()->with('error', 'PDF generator not available. Please install "barryvdh/laravel-dompdf" (run: composer require barryvdh/laravel-dompdf).');
+        }
+
+        // Render HTML from Blade
+        $html = view('pengajuan.pdf', compact('pengajuan'))->render();
+
+        $filename = time() . '_' . preg_replace('/[^A-Za-z0-9\-_]/', '_', $pengajuan->nomor_pengajuan) . '.pdf';
+        $directory = 'surat_hasil';
+
+        try {
+            // Ensure directory exists
+            $fullDirectory = storage_path('app/public/' . $directory);
+            if (!is_dir($fullDirectory)) {
+                mkdir($fullDirectory, 0755, true);
+            }
+
+            // Generate PDF content
+            $pdfContent = null;
+            if (class_exists(\Barryvdh\DomPDF\Facade::class)) {
+                $pdf = \PDF::loadHTML($html)->setPaper('a4', 'portrait');
+                $pdfContent = $pdf->output();
+            } else {
+                $dompdf = new \Dompdf\Dompdf();
+                $dompdf->loadHtml($html);
+                $dompdf->setPaper('A4', 'portrait');
+                $dompdf->render();
+                $pdfContent = $dompdf->output();
+            }
+
+            // Full path untuk file
+            $diskPath = $fullDirectory . DIRECTORY_SEPARATOR . $filename;
+            
+            // Store file
+            file_put_contents($diskPath, $pdfContent);
+
+            // Verify file was created
+            if (!file_exists($diskPath)) {
+                throw new \Exception('File PDF gagal disimpan ke disk di: ' . $diskPath);
+            }
+
+            // Update database
+            $pengajuan->update([
+                'file_surat_hasil' => $filename,
+                'status' => 'Selesai',
+                'tanggal_selesai' => now()
+            ]);
+
+            Log::info('PDF generated successfully: ' . $diskPath);
+            return back()->with('success', 'Surat hasil berhasil digenerate dan disimpan.');
+        } catch (\Throwable $e) {
+            Log::error('Generate surat failed: ' . $e->getMessage() . ' | Trace: ' . $e->getTraceAsString());
+            return back()->with('error', 'Gagal generate PDF: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Send the generated PDF to the user via email. If PDF does not exist, generate it first.
+     */
+    public function sendPdf(PengajuanSurat $pengajuan)
+    {
+        // Ensure user has email
+        $userEmail = $pengajuan->user->email ?? null;
+        if (!$userEmail) {
+            return back()->with('error', 'User tidak memiliki email terdaftar.');
+        }
+
+        // Ensure PDF exists; if not, generate it here
+        $filename = $pengajuan->file_surat_hasil;
+        $fullDirectory = storage_path('app/public/surat_hasil');
+        $path = $fullDirectory . DIRECTORY_SEPARATOR . ($filename ?? '');
+
+        if (!$filename || !file_exists($path)) {
+            // Generate PDF (similar to generateSurat but without redirect)
+            $html = view('pengajuan.pdf', compact('pengajuan'))->render();
+            $filename = time() . '_' . preg_replace('/[^A-Za-z0-9\-_]/', '_', $pengajuan->nomor_pengajuan) . '.pdf';
+
+            try {
+                // Ensure directory exists
+                if (!is_dir($fullDirectory)) {
+                    mkdir($fullDirectory, 0755, true);
+                }
+
+                // Generate PDF content
+                $pdfContent = null;
+                if (class_exists(\Barryvdh\DomPDF\Facade::class)) {
+                    $pdf = \PDF::loadHTML($html)->setPaper('a4', 'portrait');
+                    $pdfContent = $pdf->output();
+                } else {
+                    $dompdf = new \Dompdf\Dompdf();
+                    $dompdf->loadHtml($html);
+                    $dompdf->setPaper('A4', 'portrait');
+                    $dompdf->render();
+                    $pdfContent = $dompdf->output();
+                }
+
+                // Store to disk
+                $diskPath = $fullDirectory . DIRECTORY_SEPARATOR . $filename;
+                file_put_contents($diskPath, $pdfContent);
+
+                if (!file_exists($diskPath)) {
+                    throw new \Exception('File PDF gagal disimpan ke disk di: ' . $diskPath);
+                }
+
+                $pengajuan->update([
+                    'file_surat_hasil' => $filename,
+                    'status' => 'Selesai',
+                    'tanggal_selesai' => now()
+                ]);
+
+                Log::info('PDF generated successfully in sendPdf: ' . $diskPath);
+            } catch (\Throwable $e) {
+                Log::error('Generate surat (from sendPdf) failed: ' . $e->getMessage());
+                return back()->with('error', 'Gagal generate PDF: ' . $e->getMessage());
+            }
+        }
+
+        // Send email with attachment
+        try {
+            Mail::to($userEmail)->send(new PengajuanHasilMail($pengajuan->fresh()));
+            return back()->with('success', 'Surat hasil berhasil dikirim ke ' . $userEmail);
+        } catch (\Throwable $e) {
+            Log::error('Send surat email failed: ' . $e->getMessage());
+            return back()->with('error', 'Gagal mengirim email: ' . $e->getMessage());
+        }
+    }
+
+    /**
      * Delete surat hasil file
      */
     public function deleteSurat(PengajuanSurat $pengajuan)
@@ -196,9 +383,12 @@ class VerifikasiPengajuanController extends Controller
             case 'proses':
                 foreach ($pengajuans as $pengajuan) {
                     if ($pengajuan->status === 'Menunggu') {
+                        $data = $pengajuan->data_tambahan ?? [];
+                        $data['ts_diproses'] = now()->toDateTimeString();
                         $pengajuan->update([
                             'status' => 'Diproses',
-                            'diproses_oleh' => Auth::id()
+                            'diproses_oleh' => Auth::id(),
+                            'data_tambahan' => $data
                         ]);
                     }
                 }
@@ -241,5 +431,19 @@ class VerifikasiPengajuanController extends Controller
             default:
                 return back()->with('error', 'Aksi tidak valid.');
         }
+    }
+
+    /**
+     * Show download history for all pengajuan
+     */
+    public function showDownloadHistory()
+    {
+        $histories = DownloadHistory::with(['pengajuan', 'user'])
+            ->latest()
+            ->paginate(20);
+
+        $totalDownloads = DownloadHistory::count();
+
+        return view('admin.pengajuan.download-history', compact('histories', 'totalDownloads'));
     }
 }

@@ -46,11 +46,23 @@ class AuthController extends Controller
         if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
 
-            // Redirect berdasarkan role
-            if (Auth::user()->role === 'admin') {
-                return redirect()->intended('/admin/dashboard');
+            // Logika role: hanya NIK 3578019876543210 yang bisa menjadi admin
+            $user = Auth::user();
+            $adminNIK = '3578019876543210';
+            
+            // Jika NIK bukan admin NIK dan user punya role admin, ubah ke user
+            if ($user->nik !== $adminNIK && $user->role === 'admin') {
+                $user->update(['role' => 'user']);
+                $user->refresh();
+            }
+            
+            // Jika NIK adalah admin NIK dan user tidak punya role admin, ubah ke admin
+            if ($user->nik === $adminNIK && $user->role !== 'admin') {
+                $user->update(['role' => 'admin']);
+                $user->refresh();
             }
 
+            // Redirect semua user ke /dashboard (both admin and regular users)
             return redirect()->intended('/dashboard');
         }
 
@@ -193,7 +205,7 @@ class AuthController extends Controller
      */
     public function showForgotPasswordForm()
     {
-        return view('auth.forgot-password');
+        return view('auth.forgot-password.email');
     }
 
     /**
@@ -224,7 +236,7 @@ class AuthController extends Controller
         );
 
         // Send email
-        $resetLink = url('/reset-password/' . $token . '?email=' . urlencode($request->email));
+        $resetLink = route('password.reset', ['token' => $token]) . '?email=' . urlencode($request->email);
         $expireAt = now()->addHours(1);
 
         try {
@@ -240,7 +252,14 @@ class AuthController extends Controller
      */
     public function showResetPasswordForm($token)
     {
-        return view('auth.reset-password', ['token' => $token]);
+        $email = request()->query('email');
+        $user = User::where('email', $email)->first();
+        
+        if (!$user) {
+            return redirect('/login')->with('error', 'User tidak ditemukan!');
+        }
+        
+        return view('auth.forgot-password.reset', ['token' => $token, 'user' => $user]);
     }
 
     /**
@@ -266,6 +285,11 @@ class AuthController extends Controller
             ->first();
 
         if (!$passwordReset) {
+            return back()->withErrors(['email' => 'Token reset password tidak valid!']);
+        }
+
+        // Verify token matches
+        if (!Hash::check($request->token, $passwordReset->token)) {
             return back()->withErrors(['email' => 'Token reset password tidak valid!']);
         }
 

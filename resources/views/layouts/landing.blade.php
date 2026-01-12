@@ -93,71 +93,205 @@
         </nav>
         <!-- [ Pre-loader ] End -->
         @yield('content')
-        <footer class="footer bg-dark text-white py-4">
-            <div class="top-footer">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <img src="{{ asset('assets/images/my/logo_Sidoarjo.svg.png') }}"
-                                alt="logo Sidoarjo" class="img-fluid mb-3" style="max-width: 200px;">
-                            <p class="opacity-75">Mari Bangun Desa Sruni Menjadi Lebih Aaman dan Moderen</p>
-                        </div>
-                        <div class="col-md-8">
-                            <div class="row">
-                                <div class="col-sm-4">
-                                    <h5 class="text-white mb-4">Navigasi</h5>
-                                    <ul class="list-unstyled footer-link">
-                                        <li><a href="/">Beranda</a></li>
-                                        <li><a href="/#alur">Alur Pendaftaran</a></li>
-                                        <li><a href="#">Pengumuman</a></li>
-                                        <li><a href="/contact">Kontak</a></li>
-                                    </ul>
-                                </div>
-                                <div class="col-sm-4">
-                                    <h5 class="text-white mb-4">Hubungi Kami</h5>
-                                    <ul class="list-unstyled footer-link">
-                                        <li class="d-flex">
-                                            <i class="ti ti-map-pin me-2 mt-1"></i>
-                                            <span>Jl.nangka No. A-37,Sruni,Gedangan,Sidoarjo</span>
-                                        </li>
-                                        <li class="d-flex">
-                                            <i class="ti ti-mail me-2 mt-1"></i>
-                                            <span>info@desasruni.sch.id</span>
-                                        </li>
-                                        <li class="d-flex">
-                                            <i class="ti ti-phone me-2 mt-1"></i>
-                                            <span>(021) 123-4567</span>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="col-sm-4">
-                                    <h5 class="text-white mb-4">Tautan Lainnya</h5>
-                                    <ul class="list-unstyled footer-link">
-                                        <li><a href="#">Kebijakan Privasi</a></li>
-                                        <li><a href="#">Syarat & Ketentuan</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
+        <footer class="footer py-5">
+            <style>
+                .footer {
+                    background: linear-gradient(135deg, #0f1419 0%, #1a1f2e 100%);
+                    border-top: 3px solid #00d4ff;
+                }
+
+                .footer-content {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                    gap: 40px;
+                    margin-bottom: 40px;
+                }
+
+                .footer-section h5 {
+                    color: #00d4ff;
+                    font-size: 1.2rem;
+                    font-weight: 700;
+                    margin-bottom: 20px;
+                    letter-spacing: 0.5px;
+                }
+
+                .footer-section p {
+                    color: #d0d7ff;
+                    line-height: 1.8;
+                    font-size: 0.95rem;
+                }
+
+                .footer-logo {
+                    max-width: 180px;
+                    margin-bottom: 20px;
+                    filter: drop-shadow(0 0 10px rgba(0, 212, 255, 0.3));
+                }
+
+                .footer-link {
+                    list-style: none;
+                    padding: 0;
+                }
+
+                .footer-link li {
+                    margin-bottom: 12px;
+                }
+
+                .footer-link a {
+                    color: #d0d7ff;
+                    text-decoration: none;
+                    transition: all 0.3s ease;
+                    font-size: 0.95rem;
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                }
+
+                .footer-link a:hover {
+                    color: #00d4ff;
+                    transform: translateX(5px);
+                }
+
+                .footer-link i {
+                    color: #0084ff;
+                    font-size: 1.1rem;
+                    flex-shrink: 0;
+                }
+
+                .footer-divider {
+                    height: 1px;
+                    background: linear-gradient(90deg, transparent, #0084ff, transparent);
+                    margin: 40px 0;
+                }
+
+                .footer-bottom {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    flex-wrap: wrap;
+                    gap: 20px;
+                    padding-top: 30px;
+                    border-top: 1px solid rgba(0, 132, 255, 0.2);
+                }
+
+                .footer-bottom p {
+                    color: #a8aacf;
+                    margin: 0;
+                    font-size: 0.9rem;
+                }
+
+                .social-links {
+                    display: flex;
+                    gap: 15px;
+                }
+
+                .social-links a {
+                    width: 40px;
+                    height: 40px;
+                    background: rgba(0, 132, 255, 0.2);
+                    border: 2px solid #0084ff;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: #00d4ff;
+                    transition: all 0.3s ease;
+                }
+
+                .social-links a:hover {
+                    background: linear-gradient(135deg, #0084ff 0%, #00d4ff 100%);
+                    border-color: #00d4ff;
+                    color: black;
+                    transform: translateY(-4px);
+                    box-shadow: 0 8px 20px rgba(0, 212, 255, 0.4);
+                }
+
+                @media (max-width: 768px) {
+                    .footer-content {
+                        grid-template-columns: 1fr;
+                        gap: 30px;
+                    }
+
+                    .footer-bottom {
+                        flex-direction: column;
+                        text-align: center;
+                    }
+
+                    .social-links {
+                        justify-content: center;
+                    }
+                }
+            </style>
+
+            <div class="container">
+                <div class="footer-content">
+                    <!-- Logo & About -->
+                    <div class="footer-section">
+                        <img src="{{ asset('assets/images/my/logo_Sidoarjo.svg.png') }}" alt="logo Desa Sruni" class="footer-logo">
+                        <p>Mari Bangun Desa Sruni Menjadi Lebih Aman dan Modern dengan teknologi digital terpadu untuk semua warga.</p>
+                    </div>
+
+                    <!-- Navigasi -->
+                    <div class="footer-section">
+                        <h5>🗺️ Navigasi</h5>
+                        <ul class="footer-link">
+                            <li><a href="/">Beranda</a></li>
+                            <li><a href="/#features">Jelajahi Layanan</a></li>
+                            <li><a href="#">Pengumuman</a></li>
+                            <li><a href="#">Kontak</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Hubungi Kami -->
+                    <div class="footer-section">
+                        <h5>📞 Hubungi Kami</h5>
+                        <ul class="footer-link">
+                            <li>
+                                <a href="https://maps.google.com" target="_blank">
+                                    <i class="ti ti-map-pin"></i>
+                                    <span>Jl. Nangka No. A-37, Sruni, Gedangan, Sidoarjo</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="mailto:info@desasruni.sch.id">
+                                    <i class="ti ti-mail"></i>
+                                    <span>info@desasruni.sch.id</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="tel:+62211234567">
+                                    <i class="ti ti-phone"></i>
+                                    <span>(021) 123-4567</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Tautan Lainnya -->
+                    <div class="footer-section">
+                        <h5>⚖️ Tautan Lainnya</h5>
+                        <ul class="footer-link">
+                            <li><a href="#">Kebijakan Privasi</a></li>
+                            <li><a href="#">Syarat & Ketentuan</a></li>
+                            <li><a href="#">FAQ</a></li>
+                        </ul>
                     </div>
                 </div>
-            </div>
-            <div class="bottom-footer">
-                <div class="container">
-                    <div class="row align-items-center">
-                        <div class="col my-1">
-    <p class="text-white mb-0">© {{ date('Y') }} Desa Sruni. Hak Cipta Dilindungi.</p>
-</div>
-                        <div class="col-auto my-1">
-                            <ul class="list-inline footer-sos-link mb-0">
-                                <li class="list-inline-item"><a href="#"><i
-                                            class="ph-duotone ph-facebook-logo f-20"></i></a></li>
-                                <li class="list-inline-item"><a href="#"><i
-                                            class="ph-duotone ph-instagram-logo f-20"></i></a></li>
-                                <li class="list-inline-item"><a href="#"><i
-                                            class="ph-duotone ph-youtube-logo f-20"></i></a></li>
-                            </ul>
-                        </div>
+
+                <div class="footer-divider"></div>
+
+                <!-- Footer Bottom -->
+                <div class="footer-bottom">
+                    <p>&copy; {{ date('Y') }} Desa Sruni. Hak Cipta Dilindungi. | Developed with <span style="color: #ff4444;">❤</span> for Community</p>
+                    <div class="social-links">
+                        <a href="#" title="Facebook" aria-label="Facebook">
+                            <i class="ti ti-brand-facebook"></i>
+                        </a>
+                        <a href="#" title="Instagram" aria-label="Instagram">
+                            <i class="ti ti-brand-instagram"></i>
+                        </a>
+                        <a href="#" title="YouTube" aria-label="YouTube">
+                            <i class="ti ti-brand-youtube"></i>
+                        </a>
                     </div>
                 </div>
             </div>

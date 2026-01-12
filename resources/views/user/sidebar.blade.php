@@ -1,168 +1,118 @@
 
-<li class="pc-item {{ request()->routeIs('pengajuan.*') ? 'active' : '' }}">
-    <a href="{{ route('pengajuan.index') }}" class="pc-link sidebar-pengajuan">
-        <span class="pc-micon">
-            <i class="ti ti-file-text"></i>
-            <span class="badge-icon">📋</span>
+@php $pengajuanActive = request()->routeIs('pengajuan.*'); @endphp
+<li class="pc-item {{ $pengajuanActive ? 'active' : '' }}">
+    <a class="pc-link sidebar-pengajuan" data-bs-toggle="collapse" href="#pengajuanMenu" role="button" aria-expanded="{{ $pengajuanActive ? 'true' : 'false' }}" aria-controls="pengajuanMenu" style="display: flex !important; align-items: center !important; justify-content: space-between !important; white-space: nowrap !important;">
+        <span style="display: flex !important; align-items: center !important; gap: 12px !important;">
+            <span class="pc-micon">
+                <i class="ti ti-file-text"></i>
+            </span>
+            <span class="pc-mtext" style="white-space: normal !important;">Pengajuan Surat</span>
         </span>
-        <span class="pc-mtext">Pengajuan Surat</span>
+        <i class="ti ti-chevron-down" style="flex-shrink: 0; margin-left: 8px;"></i>
     </a>
+
+    <div class="collapse {{ $pengajuanActive ? 'show' : '' }}" id="pengajuanMenu">
+        @php
+            $jenisList = [
+                'Surat Nikah',
+                'Surat Tanah',
+                'Surat Warisan',
+                'Surat Domisili',
+                'Surat Akta Kelahiran',
+                'Surat Keterangan Tidak Mampu',
+                'Surat Akta Kematian'
+            ];
+        @endphp
+        <ul class="list-unstyled ps-3 mb-2">
+            <li class="mb-1">
+                <a href="{{ route('pengajuan.index') }}" class="pc-sublink d-block text-decoration-none">
+                    <i class="ti ti-list-check me-1"></i> Daftar Pengajuan
+                </a>
+            </li>
+            @foreach($jenisList as $jenis)
+                <li class="mb-1">
+                    <a href="{{ route('pengajuan.create', ['jenis_surat' => $jenis]) }}" class="pc-sublink d-block text-decoration-none">
+                        <i class="ti ti-file-plus me-1"></i> {{ $jenis }}
+                    </a>
+                </li>
+            @endforeach
+        </ul>
+    </div>
 </li>
 <li class="pc-item {{ request()->routeIs('pengaduan.*') ? 'active' : '' }}">
     <a href="{{ route('pengaduan.index') }}" class="pc-link sidebar-pengaduan">
         <span class="pc-micon">
             <i class="ti ti-message-circle"></i>
-            <span class="badge-icon">💬</span>
         </span>
         <span class="pc-mtext">Pengaduan</span>
     </a>
 </li>
 
 <style>
-    /* Sidebar Container Background - WARNA GRADIENT */
-    nav.pc-sidebar,
-    .pc-navbar {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    /* ===== USER SIDEBAR MATCH DARK THEME ===== */
+    /* Styling will be handled by dashboard.blade.php */
+
+    /* Collapsible header styling */
+    .pc-navbar .pc-item .pc-link .ti-chevron-down {
+        opacity: 0.85;
+        transition: transform 0.3s ease !important;
     }
 
-    /* Item Default Color */
-    .pc-navbar .pc-item .pc-link {
-        color: #ffffff !important;
+    .pc-navbar .pc-item[aria-expanded="true"] .pc-link .ti-chevron-down,
+    .pc-navbar .pc-item .pc-link[aria-expanded="true"] .ti-chevron-down {
+        transform: rotate(180deg);
+    }
+
+    /* Submenu links (accessible) */
+    .pc-sublink {
+        color: #d0d7ff !important;
+        display: block;
+        padding: 10px 14px;
+        border-radius: 10px;
+        font-size: 0.95rem;
         transition: all 0.3s ease !important;
-    }
-
-    /* Sidebar Custom Styling - Pengajuan */
-    .pc-navbar .pc-item.sidebar-pengajuan .pc-link {
-        border-left: 4px solid transparent !important;
         position: relative;
-        overflow: hidden;
+        padding-left: 28px !important;
     }
 
-    .pc-navbar .pc-item.sidebar-pengajuan .pc-link::before {
-        content: '';
+    .pc-sublink::before {
+        content: '→';
         position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: rgba(255, 255, 255, 0.1);
-        transition: left 0.3s ease !important;
-        z-index: -1;
+        left: 12px;
+        color: #00d4ff;
+        font-weight: bold;
     }
 
-    .pc-navbar .pc-item.sidebar-pengajuan .pc-link:hover::before {
-        left: 0 !important;
+    .pc-sublink i {
+        color: #e0e7ff;
+        opacity: 0.95;
     }
 
-    .pc-navbar .pc-item.sidebar-pengajuan .pc-link:hover {
-        background: rgba(255, 255, 255, 0.15) !important;
-        border-left-color: #ffffff !important;
+    .pc-sublink:hover,
+    .pc-sublink:focus {
+        background: rgba(0, 212, 255, 0.2) !important;
         color: #ffffff !important;
-        box-shadow: 0 2px 8px rgba(255, 255, 255, 0.25) !important;
-        transform: translateX(8px) !important;
+        text-decoration: none !important;
+        outline: none !important;
+        transform: translateX(5px) !important;
     }
 
-    .pc-navbar .pc-item.sidebar-pengajuan.active .pc-link {
-        background: rgba(255, 255, 255, 0.2) !important;
-        border-left-color: #ffffff !important;
+    /* Active / selected submenu */
+    .pc-sublink.active,
+    .pc-sublink[aria-current='true'] {
+        background: rgba(0, 132, 255, 0.25) !important;
         color: #ffffff !important;
-        font-weight: 600 !important;
-        box-shadow: 0 3px 12px rgba(255, 255, 255, 0.3) !important;
-        transform: translateX(4px) !important;
+        font-weight: 600;
     }
 
-    /* Sidebar Custom Styling - Pengaduan */
-    .pc-navbar .pc-item.sidebar-pengaduan .pc-link {
-        border-left: 4px solid transparent !important;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .pc-navbar .pc-item.sidebar-pengaduan .pc-link::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: rgba(255, 255, 255, 0.1);
-        transition: left 0.3s ease !important;
-        z-index: -1;
-    }
-
-    .pc-navbar .pc-item.sidebar-pengaduan .pc-link:hover::before {
-        left: 0 !important;
-    }
-
-    .pc-navbar .pc-item.sidebar-pengaduan .pc-link:hover {
-        background: rgba(255, 255, 255, 0.15) !important;
-        border-left-color: #ffffff !important;
-        color: #ffffff !important;
-        box-shadow: 0 2px 8px rgba(255, 255, 255, 0.25) !important;
-        transform: translateX(8px) !important;
-    }
-
-    .pc-navbar .pc-item.sidebar-pengaduan.active .pc-link {
-        background: rgba(255, 255, 255, 0.2) !important;
-        border-left-color: #ffffff !important;
-        color: #ffffff !important;
-        font-weight: 600 !important;
-        box-shadow: 0 3px 12px rgba(255, 255, 255, 0.3) !important;
-        transform: translateX(4px) !important;
-    }
-
-    /* Icon Styling */
-    .pc-micon {
-        position: relative;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: rgba(255, 255, 255, 0.2) !important;
-        border-radius: 8px;
-        padding: 4px;
-        transition: all 0.3s ease !important;
-    }
-
-    .pc-navbar .pc-item.sidebar-pengajuan .pc-link:hover .pc-micon {
-        background: rgba(255, 255, 255, 0.3) !important;
-        transform: scale(1.1) !important;
-    }
-
-    .pc-navbar .pc-item.sidebar-pengaduan .pc-link:hover .pc-micon {
-        background: rgba(255, 255, 255, 0.3) !important;
-        transform: scale(1.1) !important;
-    }
-
-    /* Badge Icon Animation - TERUS BERGERAK */
-    .badge-icon {
-        position: absolute;
-        font-size: 14px;
-        margin-left: 8px;
-        margin-top: 4px;
-        display: inline-block;
-        animation: float 3s ease-in-out infinite !important;
-    }
-
-    @keyframes float {
-        0% {
-            transform: translateY(0px) rotate(0deg);
-            opacity: 1;
-        }
-        50% {
-            transform: translateY(-8px) rotate(5deg);
-            opacity: 1;
-        }
-        100% {
-            transform: translateY(0px) rotate(0deg);
-            opacity: 1;
-        }
-    }
-
-    /* Responsive */
-    @media (max-width: 767px) {
-        .badge-icon {
-            display: none;
-        }
+    /* Collapse container styling */
+    .collapse {
+        background: rgba(0, 132, 255, 0.15) !important;
+        border-left: 4px solid #00d4ff !important;
+        border-radius: 12px !important;
+        margin: 12px 8px !important;
+        padding-left: 15px !important;
+        backdrop-filter: blur(10px);
     }
 </style>
 

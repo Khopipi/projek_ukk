@@ -391,19 +391,6 @@
                                     </div>
                                 </div>
 
-                                <!-- Foto -->
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label class="form-label">Foto</label>
-                                        <input type="file" name="foto" class="form-control @error('foto') is-invalid @enderror" 
-                                               accept="image/*">
-                                        <small class="text-muted">Format: JPG, JPEG, PNG. Max: 2MB</small>
-                                        @error('foto')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
                                 <!-- Keterangan -->
                                 <div class="col-md-12">
                                     <div class="form-group">

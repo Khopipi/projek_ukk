@@ -10,6 +10,7 @@ use App\Http\Controllers\VerifikasiPengajuanController;
 use App\Http\Controllers\VerifikasiPengaduanController;
 use App\Http\Controllers\PengaduanController;
 use App\Http\Controllers\UserProfileController;
+use App\Http\Controllers\Admin\KematianController;
 
 // ============================================
 // LANDING PAGE - Public Access
@@ -33,10 +34,6 @@ Route::middleware(['guest'])->group(function () {
     // Register
     Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
     Route::post('/register', [AuthController::class, 'register'])->name('register.post');
-
-    // Social Login (Google, Discord, dll)
-    Route::get('/auth/{provider}', [AuthController::class, 'redirect'])->name('sso.redirect');
-    Route::get('/auth/{provider}/callback', [AuthController::class, 'callback'])->name('sso.callback');
 
     // Forgot Password
     Route::get('/forgot-password', [AuthController::class, 'showForgotPasswordForm'])->name('forgot_password.email_form');
@@ -68,16 +65,6 @@ Route::middleware(['auth'])->group(function () {
 // ============================================
 Route::middleware(['auth'])->group(function () {
 
-    // Dashboard - Semua user yang login
-    Route::get('/dashboard', function () {
-        // Set common variables
-        $name = Auth::user()->name;
-        $role = ucfirst(Auth::user()->role);
-        $avatar = Auth::user()->avatar ?? asset('assets/images/user/avatar-1.jpg');
-
-        return view('dashboard', compact('name', 'role', 'avatar'));
-    })->name('dashboard');
-
     // Logout
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
@@ -86,9 +73,14 @@ Route::middleware(['auth'])->group(function () {
     // ============================================
     Route::middleware(['cekRole:admin'])->group(function () {
 
-        // Admin Dashboard
-        Route::get('/admin/dashboard', function () {
-            return view('admin.dashboard');
+        // Admin Dashboard (route spesifik untuk admin, harus di awal)
+        Route::get('/dashboard', function () {
+            // Set common variables
+            $name = Auth::user()->name;
+            $role = ucfirst(Auth::user()->role);
+            $avatar = Auth::user()->avatar ?? asset('assets/images/user/avatar-1.jpg');
+
+            return view('dashboard', compact('name', 'role', 'avatar'));
         })->name('admin.dashboard');
 
         // Data Penduduk CRUD (tanpa prefix - route utama untuk admin)
@@ -97,15 +89,23 @@ Route::middleware(['auth'])->group(function () {
         // Export Penduduk
         Route::get('/penduduk-export', [PendudukController::class, 'export'])->name('penduduk.export');
 
+        // Data Kematian CRUD
+        Route::resource('admin/kematian', KematianController::class)->names('admin.kematian');
+
         // Verifikasi Pengajuan Surat
         Route::prefix('admin/pengajuan')->name('admin.pengajuan.')->group(function () {
             Route::get('/', [VerifikasiPengajuanController::class, 'index'])->name('index');
+            Route::get('/download-history', [VerifikasiPengajuanController::class, 'showDownloadHistory'])->name('download-history');
             Route::get('/{pengajuan}', [VerifikasiPengajuanController::class, 'show'])->name('show');
             Route::post('/{pengajuan}/proses', [VerifikasiPengajuanController::class, 'proses'])->name('proses');
             Route::post('/{pengajuan}/approve', [VerifikasiPengajuanController::class, 'approve'])->name('approve');
             Route::post('/{pengajuan}/reject', [VerifikasiPengajuanController::class, 'reject'])->name('reject');
             Route::post('/{pengajuan}/upload-surat', [VerifikasiPengajuanController::class, 'uploadSurat'])->name('upload-surat');
             Route::delete('/{pengajuan}/delete-surat', [VerifikasiPengajuanController::class, 'deleteSurat'])->name('delete-surat');
+            Route::post('/{pengajuan}/generate-surat', [VerifikasiPengajuanController::class, 'generateSurat'])->name('generate-surat');
+            Route::get('/{pengajuan}/preview-surat', [VerifikasiPengajuanController::class, 'previewSurat'])->name('preview-surat');
+            Route::get('/{pengajuan}/download-pdf', [VerifikasiPengajuanController::class, 'downloadPdf'])->name('download-pdf');
+            Route::post('/{pengajuan}/send-pdf', [VerifikasiPengajuanController::class, 'sendPdf'])->name('send-pdf');
             Route::post('/bulk-action', [VerifikasiPengajuanController::class, 'bulkAction'])->name('bulk-action');
             // Pengajuan file serving route
             Route::get('/file/{filename}', [PengajuanSuratController::class, 'file'])->name('file');
@@ -151,6 +151,9 @@ Route::middleware(['auth'])->group(function () {
         // Pengajuan Surat CRUD
         Route::resource('pengajuan', PengajuanSuratController::class);
 
+        // Serve generated surat_hasil PDFs (authenticated & authorized)
+        Route::get('/pengajuan/surat-hasil/{filename}', [PengajuanSuratController::class, 'fileSuratHasil'])->name('pengajuan.surat_hasil.file');
+
         // Pengaduan CRUD (tanpa edit & update)
 
         // Debug route: list pengaduan file names (only for the authenticated user) and storage files
@@ -169,5 +172,15 @@ Route::middleware(['auth'])->group(function () {
         // Update profile
         Route::post('/profile', [UserProfileController::class, 'update'])->name('user.profile.update');
     });
+
+    // Dashboard - Untuk user biasa (setelah admin routes agar tidak bentrok)
+    Route::get('/dashboard', function () {
+        // Set common variables
+        $name = Auth::user()->name;
+        $role = ucfirst(Auth::user()->role);
+        $avatar = Auth::user()->avatar ?? asset('assets/images/user/avatar-1.jpg');
+
+        return view('dashboard', compact('name', 'role', 'avatar'));
+    })->name('dashboard');
 
 });

@@ -191,51 +191,62 @@
                     </div>
                     <div class="card-body">
                         <ul class="list-group list-group-flush">
+                            <!-- User Mengirim -->
                             <li class="list-group-item px-0">
                                 <div class="d-flex align-items-start">
                                     <div class="flex-shrink-0">
-                                        <div class="avtar avtar-s bg-light-success">
-                                            <i class="ti ti-plus text-success"></i>
+                                        <div class="avtar avtar-s bg-light-primary">
+                                            <i class="ti ti-send text-primary"></i>
                                         </div>
                                     </div>
                                     <div class="flex-grow-1 ms-3">
-                                        <h6 class="mb-0">Pengaduan Dibuat</h6>
+                                        <h6 class="mb-0">User Mengirim</h6>
                                         <small class="text-muted">{{ $pengaduan->created_at->format('d F Y, H:i') }}</small>
                                     </div>
                                 </div>
                             </li>
 
-                            @if($pengaduan->tanggal_ditanggapi)
+                            <!-- User Diproses -->
                             <li class="list-group-item px-0">
                                 <div class="d-flex align-items-start">
                                     <div class="flex-shrink-0">
                                         <div class="avtar avtar-s bg-light-info">
-                                            <i class="ti ti-message-circle text-info"></i>
+                                            <i class="ti ti-hourglass text-info"></i>
                                         </div>
                                     </div>
                                     <div class="flex-grow-1 ms-3">
-                                        <h6 class="mb-0">Ditanggapi Admin</h6>
-                                        <small class="text-muted">{{ $pengaduan->tanggal_ditanggapi->format('d F Y, H:i') }}</small>
+                                        <h6 class="mb-0">User Diproses</h6>
+                                        <small class="text-muted">
+                                            @if($pengaduan->tanggal_diproses)
+                                                {{ $pengaduan->tanggal_diproses->format('d F Y, H:i') }}
+                                            @else
+                                                <em>Belum diproses</em>
+                                            @endif
+                                        </small>
                                     </div>
                                 </div>
                             </li>
-                            @endif
 
-                            @if($pengaduan->tanggal_selesai)
+                            <!-- User Selesai -->
                             <li class="list-group-item px-0">
                                 <div class="d-flex align-items-start">
                                     <div class="flex-shrink-0">
-                                        <div class="avtar avtar-s bg-light-primary">
-                                            <i class="ti ti-circle-check text-primary"></i>
+                                        <div class="avtar avtar-s bg-light-success">
+                                            <i class="ti ti-circle-check text-success"></i>
                                         </div>
                                     </div>
                                     <div class="flex-grow-1 ms-3">
-                                        <h6 class="mb-0">Pengaduan Selesai</h6>
-                                        <small class="text-muted">{{ $pengaduan->tanggal_selesai->format('d F Y, H:i') }}</small>
+                                        <h6 class="mb-0">User Selesai</h6>
+                                        <small class="text-muted">
+                                            @if($pengaduan->tanggal_selesai)
+                                                {{ $pengaduan->tanggal_selesai->format('d F Y, H:i') }}
+                                            @else
+                                                <em>Belum selesai</em>
+                                            @endif
+                                        </small>
                                     </div>
                                 </div>
                             </li>
-                            @endif
                         </ul>
                     </div>
                 </div>

@@ -47,6 +47,43 @@
                                 {{ $pengajuan->status }}
                             </span>
                         </div>
+                        {{-- Tracking status langkah: Dikirim -> Diproses -> Selesai --}}
+                        @php
+                            $step = 1;
+                            if ($pengajuan->status === 'Diproses') $step = 2;
+                            if (in_array($pengajuan->status, ['Disetujui','Selesai'])) $step = 3;
+                        @endphp
+                        <div class="mb-3">
+                            <div style="display:flex;align-items:center;gap:0.5rem;">
+                                @php
+                                    $ts_dikirim = $pengajuan->data_tambahan['ts_dikirim'] ?? $pengajuan->created_at?->toDateTimeString();
+                                    $ts_diproses = $pengajuan->data_tambahan['ts_diproses'] ?? null;
+                                    $ts_selesai = $pengajuan->tanggal_selesai?->toDateTimeString() ?? $pengajuan->data_tambahan['ts_selesai'] ?? null;
+                                @endphp
+
+                                @foreach(['Dikirim','Diproses','Selesai'] as $i => $label)
+                                    @php $idx = $i + 1; $active = $idx <= $step; @endphp
+                                    <div style="flex:1;text-align:center;">
+                                        <div style="width:44px;height:44px;margin:0 auto;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;" class="{{ $active ? 'bg-success text-white' : 'bg-light text-muted' }}">
+                                            {{ $idx }}
+                                        </div>
+                                        <div style="font-size:0.85rem;margin-top:6px;" class="{{ $active ? 'text-success' : 'text-muted' }}">{{ $label }}</div>
+                                        <div style="font-size:0.75rem;margin-top:4px;" class="text-muted">
+                                            @if($label === 'Dikirim')
+                                                {{ $ts_dikirim ? \Carbon\Carbon::parse($ts_dikirim)->format('H:i, d F Y') : '-' }}
+                                            @elseif($label === 'Diproses')
+                                                {{ $ts_diproses ? \Carbon\Carbon::parse($ts_diproses)->format('H:i, d F Y') : '-' }}
+                                            @else
+                                                {{ $ts_selesai ? \Carbon\Carbon::parse($ts_selesai)->format('H:i, d F Y') : '-' }}
+                                            @endif
+                                        </div>
+                                    </div>
+                                    @if($i < 2)
+                                        <div style="width:20px;height:2px;background:{{ $step > $i+1 ? '#28a745' : '#e9ecef' }};align-self:center;margin:0 4px;border-radius:2px;"></div>
+                                    @endif
+                                @endforeach
+                            </div>
+                        </div>
                         
                         <h4 class="mb-1">{{ $pengajuan->nomor_pengajuan }}</h4>
                         <p class="text-muted mb-3">Nomor Pengajuan</p>
@@ -55,7 +92,7 @@
                             <p class="mb-2">
                                 <i class="{{ $pengajuan->jenis_surat_icon }} me-2 text-primary"></i>
                                 <strong>Jenis Surat:</strong><br>
-                                <span class="ms-4">{{ $pengajuan->jenis_surat }}</span>
+                                <span class="ms-4">{{ $pengajuan->data_tambahan['jenis_surat_asli'] ?? $pengajuan->jenis_surat }}</span>
                             </p>
                             <p class="mb-2">
                                 <i class="ti ti-calendar me-2 text-success"></i>
@@ -97,7 +134,7 @@
 
                         @if($pengajuan->file_surat_hasil)
                         <div class="mt-3">
-                            <a href="{{ $pengajuan->file_surat_hasil_url }}" target="_blank" class="btn btn-success w-100">
+                            <a href="{{ route('pengajuan.surat_hasil.file', $pengajuan->file_surat_hasil) }}" target="_blank" class="btn btn-success w-100">
                                 <i class="ti ti-download me-1"></i> Download Surat Hasil
                             </a>
                         </div>
@@ -176,6 +213,34 @@
                         </div>
                     </div>
                 </div>
+
+                @if($pengajuan->jenis_surat === 'Surat Akta Kematian')
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="ti ti-heart-broken me-2"></i>Data Almarhum / Almarhumah</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="text-muted mb-1">Nama</label>
+                                <p class="fw-bold">{{ $pengajuan->data_tambahan['nama_almarhum'] ?? '-' }}</p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="text-muted mb-1">Tempat Lahir</label>
+                                <p class="fw-bold">{{ $pengajuan->data_tambahan['tempat_lahir_almarhum'] ?? '-' }}</p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="text-muted mb-1">Tanggal Lahir</label>
+                                <p class="fw-bold">{{ isset($pengajuan->data_tambahan['tanggal_lahir_almarhum']) ? \Carbon\Carbon::parse($pengajuan->data_tambahan['tanggal_lahir_almarhum'])->format('d F Y') : '-' }}</p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="text-muted mb-1">Dimakamkan di</label>
+                                <p class="fw-bold">{{ $pengajuan->data_tambahan['tempat_makam'] ?? '-' }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @endif
 
                 <!-- Dokumen Upload -->
                 <div class="card">
@@ -272,7 +337,7 @@
                     <p>Apakah Anda yakin ingin membatalkan pengajuan surat ini?</p>
                     <div class="alert alert-warning">
                         <strong>{{ $pengajuan->nomor_pengajuan }}</strong><br>
-                        {{ $pengajuan->jenis_surat }}
+                        {{ $pengajuan->data_tambahan['jenis_surat_asli'] ?? $pengajuan->jenis_surat }}
                     </div>
                     <p class="text-danger mb-0">
                         <i class="ti ti-alert-triangle me-1"></i>

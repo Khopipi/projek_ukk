@@ -1,6 +1,151 @@
 @extends('layouts.dashboard')
 @section('title', 'Verifikasi Pengajuan Surat')
 @section('content')
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #5b6ef5 0%, #7685f0 100%);
+            --warning-gradient: linear-gradient(135deg, #ffa500 0%, #ff9500 100%);
+            --info-gradient: linear-gradient(135deg, #17a2b8 0%, #20c9a6 100%);
+            --success-gradient: linear-gradient(135deg, #2dce89 0%, #26c381 100%);
+            --danger-gradient: linear-gradient(135deg, #f5365c 0%, #e91e63 100%);
+        }
+
+        .stat-card-elegant {
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease;
+            overflow: hidden;
+            position: relative;
+            height: 100%;
+            background: white;
+        }
+
+        .stat-card-elegant:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 8px 20px rgba(91, 110, 245, 0.1);
+            border-color: #5b6ef5;
+        }
+
+        .stat-card-elegant.stat-1 { border-left: 4px solid #5b6ef5; }
+        .stat-card-elegant.stat-2 { border-left: 4px solid #ffa500; }
+        .stat-card-elegant.stat-3 { border-left: 4px solid #17a2b8; }
+        .stat-card-elegant.stat-4 { border-left: 4px solid #2dce89; }
+        .stat-card-elegant.stat-5 { border-left: 4px solid #f5365c; }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .stat-card-elegant.stat-1 .stat-icon { background: linear-gradient(135deg, #f0f2ff 0%, #e9ebff 100%); color: #5b6ef5; }
+        .stat-card-elegant.stat-2 .stat-icon { background: linear-gradient(135deg, #fffbf0 0%, #fff3e0 100%); color: #ff9500; }
+        .stat-card-elegant.stat-3 .stat-icon { background: linear-gradient(135deg, #f0f9fb 0%, #e8f7f9 100%); color: #17a2b8; }
+        .stat-card-elegant.stat-4 .stat-icon { background: linear-gradient(135deg, #f0fdf4 0%, #e8fbe9 100%); color: #2dce89; }
+        .stat-card-elegant.stat-5 .stat-icon { background: linear-gradient(135deg, #fff5f7 0%, #ffe9f0 100%); color: #f5365c; }
+
+        .elegant-card {
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .elegant-card:hover {
+            box-shadow: 0 8px 20px rgba(91, 110, 245, 0.08);
+        }
+
+        .elegant-card .card-header {
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+            padding: 20px 24px;
+        }
+
+        .elegant-card .card-header h5 {
+            font-size: 15px;
+            font-weight: 700;
+            color: #2d3748;
+            letter-spacing: 0.3px;
+        }
+
+        .elegant-table {
+            border-collapse: collapse;
+        }
+
+        .elegant-table thead th {
+            background: #f8f9fa;
+            color: #495057;
+            font-weight: 700;
+            font-size: 11px;
+            letter-spacing: 0.3px;
+            text-transform: none;
+            padding: 14px 16px;
+            border: 1px solid #dee2e6;
+        }
+
+        .elegant-table tbody tr {
+            border-bottom: 1px solid #e9ecef;
+            transition: all 0.2s ease;
+        }
+
+        .elegant-table tbody tr:hover {
+            background: #f8f9fa;
+            box-shadow: inset 0 0 0 1px rgba(91, 110, 245, 0.05);
+        }
+
+        .elegant-table tbody td {
+            padding: 14px 16px;
+            color: #2d3748;
+            font-weight: 500;
+        }
+
+        .elegant-btn {
+            border-radius: 8px;
+            padding: 8px 14px;
+            font-size: 12px;
+            font-weight: 700;
+            border: none;
+            transition: all 0.3s ease;
+            color: white !important;
+        }
+
+        .elegant-btn-primary {
+            background: var(--primary-gradient);
+        }
+
+        .elegant-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
+        }
+
+        .filter-form {
+            background: linear-gradient(135deg, #f8fbff 0%, #ffffff 100%);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #eef2f9;
+        }
+
+        .filter-form .form-control,
+        .filter-form .form-select {
+            border-radius: 8px;
+            border: 1px solid #eef2f9;
+            transition: all 0.3s ease;
+        }
+
+        .filter-form .form-control:focus,
+        .filter-form .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+    </style>
+
     <div class="pc-content">
         <!-- Breadcrumb -->
         <div class="page-header">

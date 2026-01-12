@@ -76,7 +76,6 @@
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th>Foto</th>
                                         <th>NIK</th>
                                         <th>Nama Lengkap</th>
                                         <th>L/P</th>
@@ -90,12 +89,6 @@
                                     @forelse ($penduduks as $index => $penduduk)
                                         <tr>
                                             <td>{{ $penduduks->firstItem() + $index }}</td>
-                                            <td>
-                                                <img src="{{ $penduduk->foto_url }}" 
-                                                     alt="Foto" 
-                                                     class="img-fluid rounded-circle" 
-                                                     style="width: 40px; height: 40px; object-fit: cover;">
-                                            </td>
                                             <td>{{ $penduduk->nik }}</td>
                                             <td>{{ $penduduk->nama_lengkap }}</td>
                                             <td>

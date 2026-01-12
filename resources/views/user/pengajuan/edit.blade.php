@@ -55,7 +55,7 @@
                             <p class="mb-2">
                                 <i class="{{ $pengajuan->jenis_surat_icon }} me-2 text-primary"></i>
                                 <strong>Jenis Surat:</strong><br>
-                                <span class="ms-4">{{ $pengajuan->jenis_surat }}</span>
+                                <span class="ms-4">{{ $pengajuan->data_tambahan['jenis_surat_asli'] ?? $pengajuan->jenis_surat }}</span>
                             </p>
                             <p class="mb-2">
                                 <i class="ti ti-calendar me-2 text-success"></i>
@@ -97,7 +97,7 @@
 
                         @if($pengajuan->file_surat_hasil)
                         <div class="mt-3">
-                            <a href="{{ $pengajuan->file_surat_hasil_url }}" target="_blank" class="btn btn-success w-100">
+                            <a href="{{ route('pengajuan.surat_hasil.file', $pengajuan->file_surat_hasil) }}" target="_blank" class="btn btn-success w-100">
                                 <i class="ti ti-download me-1"></i> Download Surat Hasil
                             </a>
                         </div>

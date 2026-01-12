@@ -63,6 +63,14 @@ class PengajuanSurat extends Model
     }
 
     /**
+     * Relasi ke Download History
+     */
+    public function downloadHistories()
+    {
+        return $this->hasMany(DownloadHistory::class, 'pengajuan_surat_id');
+    }
+
+    /**
      * Generate nomor pengajuan otomatis
      */
     public static function generateNomorPengajuan()
@@ -111,11 +119,10 @@ class PengajuanSurat extends Model
     {
         return match($this->jenis_surat) {
             'Surat Nikah' => 'ti ti-heart',
-            'Pembuatan KTP' => 'ti ti-id',
             'Surat Tanah' => 'ti ti-map',
             'Surat Warisan' => 'ti ti-building-estate',
             'Surat Domisili' => 'ti ti-home',
-            'Surat Kelahiran' => 'ti ti-baby-carriage',
+            'Surat Akta Kelahiran' => 'ti ti-baby-carriage',
             'Surat Keterangan Tidak Mampu' => 'ti ti-cash-off',
             default => 'ti ti-file'
         };
@@ -171,5 +178,140 @@ class PengajuanSurat extends Model
     public function getFilePendukung3UrlAttribute()
     {
         return $this->file_pendukung_3 ? route('pengajuan.file', $this->file_pendukung_3) : null;
+    }
+
+    /**
+     * Get special document URL from data_tambahan
+     */
+    public function getSpecialDocUrl($docField)
+    {
+        if (!$this->data_tambahan || !is_array($this->data_tambahan)) {
+            return null;
+        }
+        
+        $filename = $this->data_tambahan[$docField] ?? null;
+        return $filename ? route('pengajuan.file', $filename) : null;
+    }
+
+    /**
+     * Get all special documents with labels based on jenis_surat
+     */
+    public function getSpecialDocuments()
+    {
+        $docs = [];
+        
+        if (!$this->data_tambahan || !is_array($this->data_tambahan)) {
+            return $docs;
+        }
+
+        // Order documents by jenis_surat and return only those for current type
+        $docsByType = [
+            'Surat Nikah' => [
+                'doc_surat_pengantar_rtrw' => 'Surat Pengantar dari RT/RW',
+                'doc_surat_pengantar_kelurahan' => 'Surat Pengantar dari Kelurahan',
+                'doc_formulir_n1' => 'Formulir N1 (Permohonan Pencatatan Perkawinan)',
+                'doc_formulir_n2' => 'Formulir N2 (Pernyataan Calon Pengantin)',
+                'doc_formulir_n4' => 'Formulir N4 (Daftar Riwayat Hidup)',
+                'doc_ktp_pria' => 'Foto/Scan KTP Calon Pengantin Pria',
+                'doc_ktp_wanita' => 'Foto/Scan KTP Calon Pengantin Wanita',
+                'doc_kk_pria' => 'Kartu Keluarga (KK) Calon Pria',
+                'doc_kk_wanita' => 'Kartu Keluarga (KK) Calon Wanita',
+                'doc_akta_lahir_pria' => 'Akta Kelahiran Calon Pria',
+                'doc_akta_lahir_wanita' => 'Akta Kelahiran Calon Wanita',
+                'doc_pas_foto_pria' => 'Pas Foto Calon Pengantin Pria (4x6)',
+                'doc_pas_foto_wanita' => 'Pas Foto Calon Pengantin Wanita (4x6)',
+            ],
+            'Surat Tanah' => [
+                'doc_ktp_pemohon' => 'Fotokopi KTP Pemohon',
+                'doc_kk_pemohon' => 'Fotokopi Kartu Keluarga (KK) Pemohon',
+                'doc_npwp' => 'Fotokopi NPWP',
+                'doc_pbb' => 'Bukti Pembayaran PBB Tahun Terakhir',
+                'doc_girik' => 'Girik/Letter C/Petok D',
+                'doc_riwayat_tanah' => 'Surat Riwayat Tanah',
+            ],
+            'Surat Warisan' => [
+                'doc_akta_kematian' => 'Akta Kematian Pewaris',
+                'doc_ktp_pewaris' => 'KTP Pewaris',
+                'doc_kk_pewaris' => 'KK Pewaris',
+                'doc_ktp_ahli' => 'KTP Ahli Waris',
+                'doc_kk_ahli' => 'KK Ahli Waris',
+                'doc_surat_pengantar_rtrw' => 'Surat Pengantar RT/RW',
+                'doc_akta_kelahiran_ahli' => 'Akta Kelahiran Ahli Waris',
+                'doc_surat_nikah_pewaris' => 'Surat Nikah Pewaris (jika ada)',
+            ],
+            'Surat Domisili' => [
+                'doc_kk_domisili' => 'Kartu Keluarga (KK)',
+                'doc_ktp_domisili' => 'KTP Asli Pemohon (verifikasi)',
+                'doc_form_f103' => 'Formulir Permohonan F-1.03 (Disdukcapil)',
+                'doc_akta_kelahiran_domisili' => 'Akta Kelahiran (jika belum punya KTP)',
+                'doc_surat_nikah_cerai' => 'Surat Nikah / Cerai (jika ada)',
+            ],
+            'Surat Akta Kelahiran' => [
+                'doc_surat_keterangan_lahir' => 'Surat Keterangan Lahir',
+                'doc_akta_nikah_orangtua' => 'Akta Nikah Orang Tua',
+                'doc_kk_kelahiran' => 'Kartu Keluarga (KK)',
+                'doc_ktp_ayah' => 'KTP Ayah',
+                'doc_ktp_ibu' => 'KTP Ibu',
+            ],
+            'Surat Akta Kematian' => [
+                'doc_surat_keterangan_kematian' => 'Surat Keterangan Kematian (asli dari dokter / Puskesmas / Rumah Sakit)',
+                'doc_ktp_almarhum' => 'Kartu Tanda Penduduk (KTP) Almarhum / Almarhumah (asli atau fotokopi)',
+                'doc_kk_almarhum' => 'Kartu Keluarga (KK) Almarhum / Almarhumah (asli atau fotokopi)',
+                'doc_ktp_pelapor' => 'Foto/Scan KTP Pelapor (anak kandung / ahli waris / Ketua RT/RW)',
+                'doc_akta_kelahiran_almarhum' => 'Akta Kelahiran Almarhum / Almarhumah (jika belum memiliki KTP)'
+            ],
+            'Surat Keterangan Tidak Mampu' => [
+                'doc_kk_tidak_mampu' => 'Kartu Keluarga (KK)',
+                'doc_ktp_tidak_mampu' => 'Kartu Tanda Penduduk (KTP) Asli dan/atau Fotokopi',
+                'doc_pengantar_rtrw_tidak_mampu' => 'Surat Pengantar dari RT/RW',
+                'doc_pernyataan_tidak_mampu' => 'Surat Pernyataan Tidak Mampu Bermeterai',
+                'doc_foto_rumah' => 'Foto Rumah (Jika Diperlukan)',
+            ],
+        ];
+
+        // Determine which jenis_surat to use for label mapping.
+        // If controller saved the original requested jenis under data_tambahan['jenis_surat_asli'], prefer it.
+        $requestedJenis = $this->data_tambahan['jenis_surat_asli'] ?? $this->jenis_surat;
+
+        // Try direct match first, then a case-insensitive match to support label variants
+        $docLabels = $docsByType[$requestedJenis] ?? null;
+        if (!$docLabels) {
+            foreach ($docsByType as $typeKey => $labels) {
+                if (strcasecmp($typeKey, $requestedJenis) === 0) {
+                    $docLabels = $labels;
+                    break;
+                }
+            }
+        }
+        $docLabels = $docLabels ?? [];
+
+        // Build docs array in order from mapping first
+        foreach ($docLabels as $fieldName => $label) {
+            if (isset($this->data_tambahan[$fieldName]) && $this->data_tambahan[$fieldName]) {
+                $filename = $this->data_tambahan[$fieldName];
+                $docs[$fieldName] = [
+                    'label' => $label,
+                    'filename' => $filename,
+                    'url' => route('pengajuan.file', $filename)
+                ];
+            }
+        }
+
+        // Also include any other doc_* fields that exist in data_tambahan but weren't in the mapping
+        foreach ($this->data_tambahan as $fieldName => $filename) {
+            if (!is_string($fieldName) || strpos($fieldName, 'doc_') !== 0) continue;
+            if (!$filename) continue;
+            if (isset($docs[$fieldName])) continue; // already included
+
+            // Derive a readable label if not available in mapping
+            $label = $docLabels[$fieldName] ?? ucwords(str_replace(['doc_', '_'], ['', ' '], $fieldName));
+            $docs[$fieldName] = [
+                'label' => $label,
+                'filename' => $filename,
+                'url' => route('pengajuan.file', $filename)
+            ];
+        }
+
+        return $docs;
     }
 }

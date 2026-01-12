@@ -48,6 +48,43 @@
                                 {{ $pengajuan->status }}
                             </span>
                         </div>
+                        {{-- Tracking status langkah: Dikirim -> Diproses -> Selesai --}}
+                        @php
+                            $step = 1;
+                            if ($pengajuan->status === 'Diproses') $step = 2;
+                            if (in_array($pengajuan->status, ['Disetujui','Selesai'])) $step = 3;
+                        @endphp
+                        <div class="mb-3">
+                            <div style="display:flex;align-items:center;gap:0.5rem;">
+                                @php
+                                    $ts_dikirim = $pengajuan->data_tambahan['ts_dikirim'] ?? $pengajuan->created_at?->toDateTimeString();
+                                    $ts_diproses = $pengajuan->data_tambahan['ts_diproses'] ?? null;
+                                    $ts_selesai = $pengajuan->tanggal_selesai?->toDateTimeString() ?? $pengajuan->data_tambahan['ts_selesai'] ?? null;
+                                @endphp
+
+                                @foreach(['Dikirim','Diproses','Selesai'] as $i => $label)
+                                    @php $idx = $i + 1; $active = $idx <= $step; @endphp
+                                    <div style="flex:1;text-align:center;">
+                                        <div style="width:44px;height:44px;margin:0 auto;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;" class="{{ $active ? 'bg-success text-white' : 'bg-light text-muted' }}">
+                                            {{ $idx }}
+                                        </div>
+                                        <div style="font-size:0.85rem;margin-top:6px;" class="{{ $active ? 'text-success' : 'text-muted' }}">{{ $label }}</div>
+                                        <div style="font-size:0.75rem;margin-top:4px;" class="text-muted">
+                                            @if($label === 'Dikirim')
+                                                {{ $ts_dikirim ? \Carbon\Carbon::parse($ts_dikirim)->format('H:i, d F Y') : '-' }}
+                                            @elseif($label === 'Diproses')
+                                                {{ $ts_diproses ? \Carbon\Carbon::parse($ts_diproses)->format('H:i, d F Y') : '-' }}
+                                            @else
+                                                {{ $ts_selesai ? \Carbon\Carbon::parse($ts_selesai)->format('H:i, d F Y') : '-' }}
+                                            @endif
+                                        </div>
+                                    </div>
+                                    @if($i < 2)
+                                        <div style="width:20px;height:2px;background:{{ $step > $i+1 ? '#28a745' : '#e9ecef' }};align-self:center;margin:0 4px;border-radius:2px;"></div>
+                                    @endif
+                                @endforeach
+                            </div>
+                        </div>
                         
                         <h4 class="mb-1">{{ $pengajuan->nomor_pengajuan }}</h4>
                         <p class="text-muted mb-3">Nomor Pengajuan</p>
@@ -56,7 +93,7 @@
                             <p class="mb-2">
                                 <i class="{{ $pengajuan->jenis_surat_icon }} me-2 text-primary"></i>
                                 <strong>Jenis Surat:</strong><br>
-                                <span class="ms-4">{{ $pengajuan->jenis_surat }}</span>
+                                <span class="ms-4">{{ $pengajuan->data_tambahan['jenis_surat_asli'] ?? $pengajuan->jenis_surat }}</span>
                             </p>
                             <p class="mb-2">
                                 <i class="ti ti-calendar me-2 text-success"></i>
@@ -106,6 +143,34 @@
                     </div>
                 </div>
 
+                @if($pengajuan->jenis_surat === 'Surat Akta Kematian')
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="ti ti-heart-broken me-2"></i>Data Almarhum / Almarhumah</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="text-muted mb-1">Nama</label>
+                                <p class="fw-bold">{{ $pengajuan->data_tambahan['nama_almarhum'] ?? '-' }}</p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="text-muted mb-1">Tempat Lahir</label>
+                                <p class="fw-bold">{{ $pengajuan->data_tambahan['tempat_lahir_almarhum'] ?? '-' }}</p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="text-muted mb-1">Tanggal Lahir</label>
+                                <p class="fw-bold">{{ isset($pengajuan->data_tambahan['tanggal_lahir_almarhum']) ? \Carbon\Carbon::parse($pengajuan->data_tambahan['tanggal_lahir_almarhum'])->format('d F Y') : '-' }}</p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="text-muted mb-1">Dimakamkan di</label>
+                                <p class="fw-bold">{{ $pengajuan->data_tambahan['tempat_makam'] ?? '-' }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @endif
+
                 <!-- Action Buttons -->
                 <div class="card">
                     <div class="card-header">
@@ -133,16 +198,17 @@
                             @endif
 
                             @if($pengajuan->status == 'Disetujui')
-                            <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#uploadModal">
+                            <button type="button" class="btn btn-primary w-100 mb-2" data-bs-toggle="modal" data-bs-target="#uploadModal">
                                 <i class="ti ti-upload me-1"></i> Upload Surat Hasil
                             </button>
                             @endif
 
-                            @if($pengajuan->file_surat_hasil)
-                            <a href="{{ $pengajuan->file_surat_hasil_url }}" target="_blank" class="btn btn-success w-100">
-                                <i class="ti ti-download me-1"></i> Lihat Surat Hasil
+                            {{-- Preview Surat & Generate PDF --}}
+                            <a href="{{ route('admin.pengajuan.preview-surat', $pengajuan->id) }}" class="btn btn-outline-primary w-100 mb-2">
+                                <i class="ti ti-eye me-1"></i> Preview Surat
                             </a>
-                            
+
+                            @if($pengajuan->file_surat_hasil)
                             <form action="{{ route('admin.pengajuan.delete-surat', $pengajuan->id) }}" method="POST" onsubmit="return confirm('Yakin hapus file surat?')">
                                 @csrf
                                 @method('DELETE')
@@ -204,31 +270,31 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="text-muted mb-1">Nama Lengkap</label>
+                                <label class="mb-1" style="color: #d0d7ff;">Nama Lengkap</label>
                                 <p class="fw-bold">{{ $pengajuan->nama_pemohon }}</p>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="text-muted mb-1">NIK</label>
+                                <label class="mb-1" style="color: #d0d7ff;">NIK</label>
                                 <p class="fw-bold">{{ $pengajuan->nik_pemohon }}</p>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="text-muted mb-1">Tempat, Tanggal Lahir</label>
+                                <label class="mb-1" style="color: #d0d7ff;">Tempat, Tanggal Lahir</label>
                                 <p class="fw-bold">{{ $pengajuan->tempat_lahir_pemohon }}, {{ optional($pengajuan->tanggal_lahir_pemohon)->format('d F Y') ?? '-' }}</p>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="text-muted mb-1">Jenis Kelamin</label>
+                                <label class="mb-1" style="color: #d0d7ff;">Jenis Kelamin</label>
                                 <p class="fw-bold">{{ $pengajuan->jenis_kelamin_pemohon }}</p>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="text-muted mb-1">Pekerjaan</label>
+                                <label class="mb-1" style="color: #d0d7ff;">Pekerjaan</label>
                                 <p class="fw-bold">{{ $pengajuan->pekerjaan_pemohon }}</p>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="text-muted mb-1">No. Telepon</label>
+                                <label class="mb-1" style="color: #d0d7ff;">No. Telepon</label>
                                 <p class="fw-bold">{{ $pengajuan->no_telepon_pemohon }}</p>
                             </div>
                             <div class="col-md-12 mb-0">
-                                <label class="text-muted mb-1">Alamat</label>
+                                <label class="mb-1" style="color: #d0d7ff;">Alamat</label>
                                 <p class="fw-bold mb-0">{{ $pengajuan->alamat_pemohon }}</p>
                             </div>
                         </div>
@@ -242,8 +308,10 @@
                     </div>
                     <div class="card-body">
                         <div class="row">
+                            <!-- Base Documents (KTP & KK) - Shown only for types that use them -->
+                            @if(in_array($pengajuan->jenis_surat, ['Surat Tanah', 'Surat Domisili']))
                             <div class="col-md-6 mb-3">
-                                <label class="text-muted mb-2">
+                                <label class="mb-2" style="color: #d0d7ff;">
                                     <i class="ti ti-id me-1"></i> Foto/Scan KTP
                                 </label>
                                 @if($pengajuan->file_ktp)
@@ -261,7 +329,7 @@
                             </div>
 
                             <div class="col-md-6 mb-3">
-                                <label class="text-muted mb-2">
+                                <label class="mb-2" style="color: #d0d7ff;">
                                     <i class="ti ti-users me-1"></i> Foto/Scan KK
                                 </label>
                                 @if($pengajuan->file_kk)
@@ -277,10 +345,46 @@
                                 <p class="text-muted mb-0">Tidak ada file</p>
                                 @endif
                             </div>
+                            @endif
 
+                            <!-- Special Documents for specific surat types -->
+                            @php
+                                $specialDocs = $pengajuan->getSpecialDocuments();
+                            @endphp
+                            
+                            @if(count($specialDocs) > 0)
+                            <div class="col-md-12">
+                                <hr>
+                                <h6 class="mb-3" style="color: #d0d7ff;">Dokumen Khusus untuk {{ $pengajuan->data_tambahan['jenis_surat_asli'] ?? $pengajuan->jenis_surat }}</h6>
+                            </div>
+                            
+                            @foreach($specialDocs as $fieldName => $doc)
+                            <div class="col-lg-4 col-md-6 mb-3">
+                                <label class="mb-2" style="color: #d0d7ff;">
+                                    <i class="ti ti-file me-1"></i> {{ $doc['label'] }}
+                                </label>
+                                <div>
+                                    <a href="{{ $doc['url'] }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                        <i class="ti ti-eye me-1"></i> Lihat
+                                    </a>
+                                    <a href="{{ $doc['url'] }}" download class="btn btn-sm btn-outline-success">
+                                        <i class="ti ti-download me-1"></i> Download
+                                    </a>
+                                </div>
+                            </div>
+                            @endforeach
+                            @endif
+
+                            <!-- Optional Supporting Documents -->
+                            @if($pengajuan->file_pendukung_1_url || $pengajuan->file_pendukung_2_url || $pengajuan->file_pendukung_3_url)
+                            <div class="col-md-12">
+                                <hr>
+                                <h6 class="mb-3" style="color: #d0d7ff;">Dokumen Pendukung Tambahan</h6>
+                            </div>
+                            
                             @if($pengajuan->file_pendukung_1_url)
                             <div class="col-md-4 mb-3">
-                                <label class="text-muted mb-2">
+                                <label class="mb-2" style="color: #d0d7ff;">
                                     <i class="ti ti-file me-1"></i> Dokumen Pendukung 1
                                 </label>
                                 <div>
@@ -296,7 +400,7 @@
 
                             @if($pengajuan->file_pendukung_2_url)
                             <div class="col-md-4 mb-3">
-                                <label class="text-muted mb-2">
+                                <label class="mb-2" style="color: #d0d7ff;">
                                     <i class="ti ti-file me-1"></i> Dokumen Pendukung 2
                                 </label>
                                 <div>
@@ -312,7 +416,7 @@
 
                             @if($pengajuan->file_pendukung_3_url)
                             <div class="col-md-4 mb-3">
-                                <label class="text-muted mb-2">
+                                <label class="mb-2" style="color: #d0d7ff;">
                                     <i class="ti ti-file me-1"></i> Dokumen Pendukung 3
                                 </label>
                                 <div>
@@ -323,6 +427,13 @@
                                         <i class="ti ti-download me-1"></i> Download
                                     </a>
                                 </div>
+                            </div>
+                            @endif
+                            @endif
+
+                            @if(count($specialDocs) == 0 && !$pengajuan->file_pendukung_1_url && !$pengajuan->file_pendukung_2_url && !$pengajuan->file_pendukung_3_url)
+                            <div class="col-md-12">
+                                <p class="text-muted text-center">Tidak ada dokumen yang diupload</p>
                             </div>
                             @endif
                         </div>
@@ -346,7 +457,7 @@
                         <p>Apakah Anda yakin ingin menyetujui pengajuan ini?</p>
                         <div class="alert alert-info">
                             <strong>{{ $pengajuan->nomor_pengajuan }}</strong><br>
-                            {{ $pengajuan->jenis_surat }}<br>
+                            {{ $pengajuan->data_tambahan['jenis_surat_asli'] ?? $pengajuan->jenis_surat }}<br>
                             Pemohon: {{ $pengajuan->nama_pemohon }}
                         </div>
                         <div class="form-group">
@@ -380,7 +491,7 @@
                         <p>Apakah Anda yakin ingin menolak pengajuan ini?</p>
                         <div class="alert alert-warning">
                             <strong>{{ $pengajuan->nomor_pengajuan }}</strong><br>
-                            {{ $pengajuan->jenis_surat }}<br>
+                            {{ $pengajuan->data_tambahan['jenis_surat_asli'] ?? $pengajuan->jenis_surat }}<br>
                             Pemohon: {{ $pengajuan->nama_pemohon }}
                         </div>
                         <div class="form-group">

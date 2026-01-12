@@ -393,25 +393,6 @@
                                     </div>
                                 </div>
 
-                                <!-- Foto -->
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label class="form-label">Foto</label>
-                                        @if($penduduk->foto)
-                                        <div class="mb-2">
-                                            <img src="{{ $penduduk->foto_url }}" alt="Foto Saat Ini" class="img-thumbnail" style="max-width: 150px;">
-                                            <p class="text-muted small mb-0">Foto saat ini</p>
-                                        </div>
-                                        @endif
-                                        <input type="file" name="foto" class="form-control @error('foto') is-invalid @enderror" 
-                                               accept="image/*">
-                                        <small class="text-muted">Format: JPG, JPEG, PNG. Max: 2MB. Kosongkan jika tidak ingin mengubah foto.</small>
-                                        @error('foto')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
                                 <!-- Keterangan -->
                                 <div class="col-md-12">
                                     <div class="form-group">

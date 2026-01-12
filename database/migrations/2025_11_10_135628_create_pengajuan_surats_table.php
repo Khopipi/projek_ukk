@@ -21,7 +21,7 @@ return new class extends Migration
                 'Surat Tanah',
                 'Surat Warisan',
                 'Surat Domisili',
-                'Surat Kelahiran',
+                'Surat Akta Kelahiran',
                 'Surat Keterangan Tidak Mampu'
             ]);
             $table->text('keperluan');

@@ -28,7 +28,7 @@
 
                 <div class="form-group mb-3">
                     <label class="form-label">NIK (Nomor Induk Kependudukan)</label>
-                    <input type="text"
+                    <input type="number"
                            class="form-control @error('nik') is-invalid @enderror"
                            name="nik"
                            placeholder="Masukkan NIK 16 digit"
@@ -66,11 +66,6 @@
                 <div class="d-grid mt-4">
                     <button type="submit" class="btn btn-primary">Login</button>
                 </div>
-
-                <div class="saprator mt-3">
-                    <span>Login dengan</span>
-                </div>
-                @include('auth.sso')
             </div>
         </form>
     </div>

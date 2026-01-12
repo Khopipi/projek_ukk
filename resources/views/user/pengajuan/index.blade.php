@@ -1,6 +1,39 @@
 @extends('layouts.dashboard')
 @section('title', 'Pengajuan Surat')
 @section('content')
+    <style>
+        .user-table {
+            border-collapse: collapse;
+        }
+
+        .user-table thead th {
+            background: #f8f9fa;
+            color: #495057;
+            font-weight: 700;
+            font-size: 11px;
+            letter-spacing: 0.3px;
+            text-transform: none;
+            padding: 14px 16px;
+            border: 1px solid #dee2e6;
+        }
+
+        .user-table tbody tr {
+            border-bottom: 1px solid #e9ecef;
+            transition: all 0.2s ease;
+        }
+
+        .user-table tbody tr:hover {
+            background: #f8f9fa;
+            box-shadow: inset 0 0 0 1px rgba(91, 110, 245, 0.05);
+        }
+
+        .user-table tbody td {
+            padding: 14px 16px;
+            color: #2d3748;
+            font-weight: 500;
+        }
+    </style>
+
     <div class="pc-content">
         <!-- Breadcrumb -->
         <div class="page-header">
@@ -39,60 +72,60 @@
         <!-- Statistik Cards -->
         <div class="row mb-4">
             <div class="col-md-3 col-sm-6">
-                <div class="card bg-warning text-white">
+                <div class="card border-left border-warning">
                     <div class="card-body">
                         <div class="d-flex align-items-center">
                             <div class="flex-shrink-0">
-                                <i class="ti ti-clock f-36"></i>
+                                <i class="ti ti-clock f-36" style="color: #ff9500;"></i>
                             </div>
                             <div class="flex-grow-1 ms-3">
-                                <h3 class="text-white">{{ $pengajuans->where('status', 'Menunggu')->count() }}</h3>
-                                <p class="mb-0">Menunggu</p>
+                                <h3 class="text-dark">{{ $pengajuans->where('status', 'Menunggu')->count() }}</h3>
+                                <p class="mb-0 text-muted">Menunggu</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col-md-3 col-sm-6">
-                <div class="card bg-info text-white">
+                <div class="card border-left border-info">
                     <div class="card-body">
                         <div class="d-flex align-items-center">
                             <div class="flex-shrink-0">
-                                <i class="ti ti-refresh f-36"></i>
+                                <i class="ti ti-refresh f-36" style="color: #17a2b8;"></i>
                             </div>
                             <div class="flex-grow-1 ms-3">
-                                <h3 class="text-white">{{ $pengajuans->where('status', 'Diproses')->count() }}</h3>
-                                <p class="mb-0">Diproses</p>
+                                <h3 class="text-dark">{{ $pengajuans->where('status', 'Diproses')->count() }}</h3>
+                                <p class="mb-0 text-muted">Diproses</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col-md-3 col-sm-6">
-                <div class="card bg-success text-white">
+                <div class="card border-left border-success">
                     <div class="card-body">
                         <div class="d-flex align-items-center">
                             <div class="flex-shrink-0">
-                                <i class="ti ti-check f-36"></i>
+                                <i class="ti ti-check f-36" style="color: #2dce89;"></i>
                             </div>
                             <div class="flex-grow-1 ms-3">
-                                <h3 class="text-white">{{ $pengajuans->where('status', 'Selesai')->count() }}</h3>
-                                <p class="mb-0">Selesai</p>
+                                <h3 class="text-dark">{{ $pengajuans->where('status', 'Selesai')->count() }}</h3>
+                                <p class="mb-0 text-muted">Selesai</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col-md-3 col-sm-6">
-                <div class="card bg-danger text-white">
+                <div class="card border-left border-danger">
                     <div class="card-body">
                         <div class="d-flex align-items-center">
                             <div class="flex-shrink-0">
-                                <i class="ti ti-x f-36"></i>
+                                <i class="ti ti-x f-36" style="color: #f5365c;"></i>
                             </div>
                             <div class="flex-grow-1 ms-3">
-                                <h3 class="text-white">{{ $pengajuans->where('status', 'Ditolak')->count() }}</h3>
-                                <p class="mb-0">Ditolak</p>
+                                <h3 class="text-dark">{{ $pengajuans->where('status', 'Ditolak')->count() }}</h3>
+                                <p class="mb-0 text-muted">Ditolak</p>
                             </div>
                         </div>
                     </div>
@@ -122,11 +155,10 @@
                                     <select name="jenis_surat" class="form-select">
                                         <option value="">Semua Jenis Surat</option>
                                         <option value="Surat Nikah" {{ request('jenis_surat') == 'Surat Nikah' ? 'selected' : '' }}>Surat Nikah</option>
-                                        <option value="Pembuatan KTP" {{ request('jenis_surat') == 'Pembuatan KTP' ? 'selected' : '' }}>Pembuatan KTP</option>
                                         <option value="Surat Tanah" {{ request('jenis_surat') == 'Surat Tanah' ? 'selected' : '' }}>Surat Tanah</option>
                                         <option value="Surat Warisan" {{ request('jenis_surat') == 'Surat Warisan' ? 'selected' : '' }}>Surat Warisan</option>
                                         <option value="Surat Domisili" {{ request('jenis_surat') == 'Surat Domisili' ? 'selected' : '' }}>Surat Domisili</option>
-                                        <option value="Surat Kelahiran" {{ request('jenis_surat') == 'Surat Kelahiran' ? 'selected' : '' }}>Surat Kelahiran</option>
+                                        <option value="Surat Akta Kelahiran" {{ request('jenis_surat') == 'Surat Akta Kelahiran' ? 'selected' : '' }}>Surat Akta Kelahiran</option>
                                         <option value="Surat Keterangan Tidak Mampu" {{ request('jenis_surat') == 'Surat Keterangan Tidak Mampu' ? 'selected' : '' }}>Surat Keterangan Tidak Mampu</option>
                                     </select>
                                 </div>
@@ -150,7 +182,7 @@
 
                         <!-- Table -->
                         <div class="table-responsive">
-                            <table class="table table-hover">
+                            <table class="table user-table">
                                 <thead>
                                     <tr>
                                         <th>No</th>
@@ -171,7 +203,7 @@
                                             </td>
                                             <td>
                                                 <i class="{{ $pengajuan->jenis_surat_icon }} me-1"></i>
-                                                {{ $pengajuan->jenis_surat }}
+                                                {{ $pengajuan->data_tambahan['jenis_surat_asli'] ?? $pengajuan->jenis_surat }}
                                             </td>
                                             <td>{{ $pengajuan->created_at->format('d M Y, H:i') }}</td>
                                             <td>

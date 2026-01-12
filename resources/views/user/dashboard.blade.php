@@ -1,107 +1,281 @@
 @include('partials.welcome-navbar')
 
-<div class="row">
-    <div class="col-12 mb-3">
-        <div class="d-flex justify-content-end">
-            <a href="{{ route('user.profile.show') }}" class="btn btn-outline-primary me-2">
-                <i class="ti ti-user me-1"></i> Profil Saya
+<style>
+    :root {
+        --primary-gradient: linear-gradient(135deg, #5b6ef5 0%, #7685f0 100%);
+        --danger-gradient: linear-gradient(135deg, #f5365c 0%, #e91e63 100%);
+        --info-gradient: linear-gradient(135deg, #17a2b8 0%, #20c9a6 100%);
+        --success-gradient: linear-gradient(135deg, #2dce89 0%, #26c381 100%);
+        --warning-gradient: linear-gradient(135deg, #ffa500 0%, #ff9500 100%);
+        --secondary-gradient: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+    }
+
+    .dashboard-card {
+        border-radius: 12px !important;
+        transition: all 0.3s ease;
+        border: 1px solid #e9ecef;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        background: white;
+    }
+
+    .dashboard-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 8px 20px rgba(91, 110, 245, 0.1);
+        border-color: #5b6ef5;
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: 12px;
+        border: 1px solid #e9ecef;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 8px 20px rgba(91, 110, 245, 0.1);
+        border-color: #5b6ef5;
+    }
+
+    .stat-card-1 { border-left: 4px solid #5b6ef5; }
+    .stat-card-2 { border-left: 4px solid #f5365c; }
+    .stat-card-3 { border-left: 4px solid #17a2b8; }
+    .stat-card-4 { border-left: 4px solid #2dce89; }
+
+    .icon-box {
+        width: 60px;
+        height: 60px;
+        border-radius: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 28px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    }
+
+    .stat-card-1 .icon-box { background: linear-gradient(135deg, #f0f2ff 0%, #e9ebff 100%); color: #5b6ef5; }
+    .stat-card-2 .icon-box { background: linear-gradient(135deg, #fff5f7 0%, #ffe9f0 100%); color: #f5365c; }
+    .stat-card-3 .icon-box { background: linear-gradient(135deg, #f0f9fb 0%, #e8f7f9 100%); color: #17a2b8; }
+    .stat-card-4 .icon-box { background: linear-gradient(135deg, #f0fdf4 0%, #e8fbe9 100%); color: #2dce89; }
+
+    .small-icon-box {
+        width: 44px;
+        height: 44px;
+        border-radius: 8px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 20px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .elegant-table {
+        border-collapse: collapse;
+    }
+
+    .elegant-table thead th {
+        background: #f8f9fa;
+        color: #495057;
+        font-weight: 700;
+        font-size: 11px;
+        letter-spacing: 0.3px;
+        text-transform: none;
+        padding: 14px 16px;
+        border: 1px solid #dee2e6;
+    }
+
+    .elegant-table tbody tr {
+        border-bottom: 1px solid #e9ecef;
+        transition: all 0.2s ease;
+    }
+
+    .elegant-table tbody tr:hover {
+        background: #f8f9fa;
+        box-shadow: inset 0 0 0 1px rgba(91, 110, 245, 0.05);
+    }
+
+    .elegant-table tbody td {
+        padding: 14px 16px;
+        color: #2d3748;
+        font-weight: 500;
+    }
+
+    .elegant-btn {
+        border-radius: 8px;
+        padding: 8px 14px;
+        font-size: 12px;
+        font-weight: 700;
+        border: none;
+        transition: all 0.3s ease;
+        color: white;
+        text-decoration: none;
+    }
+
+    .elegant-btn-primary {
+        background: var(--primary-gradient);
+    }
+
+    .elegant-btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
+        color: white;
+    }
+
+    .progress-elegant {
+        height: 8px;
+        border-radius: 10px;
+        background: #eef2f9;
+        overflow: hidden;
+    }
+
+    .progress-elegant .progress-bar {
+        border-radius: 10px;
+    }
+
+    .badge-custom {
+        padding: 6px 12px;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 11px;
+        letter-spacing: 0.4px;
+    }
+
+    .card-header-elegant {
+        background: linear-gradient(135deg, #f8fbff 0%, #ffffff 100%);
+        border-bottom: 2px solid #eef2f9;
+        padding: 24px;
+    }
+
+    .section-title {
+        font-size: 18px;
+        font-weight: 800;
+        letter-spacing: 0.5px;
+        color: #2d3748;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+    }
+
+    .section-title i {
+        margin-right: 10px;
+        width: 28px;
+        height: 28px;
+        background: var(--primary-gradient);
+        color: white;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+    }
+
+    .info-card {
+        border-radius: 12px;
+        padding: 20px;
+        background: linear-gradient(135deg, #f8fbff 0%, #ffffff 100%);
+        border: 1px solid #eef2f9;
+        transition: all 0.3s ease;
+    }
+
+    .info-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    }
+
+    .stat-value {
+        font-size: 32px;
+        font-weight: 800;
+        color: #2d3748;
+    }
+
+    .stat-label {
+        font-size: 13px;
+        font-weight: 600;
+        color: #718096;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+    }
+</style>
+
+
+<div class="row g-4">
+
+    <!-- Tombol Profil -->
+    <div class="col-12">
+        <div class="d-flex justify-content-end mb-3">
+            <a href="{{ route('user.profile.show') }}" class="elegant-btn elegant-btn-primary px-4 py-2">
+                <i class="ti ti-user me-2"></i> Profil Saya
             </a>
         </div>
     </div>
-    <!-- Quick Stats -->
+
+    <!-- STATISTIK -->
+    @php
+        $stats = [
+            [
+                'label' => 'Menunggu',
+                'value' => Auth::user()->pengajuanSurat()->where('status','Menunggu')->count(),
+                'color' => 'warning',
+                'gradient' => 'var(--warning-gradient)',
+                'icon'  => 'clock'
+            ],
+            [
+                'label' => 'Diproses',
+                'value' => Auth::user()->pengajuanSurat()->where('status','Diproses')->count(),
+                'color' => 'info',
+                'gradient' => 'var(--info-gradient)',
+                'icon'  => 'refresh'
+            ],
+            [
+                'label' => 'Selesai',
+                'value' => Auth::user()->pengajuanSurat()->where('status','Selesai')->count(),
+                'color' => 'success',
+                'gradient' => 'var(--success-gradient)',
+                'icon'  => 'check'
+            ],
+            [
+                'label' => 'Total Pengajuan',
+                'value' => Auth::user()->pengajuanSurat()->count(),
+                'color' => 'primary',
+                'gradient' => 'var(--primary-gradient)',
+                'icon'  => 'file-text'
+            ],
+        ];
+    @endphp
+
+    @foreach($stats as $s)
     <div class="col-md-6 col-xl-3">
-        <div class="card">
+        <div class="card stat-card stat-card-{{ $loop->iteration }}">
             <div class="card-body">
                 <div class="d-flex align-items-center">
-                    <div class="flex-shrink-0">
-                        <div class="avtar avtar-l bg-light-warning">
-                            <i class="ti ti-clock f-24 text-warning"></i>
-                        </div>
+                    <div class="icon-box" style="background: {{ $s['gradient'] }}; color: white;">
+                        <i class="ti ti-{{ $s['icon'] }}"></i>
                     </div>
-                    <div class="flex-grow-1 ms-3">
-                        <h6 class="mb-0 text-muted">Pengajuan Menunggu</h6>
-                        <h3 class="mb-0">
-                            {{ Auth::user()->pengajuanSurat()->where('status', 'Menunggu')->count() }}
-                        </h3>
+                    <div class="ms-4">
+                        <p class="stat-label mb-1">{{ $s['label'] }}</p>
+                        <h3 class="stat-value mb-0">{{ $s['value'] }}</h3>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    @endforeach
 
-    <div class="col-md-6 col-xl-3">
-        <div class="card">
-            <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <div class="flex-shrink-0">
-                        <div class="avtar avtar-l bg-light-info">
-                            <i class="ti ti-refresh f-24 text-info"></i>
-                        </div>
-                    </div>
-                    <div class="flex-grow-1 ms-3">
-                        <h6 class="mb-0 text-muted">Sedang Diproses</h6>
-                        <h3 class="mb-0">
-                            {{ Auth::user()->pengajuanSurat()->where('status', 'Diproses')->count() }}
-                        </h3>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-6 col-xl-3">
-        <div class="card">
-            <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <div class="flex-shrink-0">
-                        <div class="avtar avtar-l bg-light-success">
-                            <i class="ti ti-check f-24 text-success"></i>
-                        </div>
-                    </div>
-                    <div class="flex-grow-1 ms-3">
-                        <h6 class="mb-0 text-muted">Selesai</h6>
-                        <h3 class="mb-0">
-                            {{ Auth::user()->pengajuanSurat()->where('status', 'Selesai')->count() }}
-                        </h3>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-6 col-xl-3">
-        <div class="card">
-            <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <div class="flex-shrink-0">
-                        <div class="avtar avtar-l bg-light-primary">
-                            <i class="ti ti-file-text f-24 text-primary"></i>
-                        </div>
-                    </div>
-                    <div class="flex-grow-1 ms-3">
-                        <h6 class="mb-0 text-muted">Total Pengajuan</h6>
-                        <h3 class="mb-0">
-                            {{ Auth::user()->pengajuanSurat()->count() }}
-                        </h3>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Pengajuan Surat Saya -->
-    <div class="col-md-12 col-xl-8">
-        <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5><i class="ti ti-file-text me-2"></i>Riwayat Pengajuan Surat</h5>
-                <a href="{{ route('pengajuan.index') }}" class="btn btn-sm btn-primary">
+    <!-- RIWAYAT PENGAJUAN SURAT -->
+    <div class="col-xl-8 mb-4">
+        <div class="card dashboard-card">
+            <div class="card-header card-header-elegant d-flex justify-content-between align-items-center">
+                <h5 class="mb-0" style="font-size: 16px; font-weight: 800; color: #2d3748;"><i class="ti ti-file-text me-2" style="color: #667eea;"></i>Riwayat Pengajuan Surat</h5>
+                <a href="{{ route('pengajuan.index') }}" class="elegant-btn elegant-btn-primary">
                     Lihat Semua <i class="ti ti-arrow-right ms-1"></i>
                 </a>
             </div>
-            <div class="card-body">
+
+            <div class="card-body p-0">
                 @if(Auth::user()->is_verified)
                     <div class="table-responsive">
-                        <table class="table table-hover mb-0">
+                        <table class="table align-middle mb-0 elegant-table">
                             <thead>
                                 <tr>
                                     <th>Nomor</th>
@@ -112,49 +286,47 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse(Auth::user()->pengajuanSurat()->latest()->take(5)->get() as $pengajuan)
-                                <tr>
-                                    <td>
-                                        <strong>{{ $pengajuan->nomor_pengajuan }}</strong><br>
-                                        <small class="text-muted">{{ $pengajuan->created_at->format('H:i') }}</small>
-                                    </td>
-                                    <td>
-                                        <i class="{{ $pengajuan->jenis_surat_icon }} me-1 text-primary"></i>
-                                        {{ Str::limit($pengajuan->jenis_surat, 25) }}
-                                    </td>
-                                    <td>{{ $pengajuan->created_at->format('d M Y') }}</td>
-                                    <td>
-                                        <span class="badge {{ $pengajuan->status_badge }}">
-                                            {{ $pengajuan->status }}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <a href="{{ route('pengajuan.show', $pengajuan->id) }}"
-                                           class="btn btn-sm btn-info">
-                                            <i class="ti ti-eye"></i>
-                                        </a>
-                                    </td>
-                                </tr>
+                                @forelse(Auth::user()->pengajuanSurat()->latest()->take(5)->get() as $p)
+                                    <tr>
+                                        <td>
+                                            <strong style="color: #2d3748;">{{ $p->nomor_pengajuan }}</strong>
+                                            <br>
+                                            <small class="text-muted">{{ $p->created_at->format('H:i') }}</small>
+                                        </td>
+                                        <td>
+                                            <i class="{{ $p->jenis_surat_icon }} text-primary me-2"></i>
+                                            {{ Str::limit($p->jenis_surat, 25) }}
+                                        </td>
+                                        <td><small>{{ $p->created_at->format('d M Y') }}</small></td>
+                                        <td>
+                                            <span class="badge {{ $p->status_badge }}">{{ $p->status }}</span>
+                                        </td>
+                                        <td>
+                                            <a href="{{ route('pengajuan.show', $p->id) }}" class="elegant-btn elegant-btn-primary">
+                                                <i class="ti ti-eye"></i> Lihat
+                                            </a>
+                                        </td>
+                                    </tr>
                                 @empty
-                                <tr>
-                                    <td colspan="5" class="text-center py-4">
-                                        <i class="ti ti-inbox f-36 text-muted"></i>
-                                        <p class="text-muted mb-2">Belum ada pengajuan surat</p>
-                                        <a href="{{ route('pengajuan.create') }}" class="btn btn-sm btn-primary">
-                                            <i class="ti ti-plus me-1"></i> Ajukan Surat Pertama
-                                        </a>
-                                    </td>
-                                </tr>
+                                    <tr>
+                                        <td colspan="5" class="text-center py-5">
+                                            <i class="ti ti-inbox f-36 text-muted"></i>
+                                            <p class="text-muted mt-3">Belum ada pengajuan surat</p>
+                                            <a href="{{ route('pengajuan.create') }}" class="elegant-btn elegant-btn-primary mt-3">
+                                                <i class="ti ti-plus me-1"></i> Ajukan Surat
+                                            </a>
+                                        </td>
+                                    </tr>
                                 @endforelse
                             </tbody>
                         </table>
                     </div>
                 @else
                     <div class="text-center py-5">
-                        <i class="ti ti-alert-triangle f-48 text-warning mb-3"></i>
-                        <h5>Email Belum Diverifikasi</h5>
-                        <p class="text-muted mb-3">Silakan verifikasi email Anda untuk mengajukan surat</p>
-                        <a href="{{ route('verify.form') }}" class="btn btn-warning">
+                        <i class="ti ti-alert-triangle f-48 text-warning"></i>
+                        <h5 class="mt-3 fw-bold" style="color: #2d3748;">Email Belum Diverifikasi</h5>
+                        <p class="text-muted">Verifikasi email Anda untuk mengajukan surat</p>
+                        <a href="{{ route('verify.form') }}" class="elegant-btn" style="background: var(--warning-gradient);">
                             <i class="ti ti-shield-check me-1"></i> Verifikasi Email
                         </a>
                     </div>
@@ -163,140 +335,88 @@
         </div>
     </div>
 
-    <!-- Riwayat Pengaduan & Charts -->
-    <div class="col-md-12 col-xl-4">
-        <!-- Status Progress -->
-        <div class="card">
-            <div class="card-header">
-                <h5><i class="ti ti-chart-donut me-2"></i>Status Pengajuan</h5>
+    <!-- STATUS CHART -->
+    <div class="col-xl-4 mb-4">
+        <div class="card dashboard-card">
+            <div class="card-header card-header-elegant">
+                <h5 class="mb-0" style="font-size: 16px; font-weight: 800; color: #2d3748;"><i class="ti ti-chart-donut me-2" style="color: #667eea;"></i>Status Pengajuan</h5>
             </div>
+
             <div class="card-body">
                 @php
                     $userStatuses = [
-                        'Menunggu' => Auth::user()->pengajuanSurat()->where('status', 'Menunggu')->count(),
-                        'Diproses' => Auth::user()->pengajuanSurat()->where('status', 'Diproses')->count(),
-                        'Disetujui' => Auth::user()->pengajuanSurat()->where('status', 'Disetujui')->count(),
-                        'Ditolak' => Auth::user()->pengajuanSurat()->where('status', 'Ditolak')->count(),
-                        'Selesai' => Auth::user()->pengajuanSurat()->where('status', 'Selesai')->count(),
+                        'Menunggu' => Auth::user()->pengajuanSurat()->where('status','Menunggu')->count(),
+                        'Diproses' => Auth::user()->pengajuanSurat()->where('status','Diproses')->count(),
+                        'Disetujui' => Auth::user()->pengajuanSurat()->where('status','Disetujui')->count(),
+                        'Ditolak'   => Auth::user()->pengajuanSurat()->where('status','Ditolak')->count(),
+                        'Selesai'   => Auth::user()->pengajuanSurat()->where('status','Selesai')->count(),
                     ];
-                    $userTotal = array_sum($userStatuses);
+                    $total = array_sum($userStatuses);
                 @endphp
 
-                @if($userTotal > 0)
-                    @foreach($userStatuses as $status => $count)
-                    @if($count > 0)
-                    <div class="mb-3">
-                        <div class="d-flex align-items-center justify-content-between mb-1">
-                            <span>{{ $status }}</span>
-                            <span class="fw-bold">{{ $count }}</span>
-                        </div>
-                        <div class="progress" style="height: 6px;">
-                            <div class="progress-bar
-                                @if($status == 'Menunggu') bg-warning
-                                @elseif($status == 'Diproses') bg-info
-                                @elseif($status == 'Disetujui') bg-success
-                                @elseif($status == 'Ditolak') bg-danger
-                                @else bg-primary
-                                @endif"
-                                style="width: {{ ($count / $userTotal * 100) }}%;">
+                @if($total > 0)
+                    @foreach($userStatuses as $label => $count)
+                        @if($count > 0)
+                        <div class="mb-4">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span style="font-weight: 600; color: #2d3748;">{{ $label }}</span>
+                                <span class="badge badge-custom" style="background: var(--primary-gradient); color: white;">{{ $count }}</span>
+                            </div>
+                            <div class="progress-elegant">
+                                <div class="progress-bar
+                                    @if($label=='Menunggu') bg-warning
+                                    @elseif($label=='Diproses') bg-info
+                                    @elseif($label=='Disetujui') bg-success
+                                    @elseif($label=='Ditolak') bg-danger
+                                    @else bg-primary
+                                    @endif"
+                                    style="width: {{ ($count / $total * 100) }}%">
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    @endif
+                        @endif
                     @endforeach
                 @else
-                    <div class="text-center text-muted py-3">
-                        <i class="ti ti-inbox f-36 mb-2"></i>
-                        <p class="mb-0">Belum ada data</p>
+                    <div class="text-center text-muted py-5">
+                        <i class="ti ti-inbox f-36"></i>
+                        <p class="mt-3">Belum ada data</p>
                     </div>
                 @endif
             </div>
         </div>
-
-        <!-- Panduan Cepat -->
-        <div class="card">
-            <div class="card-header">
-                <h5><i class="ti ti-help me-2"></i>Panduan Cepat</h5>
-            </div>
-            <div class="card-body">
-                <div class="list-group list-group-flush">
-                    <a href="{{ route('pengajuan.create') }}" class="list-group-item list-group-item-action px-0">
-                        <div class="d-flex align-items-center">
-                            <div class="flex-shrink-0">
-                                <div class="avtar avtar-s bg-light-primary">
-                                    <i class="ti ti-plus text-primary"></i>
-                                </div>
-                            </div>
-                            <div class="flex-grow-1 ms-3">
-                                <h6 class="mb-0">Ajukan Surat Baru</h6>
-                                <small class="text-muted">Buat pengajuan surat desa</small>
-                            </div>
-                            <i class="ti ti-chevron-right"></i>
-                        </div>
-                    </a>
-                    <a href="{{ route('pengajuan.index') }}" class="list-group-item list-group-item-action px-0">
-                        <div class="d-flex align-items-center">
-                            <div class="flex-shrink-0">
-                                <div class="avtar avtar-s bg-light-info">
-                                    <i class="ti ti-file-text text-info"></i>
-                                </div>
-                            </div>
-                            <div class="flex-grow-1 ms-3">
-                                <h6 class="mb-0">Lihat Pengajuan Saya</h6>
-                                <small class="text-muted">Tracking status pengajuan</small>
-                            </div>
-                            <i class="ti ti-chevron-right"></i>
-                        </div>
-                    </a>
-                    <a href="{{ route('pengaduan.index') }}" class="list-group-item list-group-item-action px-0">
-                        <div class="d-flex align-items-center">
-                            <div class="flex-shrink-0">
-                                <div class="avtar avtar-s bg-light-warning">
-                                    <i class="ti ti-message-circle text-warning"></i>
-                                </div>
-                            </div>
-                            <div class="flex-grow-1 ms-3">
-                                <h6 class="mb-0">Pengaduan Saya</h6>
-                                <small class="text-muted">Lapor masalah desa</small>
-                            </div>
-                            <i class="ti ti-chevron-right"></i>
-                        </div>
-                    </a>
-                </div>
-            </div>
-        </div>
     </div>
 
-    <!-- Riwayat Pengaduan -->
-    <div class="col-12">
-        <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5><i class="ti ti-message-circle me-2"></i>Riwayat Pengaduan</h5>
-                <a href="{{ route('pengaduan.index') }}" class="btn btn-sm btn-primary">
+    <!-- RIWAYAT PENGADUAN -->
+    <div class="col-12 mb-4">
+        <div class="card dashboard-card">
+            <div class="card-header card-header-elegant d-flex justify-content-between align-items-center">
+                <h5 class="mb-0" style="font-size: 16px; font-weight: 800; color: #2d3748;"><i class="ti ti-message-circle me-2" style="color: #667eea;"></i>Riwayat Pengaduan</h5>
+                <a href="{{ route('pengaduan.index') }}" class="elegant-btn elegant-btn-primary">
                     Lihat Semua <i class="ti ti-arrow-right ms-1"></i>
                 </a>
             </div>
+
             <div class="card-body">
-                <div class="row">
-                    @forelse(Auth::user()->pengaduans()->latest()->take(4)->get() as $pengaduan)
+                <div class="row g-3">
+
+                    @forelse(Auth::user()->pengaduans()->latest()->take(4)->get() as $pd)
                     <div class="col-md-6 col-lg-3">
-                        <div class="card bg-light-{{ $pengaduan->status == 'Selesai' ? 'success' : ($pengaduan->status == 'Ditolak' ? 'danger' : 'warning') }} mb-md-0">
+                        <div class="card dashboard-card" style="background: linear-gradient(135deg, #f8fbff 0%, #ffffff 100%); border: 2px solid {{ $pd->prioritas_color ?? '#eef2f9' }};">
                             <div class="card-body">
                                 <div class="d-flex align-items-start">
-                                    <div class="flex-shrink-0">
-                                        <div class="avtar avtar-s bg-{{ $pengaduan->status == 'Selesai' ? 'success' : ($pengaduan->status == 'Ditolak' ? 'danger' : 'warning') }}">
-                                            <i class="ti ti-{{ $pengaduan->status == 'Selesai' ? 'check' : ($pengaduan->status == 'Ditolak' ? 'x' : 'clock') }}"></i>
-                                        </div>
+                                    <div class="small-icon-box" style="background: {{ $pd->prioritas_color ?? 'var(--primary-gradient)' }}; color: white;">
+                                        <i class="ti ti-{{ $pd->status_icon }}"></i>
                                     </div>
-                                    <div class="flex-grow-1 ms-3">
-                                        <h6 class="text-{{ $pengaduan->status == 'Selesai' ? 'success' : ($pengaduan->status == 'Ditolak' ? 'danger' : 'warning') }}">
-                                            {{ Str::limit($pengaduan->judul, 30) }}
+                                    <div class="ms-3">
+                                        <h6 class="fw-bold" style="color: #2d3748; font-size: 14px; line-height: 1.3;">
+                                            {{ Str::limit($pd->judul, 30) }}
                                         </h6>
-                                        <p class="mb-0 small">
-                                            <span class="badge {{ $pengaduan->status_badge }}">{{ $pengaduan->status }}</span><br>
-                                            <i class="ti ti-clock"></i> {{ $pengaduan->created_at->diffForHumans() }}
+                                        <p class="mb-2 small">
+                                            <span class="badge {{ $pd->status_badge }}" style="font-size: 10px;">{{ $pd->status }}</span><br>
+                                            <small style="color: #a0aec0;"><i class="ti ti-clock"></i> {{ $pd->created_at->diffForHumans() }}</small>
                                         </p>
-                                        <a href="{{ route('pengaduan.show', $pengaduan->id) }}" class="btn btn-sm btn-outline-{{ $pengaduan->status == 'Selesai' ? 'success' : ($pengaduan->status == 'Ditolak' ? 'danger' : 'warning') }} mt-2">
+                                        <a href="{{ route('pengaduan.show',$pd->id) }}"
+                                           class="elegant-btn elegant-btn-primary mt-2" style="font-size: 11px;">
                                             Lihat Detail
                                         </a>
                                     </div>
@@ -305,80 +425,70 @@
                         </div>
                     </div>
                     @empty
-                    <div class="col-12 text-center py-4">
+                    <div class="col-12 text-center py-5">
                         <i class="ti ti-inbox f-36 text-muted"></i>
-                        <p class="text-muted mb-2">Belum ada pengaduan</p>
-                        <a href="{{ route('pengaduan.create') }}" class="btn btn-sm btn-primary">
+                        <p class="text-muted mt-3">Belum ada pengaduan</p>
+                        <a href="{{ route('pengaduan.create') }}" class="elegant-btn elegant-btn-primary mt-3">
                             <i class="ti ti-plus me-1"></i> Buat Pengaduan
                         </a>
                     </div>
                     @endforelse
+
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Info Penting -->
-    <div class="col-12">
-        <div class="card">
-            <div class="card-header">
-                <h5><i class="ti ti-info-circle me-2"></i>Informasi Penting</h5>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="card bg-light-primary mb-md-0">
-                            <div class="card-body">
-                                <div class="d-flex align-items-start">
-                                    <div class="flex-shrink-0">
-                                        <div class="avtar avtar-s bg-primary">
-                                            <i class="ti ti-clock"></i>
-                                        </div>
-                                    </div>
-                                    <div class="flex-grow-1 ms-3">
-                                        <h6 class="text-primary">Waktu Proses</h6>
-                                        <p class="mb-0 small">Pengajuan surat diproses maksimal 3-5 hari kerja</p>
-                                    </div>
-                                </div>
-                            </div>
+    <!-- INFO PENTING -->
+    <div class="col-12 mb-4">
+        <div class="section-title">
+            <i class="ti ti-info-circle"></i> Informasi Penting
+        </div>
+        <div class="row g-3">
+
+            @php
+                $infos = [
+                    [
+                        'color'=>'primary',
+                        'gradient' => 'var(--primary-gradient)',
+                        'icon'=>'clock',
+                        'title'=>'Waktu Proses',
+                        'text'=>'Pengajuan surat diproses 3-5 hari kerja'
+                    ],
+                    [
+                        'color'=>'success',
+                        'gradient' => 'var(--success-gradient)',
+                        'icon'=>'file-check',
+                        'title'=>'Dokumen Lengkap',
+                        'text'=>'Pastikan KTP, KK & dokumen pendukung valid'
+                    ],
+                    [
+                        'color'=>'warning',
+                        'gradient' => 'var(--warning-gradient)',
+                        'icon'=>'bell',
+                        'title'=>'Notifikasi',
+                        'text'=>'Cek email untuk update status pengajuan'
+                    ],
+                ];
+            @endphp
+
+            @foreach($infos as $info)
+            <div class="col-md-4">
+                <div class="info-card">
+                    <div class="d-flex align-items-start">
+                        <div class="small-icon-box" style="background: {{ $info['gradient'] }}; color: white; flex-shrink: 0;">
+                            <i class="ti ti-{{ $info['icon'] }}"></i>
                         </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card bg-light-success mb-md-0">
-                            <div class="card-body">
-                                <div class="d-flex align-items-start">
-                                    <div class="flex-shrink-0">
-                                        <div class="avtar avtar-s bg-success">
-                                            <i class="ti ti-file-check"></i>
-                                        </div>
-                                    </div>
-                                    <div class="flex-grow-1 ms-3">
-                                        <h6 class="text-success">Dokumen Lengkap</h6>
-                                        <p class="mb-0 small">Pastikan KTP, KK, dan dokumen pendukung valid</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card bg-light-warning mb-0">
-                            <div class="card-body">
-                                <div class="d-flex align-items-start">
-                                    <div class="flex-shrink-0">
-                                        <div class="avtar avtar-s bg-warning">
-                                            <i class="ti ti-bell"></i>
-                                        </div>
-                                    </div>
-                                    <div class="flex-grow-1 ms-3">
-                                        <h6 class="text-warning">Notifikasi</h6>
-                                        <p class="mb-0 small">Cek email untuk update status pengajuan Anda</p>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="ms-3">
+                            <h6 class="fw-bold" style="color: #2d3748; margin-bottom: 8px;">{{ $info['title'] }}</h6>
+                            <p class="text-muted small mb-0" style="font-size: 13px; line-height: 1.5;">{{ $info['text'] }}</p>
                         </div>
                     </div>
                 </div>
             </div>
+            @endforeach
+
         </div>
     </div>
+
 </div>

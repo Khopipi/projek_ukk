@@ -25,14 +25,9 @@
         <!-- Main Content -->
         <div class="row">
             <div class="col-lg-4">
-                <!-- Foto & Identitas Singkat -->
+                <!-- Identitas Singkat -->
                 <div class="card">
                     <div class="card-body text-center">
-                        <img src="{{ $penduduk->foto_url }}" 
-                             alt="Foto {{ $penduduk->nama_lengkap }}" 
-                             class="img-fluid rounded-circle mb-3" 
-                             style="width: 150px; height: 150px; object-fit: cover;">
-                        
                         <h4 class="mb-1">{{ $penduduk->nama_lengkap }}</h4>
                         <p class="text-muted mb-3">NIK: {{ $penduduk->nik }}</p>
                         
