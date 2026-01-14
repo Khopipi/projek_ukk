@@ -5,9 +5,14 @@
 <div class="surat">
     <div class="content">
         <div class="header">
-            <div class="header-title">PEMERINTAH DESA SRUNI</div>
-            <div class="header-subtitle">SURAT KETERANGAN WARISAN</div>
-            <div class="nomor">No. {{ $pengajuan->nomor_pengajuan ?? 'Draft' }}</div>
+            <div style="display: flex; align-items: flex-start; margin-bottom: 10px;">
+                <img src="{{ asset('assets/images/my/logo_Sidoarjo.svg.png') }}" alt="Logo Sidoarjo" style="width: 60px; height: 60px; margin-right: 15px; flex-shrink: 0;">
+                <div style="text-align: center; flex: 1;">
+                    <div class="header-title">PEMERINTAH DESA SRUNI</div>
+                    <div class="header-subtitle">SURAT KETERANGAN WARISAN</div>
+                    <div class="nomor" style="font-size: 11px; margin-top: 3px;">No. {{ $pengajuan->nomor_pengajuan ?? 'Draft' }}</div>
+                </div>
+            </div>
         </div>
 
         <div style="margin-bottom: 20px; text-align: right; font-size: 11px;">
@@ -72,8 +77,8 @@
     </div>
 
     <div class="footer-content">
-        <div style="margin-top: 30px; overflow: auto;">
-            <div style="float: right; text-align: center; width: 220px;">
+        <div style="display: flex; justify-content: flex-end; margin-top: 30px;">
+            <div style="text-align: center; width: 220px;">
                 <div style="font-size: 11px; margin-bottom: 5px;">LURAH DESA SRUNI</div>
                 @include("pengajuan.components.qr-code-section", ["pengajuan" => $pengajuan])
                 <div style="border-top: 1px solid #000; width: 100%; margin: 15px 0 3px 0;"></div>
@@ -88,9 +93,14 @@
 <div class="surat">
     <div class="content">
         <div class="header">
-            <div class="header-title">PEMERINTAH DESA SRUNI</div>
-            <div class="header-subtitle">SURAT KETERANGAN PENCATATAN PERKAWINAN</div>
-            <div class="nomor">No. {{ $pengajuan->nomor_pengajuan ?? 'Draft' }}</div>
+            <div style="display: flex; align-items: flex-start; margin-bottom: 10px;">
+                <img src="{{ asset('assets/images/my/logo_Sidoarjo.svg.png') }}" alt="Logo Sidoarjo" style="width: 60px; height: 60px; margin-right: 15px; flex-shrink: 0;">
+                <div style="text-align: center; flex: 1;">
+                    <div class="header-title">PEMERINTAH DESA SRUNI</div>
+                    <div class="header-subtitle">SURAT KETERANGAN PENCATATAN PERKAWINAN</div>
+                    <div class="nomor" style="font-size: 11px; margin-top: 3px;">No. {{ $pengajuan->nomor_pengajuan ?? 'Draft' }}</div>
+                </div>
+            </div>
         </div>
 
         <div style="margin-bottom: 20px; text-align: right; font-size: 11px;">
@@ -162,8 +172,8 @@
     </div>
 
     <div class="footer-content">
-        <div style="margin-top: 30px; overflow: auto;">
-            <div style="float: right; text-align: center; width: 220px;">
+        <div style="display: flex; justify-content: flex-end; margin-top: 30px;">
+            <div style="text-align: center; width: 220px;">
                 <div style="font-size: 11px; margin-bottom: 5px;">LURAH DESA SRUNI</div>
                 @include("pengajuan.components.qr-code-section", ["pengajuan" => $pengajuan])
                 <div style="border-top: 1px solid #000; width: 100%; margin: 15px 0 3px 0;"></div>
@@ -178,9 +188,14 @@
 <div class="surat">
     <div class="content">
         <div class="header">
-            <div class="header-title">PEMERINTAH DESA SRUNI</div>
-            <div class="header-subtitle">SURAT KETERANGAN TANAH</div>
-            <div class="nomor">No. {{ $pengajuan->nomor_pengajuan ?? 'Draft' }}</div>
+            <div style="display: flex; align-items: flex-start; margin-bottom: 10px;">
+                <img src="{{ asset('assets/images/my/logo_Sidoarjo.svg.png') }}" alt="Logo Sidoarjo" style="width: 60px; height: 60px; margin-right: 15px; flex-shrink: 0;">
+                <div style="text-align: center; flex: 1;">
+                    <div class="header-title">PEMERINTAH DESA SRUNI</div>
+                    <div class="header-subtitle">SURAT KETERANGAN</div>
+                    <div class="nomor" style="font-size: 11px; margin-top: 3px;">No. {{ $pengajuan->nomor_pengajuan ?? 'Draft' }}</div>
+                </div>
+            </div>
         </div>
 
         <div style="margin-bottom: 20px; text-align: right; font-size: 11px;">
@@ -236,8 +251,8 @@
     </div>
 
     <div class="footer-content">
-        <div style="margin-top: 30px; overflow: auto;">
-            <div style="float: right; text-align: center; width: 220px;">
+        <div style="display: flex; justify-content: flex-end; margin-top: 30px;">
+            <div style="text-align: center; width: 220px;">
                 <div style="font-size: 11px; margin-bottom: 5px;">LURAH DESA SRUNI</div>
                 @include("pengajuan.components.qr-code-section", ["pengajuan" => $pengajuan])
                 <div style="border-top: 1px solid #000; width: 100%; margin: 15px 0 3px 0;"></div>
@@ -247,14 +262,20 @@
     </div>
 </div>
 
+
 @elseif($pengajuan->jenis_surat === 'Surat Domisili' || ($pengajuan->data_tambahan['jenis_surat_asli'] ?? '') === 'Surat Domisili')
 <!-- SURAT DOMISILI -->
 <div class="surat">
     <div class="content">
         <div class="header">
-            <div class="header-title">PEMERINTAH DESA SRUNI</div>
-            <div class="header-subtitle">SURAT KETERANGAN DOMISILI</div>
-            <div class="nomor">No. {{ $pengajuan->nomor_pengajuan ?? 'Draft' }}</div>
+            <div style="display: flex; align-items: flex-start; margin-bottom: 10px;">
+                <img src="{{ asset('assets/images/my/logo_Sidoarjo.svg.png') }}" alt="Logo Sidoarjo" style="width: 60px; height: 60px; margin-right: 15px; flex-shrink: 0;">
+                <div style="text-align: center; flex: 1;">
+                    <div class="header-title">PEMERINTAH DESA SRUNI</div>
+                    <div class="header-subtitle">SURAT KETERANGAN DOMISILI</div>
+                    <div class="nomor" style="font-size: 11px; margin-top: 3px;">No. {{ $pengajuan->nomor_pengajuan ?? 'Draft' }}</div>
+                </div>
+            </div>
         </div>
 
         <div style="margin-bottom: 20px; text-align: right; font-size: 11px;">
@@ -326,17 +347,20 @@
                 <div style="font-weight: bold; margin-top: 3px; font-size: 11px;">(________________________)</div>
             </div>
         </div>
-    </div>
-</div>
 
-@elseif($pengajuan->jenis_surat === 'Surat Akta Kelahiran' || ($pengajuan->data_tambahan['jenis_surat_asli'] ?? '') === 'Surat Akta Kelahiran')
-<!-- SURAT AKTA KELAHIRAN -->
+@elseif($pengajuan->jenis_surat === 'Surat Keterangan Kelahiran' || ($pengajuan->data_tambahan['jenis_surat_asli'] ?? '') === 'Surat Keterangan Kelahiran')
+<!-- SURAT KELAHIRAN -->
 <div class="surat">
     <div class="content">
         <div class="header">
-            <div class="header-title">PEMERINTAH DESA SRUNI/div>
-            <div class="header-subtitle">SURAT KETERANGAN KELAHIRAN</div>
-            <div class="nomor">No. {{ $pengajuan->nomor_pengajuan ?? 'Draft' }}</div>
+            <div style="display: flex; align-items: flex-start; margin-bottom: 10px;">
+                <img src="{{ asset('assets/images/my/logo_Sidoarjo.svg.png') }}" alt="Logo Sidoarjo" style="width: 60px; height: 60px; margin-right: 15px; flex-shrink: 0;">
+                <div style="text-align: center; flex: 1;">
+                    <div class="header-title">PEMERINTAH DESA SRUNI</div>
+                    <div class="header-subtitle">SURAT KETERANGAN KELAHIRAN</div>
+                    <div class="nomor" style="font-size: 11px; margin-top: 3px;">No. {{ $pengajuan->nomor_pengajuan ?? 'Draft' }}</div>
+                </div>
+            </div>
         </div>
 
         <div style="margin-bottom: 20px; text-align: right; font-size: 11px;">
@@ -396,8 +420,8 @@
     </div>
 
     <div class="footer-content">
-        <div style="margin-top: 30px; overflow: auto;">
-            <div style="float: right; text-align: center; width: 220px;">
+        <div style="display: flex; justify-content: flex-end; margin-top: 30px;">
+            <div style="text-align: center; width: 220px;">
                 <div style="font-size: 11px; margin-bottom: 5px;">LURAH DESA SRUNI,</div>
                 @include("pengajuan.components.qr-code-section", ["pengajuan" => $pengajuan])
                 <div style="border-top: 1px solid #000; width: 100%; margin: 15px 0 3px 0;"></div>
@@ -405,31 +429,32 @@
             </div>
         </div>
     </div>
-</div>
+
 
 @elseif($pengajuan->jenis_surat === 'Surat Akta Kematian' || ($pengajuan->data_tambahan['jenis_surat_asli'] ?? '') === 'Surat Akta Kematian')
 <!-- SURAT AKTA KEMATIAN -->
 <div class="surat">
     <div class="content">
         <div class="header">
-            <div class="header-title">PEMERINTAH DESA SRUNI</div>
-            <div class="header-subtitle">SURAT KETERANGAN KEMATIAN</div>
-            <div class="nomor">No. {{ $pengajuan->nomor_pengajuan ?? 'Draft' }}</div>
+            <div style="display: flex; align-items: flex-start; margin-bottom: 10px;">
+                <img src="{{ asset('assets/images/my/logo_Sidoarjo.svg.png') }}" alt="Logo Sidoarjo" style="width: 60px; height: 60px; margin-right: 15px; flex-shrink: 0;">
+                <div style="text-align: center; flex: 1;">
+                    <div class="header-title">PEMERINTAH DESA SRUNI</div>
+                    <div class="header-subtitle">SURAT AKTA KEMATIAN</div>
+                    <div class="nomor" style="font-size: 11px; margin-top: 3px;">No. {{ $pengajuan->nomor_pengajuan ?? 'Draft' }}</div>
+                </div>
+            </div>
         </div>
-
         <div style="margin-bottom: 20px; text-align: right; font-size: 11px;">
             <div>Dikeluarkan pada :</div>
             <div style="font-weight: bold; margin-top: 3px;">{{ now()->format('d F Y') }}</div>
         </div>
-
         <p style="margin-bottom: 15px; font-size: 11px; line-height: 1.8;">
             Berdasarkan permohonan yang telah diajukan, dengan ini kami menerangkan bahwa:
         </p>
-
         <p style="margin: 15px 0; font-size: 11px; line-height: 1.8;">
             <strong>Data Almarhum / Almarhumah:</strong>
         </p>
-
         <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 11px;">
             <tr>
                 <td style="width: 120px; padding: 5px 0;">Nama Almarhum</td>
@@ -444,11 +469,9 @@
                 <td style="padding: 5px 0;">: {{ $pengajuan->data_tambahan['tempat_makam'] ?? '-' }}</td>
             </tr>
         </table>
-
         <p style="margin: 15px 0; font-size: 11px; line-height: 1.8;">
             <strong>Pelapor Kematian:</strong>
         </p>
-
         <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 11px;">
             <tr>
                 <td style="width: 120px; padding: 5px 0;">Nama Pelapor</td>
@@ -463,16 +486,13 @@
                 <td style="padding: 5px 0;">: -</td>
             </tr>
         </table>
-
         <p style="margin: 15px 0; font-size: 11px; line-height: 1.8;">
             Dengan demikian surat keterangan kematian ini diberikan kepada yang bersangkutan untuk keperluan: <strong>{{ $pengajuan->keperluan }}</strong>
         </p>
-
         <p style="margin: 20px 0; font-size: 11px; line-height: 1.8;">
             Demikian surat keterangan ini dibuat dan diberikan untuk dipergunakan sesuai dengan keperluan.
         </p>
     </div>
-
     <div class="footer-content">
         <div style="display: flex; justify-content: flex-end; margin-top: 30px;">
             <div style="text-align: center; width: 220px;">
@@ -483,16 +503,21 @@
             </div>
         </div>
     </div>
-</div>
+ </div>
 
 @elseif($pengajuan->jenis_surat === 'Surat Keterangan Tidak Mampu' || ($pengajuan->data_tambahan['jenis_surat_asli'] ?? '') === 'Surat Keterangan Tidak Mampu')
 <!-- SURAT KETERANGAN TIDAK MAMPU -->
 <div class="surat">
     <div class="content">
-        <div class="header">
-            <div class="header-title">PEMERINTAH DESA SRUNI</div>
-            <div class="header-subtitle">SURAT KETERANGAN TIDAK MAMPU (SKTM)</div>
-            <div class="nomor">No. {{ $pengajuan->nomor_pengajuan ?? 'Draft' }}</div>
+         <div class="header">
+            <div style="display: flex; align-items: flex-start; margin-bottom: 10px;">
+                <img src="{{ asset('assets/images/my/logo_Sidoarjo.svg.png') }}" alt="Logo Sidoarjo" style="width: 60px; height: 60px; margin-right: 15px; flex-shrink: 0;">
+                <div style="text-align: center; flex: 1;">
+                    <div class="header-title">PEMERINTAH DESA SRUNI</div>
+                    <div class="header-subtitle">SURAT KETERANGAN TIDAK MAMPU</div>
+                    <div class="nomor" style="font-size: 11px; margin-top: 3px;">No. {{ $pengajuan->nomor_pengajuan ?? 'Draft' }}</div>
+                </div>
+            </div>
         </div>
 
         <div style="margin-bottom: 20px; text-align: right; font-size: 11px;">
@@ -540,9 +565,10 @@
         </p>
     </div>
 
+    <!-- Footer-content untuk Surat Keterangan Tidak Mampu -->
     <div class="footer-content">
-        <div style="margin-top: 30px; overflow: auto;">
-            <div style="float: right; text-align: center; width: 220px;">
+        <div style="display: flex; justify-content: flex-end; margin-top: 30px;">
+            <div style="text-align: center; width: 220px;">
                 <div style="font-size: 11px; margin-bottom: 5px;">LURAH DESA SRUNI,</div>
                 @include("pengajuan.components.qr-code-section", ["pengajuan" => $pengajuan])
                 <div style="border-top: 1px solid #000; width: 100%; margin: 15px 0 3px 0;"></div>
@@ -550,16 +576,18 @@
             </div>
         </div>
     </div>
-</div>
-
-@else
 <!-- DEFAULT - SURAT UMUM -->
 <div class="surat">
     <div class="content">
         <div class="header">
-            <div class="header-title">PEMERINTAH DESA SRUNI</div>
-            <div class="header-subtitle">SURAT HASIL PENGAJUAN</div>
-            <div class="nomor">No. {{ $pengajuan->nomor_pengajuan ?? 'Draft' }}</div>
+            <div style="display: flex; align-items: flex-start; margin-bottom: 10px;">
+                <img src="{{ asset('assets/images/my/logo_Sidoarjo.svg.png') }}" alt="Logo Sidoarjo" style="width: 60px; height: 60px; margin-right: 15px; flex-shrink: 0;">
+                <div style="text-align: center; flex: 1;">
+                    <div class="header-title">PEMERINTAH DESA SRUNI</div>
+                    <div class="header-subtitle">SURAT HASIL PENGAJUAN</div>
+                    <div class="nomor" style="font-size: 11px; margin-top: 3px;">No. {{ $pengajuan->nomor_pengajuan ?? 'Draft' }}</div>
+                </div>
+            </div>
         </div>
 
         <div style="margin-bottom: 20px; text-align: right; font-size: 11px;">
@@ -604,8 +632,8 @@
     </div>
 
     <div class="footer-content">
-        <div style="margin-top: 30px; overflow: auto;">
-            <div style="float: right; text-align: center; width: 220px;">
+        <div style="display: flex; justify-content: flex-end; margin-top: 30px;">
+            <div style="text-align: center; width: 220px;">
                 <div style="font-size: 11px; margin-bottom: 5px;">LURAH DESA SRUNI,</div>
                 @include("pengajuan.components.qr-code-section", ["pengajuan" => $pengajuan])
                 <div style="border-top: 1px solid #000; width: 100%; margin: 15px 0 3px 0;"></div>

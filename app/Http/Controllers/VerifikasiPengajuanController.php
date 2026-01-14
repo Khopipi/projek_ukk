@@ -187,7 +187,7 @@ class VerifikasiPengajuanController extends Controller
             $qrUrl = \App\Helpers\QrCodeGenerator::generateQrUrl($pengajuan->signature_token);
             $qrSvg = \App\Helpers\QrCodeGenerator::generateSvgBase64($qrUrl);
         }
-
+    
         return view('admin.pengajuan.preview-surat', compact('pengajuan', 'qrSvg'));
     }
 
@@ -196,6 +196,7 @@ class VerifikasiPengajuanController extends Controller
      */
     public function downloadPdf(PengajuanSurat $pengajuan)
     {
+       
         // Check if PDF exists
         if (!$pengajuan->file_surat_hasil) {
             return back()->with('error', 'PDF surat hasil belum tersedia. Silakan generate terlebih dahulu.');
@@ -254,9 +255,12 @@ class VerifikasiPengajuanController extends Controller
         $qrUrl = \App\Helpers\QrCodeGenerator::generateQrUrl($pengajuan->signature_token);
         $qrSvg = \App\Helpers\QrCodeGenerator::generateSvgBase64($qrUrl);
         
+        // Convert logo to base64 for DomPDF (fixes logo display issue)
+        $logoBase64 = \App\Helpers\ImageHelper::imageToDataUri('assets/images/my/logo_Sidoarjo.svg.png');
+        
         // Render HTML from Blade - gunakan data terbaru dari database
         $pengajuanFresh = PengajuanSurat::find($pengajuan->id);
-        $html = view('pengajuan.pdf', ['pengajuan' => $pengajuanFresh, 'qrSvg' => $qrSvg])->render();
+        $html = view('pengajuan.pdf', ['pengajuan' => $pengajuanFresh, 'qrSvg' => $qrSvg, 'logoBase64' => $logoBase64])->render();
 
         $filename = time() . '_' . preg_replace('/[^A-Za-z0-9\-_]/', '_', $pengajuan->nomor_pengajuan) . '.pdf';
         $directory = 'surat_hasil';
