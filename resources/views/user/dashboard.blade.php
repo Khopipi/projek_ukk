@@ -1,6 +1,31 @@
 @include('partials.welcome-navbar')
 
 <style>
+    /* Prevent horizontal scrollbar */
+    body, html {
+        overflow-x: hidden;
+        max-width: 100%;
+    }
+
+    .pc-container {
+        overflow-x: hidden !important;
+    }
+
+    /* Responsive padding */
+    @media (max-width: 1400px) {
+        .pc-container .pc-content {
+            padding-left: 20px !important;
+            padding-right: 20px !important;
+        }
+    }
+
+    @media (max-width: 992px) {
+        .pc-container .pc-content {
+            padding-left: 15px !important;
+            padding-right: 15px !important;
+        }
+    }
+
     :root {
         --primary-gradient: linear-gradient(135deg, #5b6ef5 0%, #7685f0 100%);
         --danger-gradient: linear-gradient(135deg, #f5365c 0%, #e91e63 100%);

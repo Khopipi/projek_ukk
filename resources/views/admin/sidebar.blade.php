@@ -9,9 +9,6 @@
         --danger: #ff4444;
     }
 
-    /* ===== ADMIN SIDEBAR STYLING - MATCH USER THEME ===== */
-    /* These will be overridden by dashboard.blade.php but kept here for clarity */
-    
     /* ===== SIDEBAR ITEMS WRAPPER ===== */
     .pc-navbar ul {
         padding: 12px 0 !important;
@@ -43,7 +40,6 @@
     }
 
     .pc-navbar .pc-item .pc-link {
-        color: #e0e7ff !important;
         transition: all 0.3s ease !important;
         border-radius: 14px !important;
         padding: 16px 20px !important;
@@ -57,7 +53,6 @@
     }
 
     .pc-navbar .pc-item .pc-link:hover {
-        color: #ffffff !important;
         background: rgba(0, 132, 255, 0.25) !important;
         box-shadow: 0 4px 16px rgba(0, 132, 255, 0.3) !important;
         transform: translateX(10px) !important;
@@ -67,7 +62,6 @@
     .pc-navbar .pc-item .pc-link.active,
     .pc-navbar .pc-item.active .pc-link {
         background: linear-gradient(135deg, #0084ff 0%, #00d4ff 100%) !important;
-        color: #000 !important;
         font-weight: 700 !important;
         box-shadow: 0 10px 30px rgba(0, 212, 255, 0.5) !important;
         transform: none !important;
@@ -99,7 +93,6 @@
         font-weight: 600 !important;
         letter-spacing: 0.3px !important;
         font-size: 14px !important;
-        color: inherit !important;
     }
 
     /* ===== BADGE ICON ANIMATION ===== */
@@ -118,33 +111,15 @@
     }
 
     @keyframes float-elegant {
-        0% {
-            transform: translateY(0px) rotate(0deg) scale(1);
-            opacity: 0.7;
-        }
-        50% {
-            transform: translateY(-6px) rotate(-3deg) scale(1.1);
-            opacity: 1;
-        }
-        100% {
-            transform: translateY(0px) rotate(0deg) scale(1);
-            opacity: 0.7;
-        }
+        0% { transform: translateY(0) rotate(0) scale(1); opacity: 0.7; }
+        50% { transform: translateY(-6px) rotate(-3deg) scale(1.1); opacity: 1; }
+        100% { transform: translateY(0) rotate(0) scale(1); opacity: 0.7; }
     }
 
     @keyframes float-active {
-        0% {
-            transform: translateY(0px) rotate(0deg) scale(1.1);
-            opacity: 1;
-        }
-        50% {
-            transform: translateY(-8px) rotate(5deg) scale(1.2);
-            opacity: 1;
-        }
-        100% {
-            transform: translateY(0px) rotate(0deg) scale(1.1);
-            opacity: 1;
-        }
+        0% { transform: translateY(0) rotate(0) scale(1.1); opacity: 1; }
+        50% { transform: translateY(-8px) rotate(5deg) scale(1.2); opacity: 1; }
+        100% { transform: translateY(0) rotate(0) scale(1.1); opacity: 1; }
     }
 
     /* ===== SIDEBAR SPECIFIC ANIMATIONS ===== */
@@ -153,17 +128,6 @@
     .sidebar-pengaduan .badge-icon { animation-delay: 0.6s; }
     .sidebar-kematian .badge-icon { animation-delay: 0.9s; }
 
-    /* ===== SEPARATOR LINE ===== */
-    .pc-navbar::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 1px;
-        background: rgba(0, 132, 255, 0.1);
-    }
-
     /* ===== RESPONSIVE ===== */
     @media (max-width: 767px) {
         .pc-navbar .pc-item .pc-link {
@@ -171,49 +135,133 @@
             font-size: 13px !important;
         }
 
-        .pc-micon {
-            min-width: auto !important;
-            min-height: auto !important;
-        }
-
         .badge-icon {
             display: none !important;
         }
+    }
+
+    /* =====================================================
+       ✅ DARK FONT OVERRIDE (TANPA MENGUBAH YANG LAIN)
+       ===================================================== */
+    .pc-navbar .pc-item .pc-link {
+        color: #1f2937 !important;
+    }
+
+    .pc-navbar .pc-item .pc-link .pc-mtext {
+        color: #1f2937 !important;
+    }
+
+    .pc-navbar .pc-item .pc-link:hover {
+        color: #111827 !important;
+    }
+
+    .pc-navbar .pc-item .pc-link.active,
+    .pc-navbar .pc-item.active .pc-link {
+        color: #0f172a !important;
+    }
+
+    .pc-navbar .pc-item .pc-link.active .pc-mtext,
+    .pc-navbar .pc-item.active .pc-link .pc-mtext {
+        color: #0f172a !important;
+    }
+
+    /* =====================================================
+       🔔 NOTIFICATION BADGE STYLING
+       ===================================================== */
+    .badge-notification {
+        position: absolute !important;
+        right: 12px !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+        background: linear-gradient(135deg, #ff4444 0%, #ff1744 100%) !important;
+        color: white !important;
+        border-radius: 50% !important;
+        min-width: 28px !important;
+        height: 28px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-weight: 800 !important;
+        font-size: 11px !important;
+        box-shadow: 0 4px 12px rgba(255, 17, 68, 0.4) !important;
+        animation: pulse-badge 2s ease-in-out infinite !important;
+        z-index: 10 !important;
+    }
+
+    .pc-navbar .pc-item:hover .badge-notification {
+        animation: pulse-badge-active 0.6s ease-in-out infinite !important;
+        box-shadow: 0 6px 16px rgba(255, 17, 68, 0.6) !important;
+    }
+
+    @keyframes pulse-badge {
+        0%, 100% {
+            transform: translateY(-50%) scale(1);
+            opacity: 1;
+        }
+        50% {
+            transform: translateY(-50%) scale(1.1);
+            opacity: 0.9;
+        }
+    }
+
+    @keyframes pulse-badge-active {
+        0%, 100% {
+            transform: translateY(-50%) scale(1.15);
+            opacity: 1;
+        }
+        50% {
+            transform: translateY(-50%) scale(1.25);
+            opacity: 0.95;
+        }
+    }
+
+    .pc-navbar .pc-item .pc-link.active .badge-notification,
+    .pc-navbar .pc-item.active .pc-link .badge-notification {
+        background: linear-gradient(135deg, #fff200 0%, #ffb300 100%) !important;
+        color: #000 !important;
+        box-shadow: 0 4px 16px rgba(255, 179, 0, 0.6) !important;
     }
 </style>
 
 <li class="pc-item">
     <a href="{{ route('penduduk.index') }}" class="pc-link sidebar-penduduk">
-        <span class="pc-micon">
-            <i class="ti ti-users"></i>
-        </span>
+        <span class="pc-micon"><i class="ti ti-users"></i></span>
         <span class="pc-mtext">Data Penduduk</span>
         <span class="badge-icon">👥</span>
     </a>
 </li>
+
 <li class="pc-item">
     <a href="{{ route('admin.pengajuan.index') }}" class="pc-link sidebar-pengajuan">
-        <span class="pc-micon">
-            <i class="ti ti-file-check"></i>
-        </span>
+        <span class="pc-micon"><i class="ti ti-file-check"></i></span>
         <span class="pc-mtext">Verifikasi Pengajuan</span>
+        @php
+            $pengajuanMenunggu = \App\Models\PengajuanSurat::where('status', 'Menunggu')->count();
+        @endphp
+        @if($pengajuanMenunggu > 0)
+            <span class="badge badge-notification">{{ $pengajuanMenunggu }}</span>
+        @endif
         <span class="badge-icon">✅</span>
     </a>
 </li>
+
 <li class="pc-item">
     <a href="{{ route('admin.pengaduan.index') }}" class="pc-link sidebar-pengaduan">
-        <span class="pc-micon">
-            <i class="ti ti-message-circle"></i>
-        </span>
+        <span class="pc-micon"><i class="ti ti-message-circle"></i></span>
         <span class="pc-mtext">Verifikasi Pengaduan</span>
+        @php
+            $pengaduanMenunggu = \App\Models\Pengaduan::where('status', 'Menunggu')->count();
+        @endphp
+        @if($pengaduanMenunggu > 0)
+            <span class="badge badge-notification">{{ $pengaduanMenunggu }}</span>
+        @endif
         <span class="badge-icon">💬</span>
     </a>
 </li>
+
 <li class="pc-item">
     <a href="{{ route('admin.kematian.index') }}" class="pc-link sidebar-kematian">
-        <span class="pc-micon">
-            <i class="ti ti-death-icon"></i>
-        </span>
+        <span class="pc-micon"><i class="ti ti-death-icon"></i></span>
         <span class="pc-mtext">Data Kematian</span>
         <span class="badge-icon">⚰️</span>
     </a>

@@ -1,4 +1,14 @@
 <style>
+    /* Prevent horizontal scrollbar */
+    body, html {
+        overflow-x: hidden;
+        max-width: 100%;
+    }
+
+    .pc-container {
+        overflow-x: hidden !important;
+    }
+
     :root {
         --primary-gradient: linear-gradient(135deg, #5b6ef5 0%, #7685f0 100%);
         --danger-gradient: linear-gradient(135deg, #f5365c 0%, #e91e63 100%);
@@ -349,6 +359,22 @@
         padding-top: 20px;
         padding-bottom: 40px;
     }
+
+    /* Responsive adjustments */
+    @media (max-width: 1400px) {
+        .dashboard-wrapper {
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+    }
+
+    @media (max-width: 992px) {
+        .dashboard-wrapper {
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+    }
+
 </style>
 
 <div class="row dashboard-wrapper">

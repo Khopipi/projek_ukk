@@ -61,6 +61,12 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // ============================================
+// PUBLIC ROUTE - QR Code Verification
+// ============================================
+// Route untuk verifikasi tanda tangan digital via QR code (public access)
+Route::get('/pengajuan/ttd', [PengajuanSuratController::class, 'verifySignature'])->name('pengajuan.verify-signature');
+
+// ============================================
 // AUTHENTICATED ROUTES - Harus login
 // ============================================
 Route::middleware(['auth'])->group(function () {

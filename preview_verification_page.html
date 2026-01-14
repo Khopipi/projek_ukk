@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verifikasi Tanda Tangan Digital - Preview</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .card {
+            border: none;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            border: none;
+            padding: 20px;
+            font-weight: 600;
+        }
+
+        .bg-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+        }
+
+        .card-body {
+            padding: 30px;
+        }
+
+        .table th {
+            font-weight: 600;
+            color: #667eea;
+            border: none;
+            padding: 12px 0;
+            background: transparent;
+        }
+
+        .table td {
+            border: none;
+            padding: 12px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .badge {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+
+        .bg-light {
+            background-color: #f9fafb !important;
+            border: 1px solid #e5e7eb;
+        }
+
+        .alert {
+            border: none;
+            border-left: 4px solid;
+            border-radius: 8px;
+        }
+
+        .alert-info {
+            border-left-color: #3b82f6;
+            background-color: #eff6ff;
+            color: #1e40af;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #5b6dd9 0%, #6b4099 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(102, 126, 234, 0.4);
+        }
+
+        .card-header h5 {
+            margin: 0;
+        }
+
+        .text-success {
+            color: #10b981 !important;
+        }
+
+        .card-header.bg-light h5 {
+            color: #333;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Valid Signature Card -->
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-check-circle"></i> Tanda Tangan Digital Terverifikasi
+                </h5>
+            </div>
+            <div class="card-body">
+
+                <div class="card mb-3">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Data Surat</h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-borderless">
+                            <tr>
+                                <th style="width: 150px;">Nomor Surat</th>
+                                <td><strong>DS-2024-001</strong></td>
+                            </tr>
+                            <tr>
+                                <th>Jenis Surat</th>
+                                <td>Surat Warisan</td>
+                            </tr>
+                            <tr>
+                                <th>Nama Pemohon</th>
+                                <td>Budi Santoso</td>
+                            </tr>
+                            <tr>
+                                <th>NIK</th>
+                                <td>3502061234567890</td>
+                            </tr>
+                            <tr>
+                                <th>Keperluan</th>
+                                <td>Pengurusan Warisan</td>
+                            </tr>
+                            <tr>
+                                <th>Status</th>
+                                <td>
+                                    <span class="badge bg-success">Selesai</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Tanggal Selesai</th>
+                                <td>13 Januari 2026 14:30</td>
+                            </tr>
+                            <tr>
+                                <th>Tanda Tangan Digital</th>
+                                <td>
+                                    <span class="text-success">
+                                        <i class="fas fa-check-circle"></i> Ditandatangani
+                                    </span>
+                                    <br>
+                                    <small class="text-muted">13 Januari 2026 14:30:45</small>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card mb-3 border-0 bg-light">
+                    <div class="card-body">
+                        <h6 class="card-title">
+                            <i class="fas fa-stamp text-success"></i> Ditandatangani Oleh
+                        </h6>
+                        <div class="fs-5 fw-bold text-dark">
+                            H. Saiful Imaduddin, SKM., M.Kes
+                        </div>
+                        <div class="small text-muted">
+                            Kepala Desa Sruni
+                        </div>
+                        <div class="small text-muted mt-2">
+                            <i class="fas fa-calendar-alt"></i>
+                            Tanggal Tanda Tangan: 13 Januari 2026 14:30:45
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i>
+                    <strong>Informasi Keamanan:</strong> Surat ini telah ditandatangani secara digital oleh H. Saiful
+                    Imaduddin, SKM., M.Kes (Kepala Desa Sruni) dan dapat dipercaya.
+                    Setiap surat memiliki token unik yang dapat diverifikasi untuk memastikan keaslian.
+                </div>
+
+                <div class="text-center mt-4">
+                    <a href="#" class="btn btn-primary">
+                        <i class="fas fa-home"></i> Kembali ke Beranda
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <hr class="my-5" style="border-color: rgba(255,255,255,0.3);">
+
+        <!-- Information Box -->
+        <div class="alert alert-light mt-5"
+            style="background: rgba(255,255,255,0.1) !important; border: 1px solid rgba(255,255,255,0.2) !important; color: white;">
+            <h6 style="color: white;">
+                <i class="fas fa-qrcode"></i> Tentang Verifikasi QR Code
+            </h6>
+            <p style="margin: 0; font-size: 0.9rem;">
+                Halaman ini menampilkan hasil pemindaian QR Code dari surat yang telah ditandatangani digital.
+                Setiap surat memiliki token unik yang dapat diverifikasi untuk memastikan keaslian dan belum
+                dimanipulasi.
+            </p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

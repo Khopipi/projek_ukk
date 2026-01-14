@@ -109,4 +109,3 @@
     @include('pengajuan.surat-template', ['pengajuan' => $pengajuan])
 </body>
 </html>
-

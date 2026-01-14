@@ -128,7 +128,7 @@
                                     <div class="form-group">
                                         <label class="form-label">Tanggal Lahir <span class="text-danger">*</span></label>
                                         <input type="date" name="tanggal_lahir_pemohon" class="form-control @error('tanggal_lahir_pemohon') is-invalid @enderror"
-                                               value="{{ old('tanggal_lahir_pemohon', $user->tanggal_lahir) }}" required>
+                                               value="{{ old('tanggal_lahir_pemohon', $user->tanggal_lahir ? $user->tanggal_lahir->format('Y-m-d') : '') }}" required>
                                         @error('tanggal_lahir_pemohon')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
@@ -324,7 +324,7 @@
             'Surat Tanah': {
                 fields: [
                     { label: 'Alamat Tanah', name: 'alamat_tanah', type: 'text', required: true },
-                    { label: 'Luas Tanah (m2)', name: 'luas_tanah', type: 'text', required: false }
+                    { label: 'Luas Tanah (m2)', name: 'luas_tanah', type: 'text', required: true, placeholder: 'Contoh: 22 atau 25*32 atau 25.5*32.5', pattern: '\\d+(\\.\\d+)?(\\*\\d+(\\.\\d+)?)*' }
                 ],
                 docs: [
                     { label: 'Fotokopi KTP Pemohon', name: 'doc_ktp_pemohon', required: true },
@@ -466,7 +466,18 @@
                     }
                     fieldHtml += '</select>';
                 } else {
-                    fieldHtml += `<input type="${field.type}" name="${field.name}" class="form-control" value="${escapeHtml(val)}" ${field.required ? 'required' : ''}>`;
+                    const placeholder = field.placeholder ? `placeholder="${escapeHtml(field.placeholder)}"` : '';
+                    const min = field.min !== undefined ? `min="${field.min}"` : '';
+                    const step = field.step !== undefined ? `step="${field.step}"` : '';
+                    const pattern = field.pattern ? `pattern="${field.pattern}"` : '';
+                    fieldHtml += `<input type="${field.type}" name="${field.name}" class="form-control" value="${escapeHtml(val)}" ${placeholder} ${min} ${step} ${pattern} ${field.required ? 'required' : ''}>`;
+                    
+                    // Show appropriate help text based on field type
+                    if (field.name === 'luas_tanah') {
+                        fieldHtml += '<small class="text-muted d-block mt-2"><strong>Format:</strong> Angka saja (22) atau dengan perkalian (*) untuk panjang x lebar (25*32 atau 25.5*32.5)</small>';
+                    } else if (field.type === 'number') {
+                        fieldHtml += '<small class="text-muted">Hanya angka (contoh: 22 atau 22.5)</small>';
+                    }
                 }
 
                 fieldHtml += '</div></div>';

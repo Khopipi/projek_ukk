@@ -3,76 +3,67 @@
 @section('content')
     <style>
         :root {
-            --primary-gradient: linear-gradient(135deg, #5b6ef5 0%, #7685f0 100%);
-            --warning-gradient: linear-gradient(135deg, #ffa500 0%, #ff9500 100%);
-            --info-gradient: linear-gradient(135deg, #17a2b8 0%, #20c9a6 100%);
-            --success-gradient: linear-gradient(135deg, #2dce89 0%, #26c381 100%);
-            --danger-gradient: linear-gradient(135deg, #f5365c 0%, #e91e63 100%);
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --warning-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            --info-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --success-gradient: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            --danger-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
         }
 
         .stat-card-elegant {
-            border: 1px solid #e9ecef;
+            border: none;
             border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-            transition: all 0.3s ease;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             overflow: hidden;
             position: relative;
             height: 100%;
-            background: white;
         }
 
         .stat-card-elegant:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 8px 20px rgba(91, 110, 245, 0.1);
-            border-color: #5b6ef5;
+            transform: translateY(-8px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
         }
 
-        .stat-card-elegant.stat-1 { border-left: 4px solid #5b6ef5; }
-        .stat-card-elegant.stat-2 { border-left: 4px solid #ffa500; }
-        .stat-card-elegant.stat-3 { border-left: 4px solid #17a2b8; }
-        .stat-card-elegant.stat-4 { border-left: 4px solid #2dce89; }
-        .stat-card-elegant.stat-5 { border-left: 4px solid #f5365c; }
+        .stat-card-elegant.stat-1 { background: var(--primary-gradient); }
+        .stat-card-elegant.stat-2 { background: var(--warning-gradient); }
+        .stat-card-elegant.stat-3 { background: var(--info-gradient); }
+        .stat-card-elegant.stat-4 { background: var(--success-gradient); }
+        .stat-card-elegant.stat-5 { background: var(--danger-gradient); }
 
         .stat-icon {
-            width: 48px;
-            height: 48px;
-            background: #f8f9fa;
-            border-radius: 8px;
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 22px;
+            font-size: 24px;
         }
 
-        .stat-card-elegant.stat-1 .stat-icon { background: linear-gradient(135deg, #f0f2ff 0%, #e9ebff 100%); color: #5b6ef5; }
-        .stat-card-elegant.stat-2 .stat-icon { background: linear-gradient(135deg, #fffbf0 0%, #fff3e0 100%); color: #ff9500; }
-        .stat-card-elegant.stat-3 .stat-icon { background: linear-gradient(135deg, #f0f9fb 0%, #e8f7f9 100%); color: #17a2b8; }
-        .stat-card-elegant.stat-4 .stat-icon { background: linear-gradient(135deg, #f0fdf4 0%, #e8fbe9 100%); color: #2dce89; }
-        .stat-card-elegant.stat-5 .stat-icon { background: linear-gradient(135deg, #fff5f7 0%, #ffe9f0 100%); color: #f5365c; }
-
         .elegant-card {
-            border: 1px solid #e9ecef;
+            border: none;
             border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
             transition: all 0.3s ease;
-            background: white;
         }
 
         .elegant-card:hover {
-            box-shadow: 0 8px 20px rgba(91, 110, 245, 0.08);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
         }
 
         .elegant-card .card-header {
-            background: #f8f9fa;
-            border-bottom: 1px solid #e9ecef;
-            padding: 20px 24px;
+            background: linear-gradient(135deg, #f8fbff 0%, #ffffff 100%);
+            border-bottom: 2px solid #eef2f9;
+            padding: 24px;
         }
 
         .elegant-card .card-header h5 {
-            font-size: 15px;
-            font-weight: 700;
+            font-size: 16px;
+            font-weight: 800;
             color: #2d3748;
-            letter-spacing: 0.3px;
+            letter-spacing: 0.5px;
         }
 
         .elegant-table {
@@ -80,29 +71,29 @@
         }
 
         .elegant-table thead th {
-            background: #f8f9fa;
-            color: #495057;
+            background: #f8fbff;
+            color: #e0e7ff;
             font-weight: 700;
             font-size: 11px;
-            letter-spacing: 0.3px;
-            text-transform: none;
-            padding: 14px 16px;
-            border: 1px solid #dee2e6;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            padding: 16px;
+            border: none;
         }
 
         .elegant-table tbody tr {
-            border-bottom: 1px solid #e9ecef;
-            transition: all 0.2s ease;
+            border-bottom: 1px solid #eef2f9;
+            transition: all 0.3s ease;
         }
 
         .elegant-table tbody tr:hover {
-            background: #f8f9fa;
-            box-shadow: inset 0 0 0 1px rgba(91, 110, 245, 0.05);
+            background: #f8fbff;
+            box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.02);
         }
 
         .elegant-table tbody td {
-            padding: 14px 16px;
-            color: #2d3748;
+            padding: 16px;
+            color: #e0e7ff;
             font-weight: 500;
         }
 

@@ -7,29 +7,29 @@
         }
 
         .user-table thead th {
-            background: #f8f9fa;
-            color: #495057;
+            background: #f8fbff;
+            color: #e0e7ff;
             font-weight: 700;
             font-size: 11px;
-            letter-spacing: 0.3px;
-            text-transform: none;
-            padding: 14px 16px;
-            border: 1px solid #dee2e6;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            padding: 16px;
+            border: none;
         }
 
         .user-table tbody tr {
-            border-bottom: 1px solid #e9ecef;
-            transition: all 0.2s ease;
+            border-bottom: 1px solid #eef2f9;
+            transition: all 0.3s ease;
         }
 
         .user-table tbody tr:hover {
-            background: #f8f9fa;
-            box-shadow: inset 0 0 0 1px rgba(91, 110, 245, 0.05);
+            background: #f8fbff;
+            box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.02);
         }
 
         .user-table tbody td {
-            padding: 14px 16px;
-            color: #2d3748;
+            padding: 16px;
+            color: #ffffff;
             font-weight: 500;
         }
     </style>
@@ -72,60 +72,60 @@
         <!-- Statistik Cards -->
         <div class="row mb-4">
             <div class="col-md-3 col-sm-6">
-                <div class="card border-left border-warning">
+                <div class="card bg-warning text-white">
                     <div class="card-body">
                         <div class="d-flex align-items-center">
                             <div class="flex-shrink-0">
-                                <i class="ti ti-clock f-36" style="color: #ff9500;"></i>
+                                <i class="ti ti-clock f-36"></i>
                             </div>
                             <div class="flex-grow-1 ms-3">
-                                <h3 class="text-dark">{{ $pengaduans->where('status', 'Menunggu')->count() }}</h3>
-                                <p class="mb-0 text-muted">Menunggu</p>
+                                <h3 class="text-white">{{ $pengaduans->where('status', 'Menunggu')->count() }}</h3>
+                                <p class="mb-0">Menunggu</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col-md-3 col-sm-6">
-                <div class="card border-left border-info">
+                <div class="card bg-info text-white">
                     <div class="card-body">
                         <div class="d-flex align-items-center">
                             <div class="flex-shrink-0">
-                                <i class="ti ti-refresh f-36" style="color: #17a2b8;"></i>
+                                <i class="ti ti-refresh f-36"></i>
                             </div>
                             <div class="flex-grow-1 ms-3">
-                                <h3 class="text-dark">{{ $pengaduans->where('status', 'Diproses')->count() }}</h3>
-                                <p class="mb-0 text-muted">Diproses</p>
+                                <h3 class="text-white">{{ $pengaduans->where('status', 'Diproses')->count() }}</h3>
+                                <p class="mb-0">Diproses</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col-md-3 col-sm-6">
-                <div class="card border-left border-success">
+                <div class="card bg-success text-white">
                     <div class="card-body">
                         <div class="d-flex align-items-center">
                             <div class="flex-shrink-0">
-                                <i class="ti ti-check f-36" style="color: #2dce89;"></i>
+                                <i class="ti ti-check f-36"></i>
                             </div>
                             <div class="flex-grow-1 ms-3">
-                                <h3 class="text-dark">{{ $pengaduans->where('status', 'Selesai')->count() }}</h3>
-                                <p class="mb-0 text-muted">Selesai</p>
+                                <h3 class="text-white">{{ $pengaduans->where('status', 'Selesai')->count() }}</h3>
+                                <p class="mb-0">Selesai</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col-md-3 col-sm-6">
-                <div class="card border-left border-danger">
+                <div class="card bg-danger text-white">
                     <div class="card-body">
                         <div class="d-flex align-items-center">
                             <div class="flex-shrink-0">
-                                <i class="ti ti-x f-36" style="color: #f5365c;"></i>
+                                <i class="ti ti-x f-36"></i>
                             </div>
                             <div class="flex-grow-1 ms-3">
-                                <h3 class="text-dark">{{ $pengaduans->where('status', 'Ditolak')->count() }}</h3>
-                                <p class="mb-0 text-muted">Ditolak</p>
+                                <h3 class="text-white">{{ $pengaduans->where('status', 'Ditolak')->count() }}</h3>
+                                <p class="mb-0">Ditolak</p>
                             </div>
                         </div>
                     </div>

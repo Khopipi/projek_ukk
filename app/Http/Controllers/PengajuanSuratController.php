@@ -85,16 +85,13 @@ class PengajuanSuratController extends Controller
             'no_telepon_pemohon' => 'required|string|max:15',
             'file_ktp' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
             'file_kk' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
-            'file_pendukung_1' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
-            'file_pendukung_2' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
-            'file_pendukung_3' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
             // Textual fields per jenis surat
             'nama_calon_pria' => 'required_if:jenis_surat,Surat Nikah|nullable|string|max:255',
             'nama_calon_wanita' => 'required_if:jenis_surat,Surat Nikah|nullable|string|max:255',
             'tanggal_nikah_rencana' => 'required_if:jenis_surat,Surat Nikah|nullable|date',
             'tempat_nikah' => 'required_if:jenis_surat,Surat Nikah|nullable|string|max:255',
             'alamat_tanah' => 'required_if:jenis_surat,Surat Tanah|nullable|string',
-            'luas_tanah' => 'required_if:jenis_surat,Surat Tanah|nullable|numeric',
+            'luas_tanah' => 'required_if:jenis_surat,Surat Tanah|nullable|regex:/^\d+(\.\d+)?(\*\d+(\.\d+)?)*$/',
             'nama_almarhum' => 'required_if:jenis_surat,Surat Warisan,Surat Akta Kematian|nullable|string|max:255',
             'hubungan_almarhum' => 'required_if:jenis_surat,Surat Warisan|nullable|string|max:255',
             'daftar_penerima' => 'required_if:jenis_surat,Surat Warisan|nullable|string',
@@ -158,6 +155,8 @@ class PengajuanSuratController extends Controller
             'doc_foto_rumah' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
             'doc_bukti_penghasilan' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
             'data_tambahan' => 'nullable|array'
+        ], [
+            'luas_tanah.regex' => 'Format luas tanah tidak valid. Gunakan angka saja (contoh: 22) atau dengan perkalian panjang x lebar (contoh: 25*32 atau 25.5*32.5).',
         ]);
 
         // Ensure data_tambahan array exists
@@ -219,7 +218,8 @@ class PengajuanSuratController extends Controller
             'Surat Domisili',
             'Surat Akta Kelahiran',
             'Surat Kelahiran',
-            'Surat Keterangan Tidak Mampu'
+            'Surat Keterangan Tidak Mampu',
+            'Surat Akta Kematian'
         ];
         $originalJenis = $validated['jenis_surat'] ?? null;
         if ($originalJenis && !in_array($originalJenis, $dbAllowed)) {
@@ -688,5 +688,41 @@ class PengajuanSuratController extends Controller
         if (!file_exists($fullPath)) abort(404, 'File not found');
 
         return response()->file($fullPath);
+    }
+
+    /**
+     * Verify digital signature from QR code scan
+     * Public endpoint untuk verifikasi tanda tangan digital kepala desa
+     */
+    public function verifySignature(Request $request)
+    {
+        $signatureToken = $request->query('p');
+        
+        if (!$signatureToken) {
+            return view('pengajuan.verify-signature', [
+                'valid' => false,
+                'message' => 'Parameter signature token tidak ditemukan.',
+                'pengajuan' => null
+            ]);
+        }
+
+        // Find pengajuan dengan signature token
+        $pengajuan = PengajuanSurat::where('signature_token', $signatureToken)
+            ->with('user')
+            ->first();
+
+        if (!$pengajuan) {
+            return view('pengajuan.verify-signature', [
+                'valid' => false,
+                'message' => 'Signature token tidak valid atau tidak ditemukan dalam sistem.',
+                'pengajuan' => null
+            ]);
+        }
+
+        return view('pengajuan.verify-signature', [
+            'valid' => true,
+            'message' => 'Tanda tangan digital sah dan terverifikasi.',
+            'pengajuan' => $pengajuan
+        ]);
     }
 }

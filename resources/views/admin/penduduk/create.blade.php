@@ -335,7 +335,6 @@
                                             <option value="">Pilih Status</option>
                                             <option value="Tetap" {{ old('status_kependudukan') == 'Tetap' ? 'selected' : '' }}>Tetap</option>
                                             <option value="Tidak Tetap" {{ old('status_kependudukan') == 'Tidak Tetap' ? 'selected' : '' }}>Tidak Tetap</option>
-                                            <option value="Pendatang" {{ old('status_kependudukan') == 'Pendatang' ? 'selected' : '' }}>Pendatang</option>
                                         </select>
                                         @error('status_kependudukan')
                                             <div class="invalid-feedback">{{ $message }}</div>
@@ -391,17 +390,6 @@
                                     </div>
                                 </div>
 
-                                <!-- Keterangan -->
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label class="form-label">Keterangan</label>
-                                        <textarea name="keterangan" class="form-control @error('keterangan') is-invalid @enderror" 
-                                                  rows="3">{{ old('keterangan') }}</textarea>
-                                        @error('keterangan')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
                             </div>
                         </div>
                         <div class="card-footer text-end">

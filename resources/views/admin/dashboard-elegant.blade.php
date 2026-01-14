@@ -1,4 +1,14 @@
 <style>
+    /* Prevent horizontal scrollbar */
+    body, html {
+        overflow-x: hidden;
+        max-width: 100%;
+    }
+
+    .pc-container {
+        overflow-x: hidden !important;
+    }
+
     :root {
         --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         --danger-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
@@ -320,6 +330,21 @@
         padding-right: 35px;
         padding-top: 20px;
         padding-bottom: 40px;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 1400px) {
+        .dashboard-wrapper {
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+    }
+
+    @media (max-width: 992px) {
+        .dashboard-wrapper {
+            padding-left: 15px;
+            padding-right: 15px;
+        }
     }
 </style>
 

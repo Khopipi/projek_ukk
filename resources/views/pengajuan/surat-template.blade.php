@@ -72,12 +72,12 @@
     </div>
 
     <div class="footer-content">
-        <div style="display: flex; justify-content: flex-end; margin-top: 30px;">
-            <div style="text-align: center; width: 220px;">
+        <div style="margin-top: 30px; overflow: auto;">
+            <div style="float: right; text-align: center; width: 220px;">
                 <div style="font-size: 11px; margin-bottom: 5px;">LURAH DESA SRUNI</div>
-                <div style="border-top: 1px solid #000; width: 100%; margin: 50px 0 3px 0;"></div>
+                @include("pengajuan.components.qr-code-section", ["pengajuan" => $pengajuan])
+                <div style="border-top: 1px solid #000; width: 100%; margin: 15px 0 3px 0;"></div>
                 <div style="font-weight: bold; margin-top: 3px; font-size: 11px;">(________________________)</div>
-                <div style="font-size: 10px; color: #333; margin-top: 2px;">NIP: ........................</div>
             </div>
         </div>
     </div>
@@ -162,12 +162,12 @@
     </div>
 
     <div class="footer-content">
-        <div style="display: flex; justify-content: flex-end; margin-top: 30px;">
-            <div style="text-align: center; width: 220px;">
+        <div style="margin-top: 30px; overflow: auto;">
+            <div style="float: right; text-align: center; width: 220px;">
                 <div style="font-size: 11px; margin-bottom: 5px;">LURAH DESA SRUNI</div>
-                <div style="border-top: 1px solid #000; width: 100%; margin: 50px 0 3px 0;"></div>
+                @include("pengajuan.components.qr-code-section", ["pengajuan" => $pengajuan])
+                <div style="border-top: 1px solid #000; width: 100%; margin: 15px 0 3px 0;"></div>
                 <div style="font-weight: bold; margin-top: 3px; font-size: 11px;">(________________________)</div>
-                <div style="font-size: 10px; color: #333; margin-top: 2px;">NIP: ........................</div>
             </div>
         </div>
     </div>
@@ -236,12 +236,12 @@
     </div>
 
     <div class="footer-content">
-        <div style="display: flex; justify-content: flex-end; margin-top: 30px;">
-            <div style="text-align: center; width: 220px;">
+        <div style="margin-top: 30px; overflow: auto;">
+            <div style="float: right; text-align: center; width: 220px;">
                 <div style="font-size: 11px; margin-bottom: 5px;">LURAH DESA SRUNI</div>
-                <div style="border-top: 1px solid #000; width: 100%; margin: 50px 0 3px 0;"></div>
+                @include("pengajuan.components.qr-code-section", ["pengajuan" => $pengajuan])
+                <div style="border-top: 1px solid #000; width: 100%; margin: 15px 0 3px 0;"></div>
                 <div style="font-weight: bold; margin-top: 3px; font-size: 11px;">(________________________)</div>
-                <div style="font-size: 10px; color: #333; margin-top: 2px;">NIP: ........................</div>
             </div>
         </div>
     </div>
@@ -321,9 +321,9 @@
         <div style="display: flex; justify-content: flex-end; margin-top: 30px;">
             <div style="text-align: center; width: 220px;">
                 <div style="font-size: 11px; margin-bottom: 5px;">LURAH DESA SRUNI</div>
-                <div style="border-top: 1px solid #000; width: 100%; margin: 50px 0 3px 0;"></div>
+                @include("pengajuan.components.qr-code-section", ["pengajuan" => $pengajuan])
+                <div style="border-top: 1px solid #000; width: 100%; margin: 15px 0 3px 0;"></div>
                 <div style="font-weight: bold; margin-top: 3px; font-size: 11px;">(________________________)</div>
-                <div style="font-size: 10px; color: #333; margin-top: 2px;">NIP: ........................</div>
             </div>
         </div>
     </div>
@@ -396,12 +396,12 @@
     </div>
 
     <div class="footer-content">
-        <div style="display: flex; justify-content: flex-end; margin-top: 30px;">
-            <div style="text-align: center; width: 220px;">
+        <div style="margin-top: 30px; overflow: auto;">
+            <div style="float: right; text-align: center; width: 220px;">
                 <div style="font-size: 11px; margin-bottom: 5px;">LURAH DESA SRUNI,</div>
-                <div style="border-top: 1px solid #000; width: 100%; margin: 50px 0 3px 0;"></div>
+                @include("pengajuan.components.qr-code-section", ["pengajuan" => $pengajuan])
+                <div style="border-top: 1px solid #000; width: 100%; margin: 15px 0 3px 0;"></div>
                 <div style="font-weight: bold; margin-top: 3px; font-size: 11px;">(________________________)</div>
-                <div style="font-size: 10px; color: #333; margin-top: 2px;">NIP: ........................</div>
             </div>
         </div>
     </div>
@@ -477,9 +477,9 @@
         <div style="display: flex; justify-content: flex-end; margin-top: 30px;">
             <div style="text-align: center; width: 220px;">
                 <div style="font-size: 11px; margin-bottom: 5px;">LURAH DESA SRUNI,</div>
-                <div style="border-top: 1px solid #000; width: 100%; margin: 50px 0 3px 0;"></div>
+                @include("pengajuan.components.qr-code-section", ["pengajuan" => $pengajuan])
+                <div style="border-top: 1px solid #000; width: 100%; margin: 15px 0 3px 0;"></div>
                 <div style="font-weight: bold; margin-top: 3px; font-size: 11px;">(________________________)</div>
-                <div style="font-size: 10px; color: #333; margin-top: 2px;">NIP: ........................</div>
             </div>
         </div>
     </div>
@@ -541,12 +541,12 @@
     </div>
 
     <div class="footer-content">
-        <div style="display: flex; justify-content: flex-end; margin-top: 30px;">
-            <div style="text-align: center; width: 220px;">
+        <div style="margin-top: 30px; overflow: auto;">
+            <div style="float: right; text-align: center; width: 220px;">
                 <div style="font-size: 11px; margin-bottom: 5px;">LURAH DESA SRUNI,</div>
-                <div style="border-top: 1px solid #000; width: 100%; margin: 50px 0 3px 0;"></div>
+                @include("pengajuan.components.qr-code-section", ["pengajuan" => $pengajuan])
+                <div style="border-top: 1px solid #000; width: 100%; margin: 15px 0 3px 0;"></div>
                 <div style="font-weight: bold; margin-top: 3px; font-size: 11px;">(________________________)</div>
-                <div style="font-size: 10px; color: #333; margin-top: 2px;">NIP: ........................</div>
             </div>
         </div>
     </div>
@@ -604,14 +604,26 @@
     </div>
 
     <div class="footer-content">
-        <div style="display: flex; justify-content: flex-end; margin-top: 30px;">
-            <div style="text-align: center; width: 220px;">
+        <div style="margin-top: 30px; overflow: auto;">
+            <div style="float: right; text-align: center; width: 220px;">
                 <div style="font-size: 11px; margin-bottom: 5px;">LURAH DESA SRUNI,</div>
-                <div style="border-top: 1px solid #000; width: 100%; margin: 50px 0 3px 0;"></div>
+                @include("pengajuan.components.qr-code-section", ["pengajuan" => $pengajuan])
+                <div style="border-top: 1px solid #000; width: 100%; margin: 15px 0 3px 0;"></div>
                 <div style="font-weight: bold; margin-top: 3px; font-size: 11px;">(________________________)</div>
-                <div style="font-size: 10px; color: #333; margin-top: 2px;">NIP: ........................</div>
             </div>
         </div>
     </div>
 </div>
 @endif
+
+
+
+
+
+
+
+
+
+
+
+

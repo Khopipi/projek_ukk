@@ -214,6 +214,11 @@
                 border-bottom: 1px solid #e9ecef !important;
                 box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
                 padding: 16px 35px !important;
+                position: fixed !important;
+                top: 0 !important;
+                right: 0 !important;
+                left: 260px !important;
+                z-index: 1000 !important;
             }
 
             .pc-header .header-search input {
@@ -273,6 +278,11 @@
                 transform: translateY(-1px) !important;
                 box-shadow: 0 4px 12px rgba(91, 110, 245, 0.15) !important;
                 color: #5b6ef5 !important;
+            }
+
+            /* ===== CONTAINER WITH FIXED HEADER ===== */
+            .pc-container {
+                margin-top: 70px !important;
             }
 
             /* ===== CARDS PREMIUM ===== */

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>QR Code Template Test</title>
+</head>
+
+<body>
+    <h1>QR Code Rendering Test</h1>
+
+    <h2>Test Data:</h2>
+    <pre>
+$pengajuan = {
+    id: 1,
+    signature_token: "1|2024-12-20T10:30:00|1|abc123xyz",
+    signature_generated_at: "2024-12-20 10:30:00"
+}
+
+$qrPath = "/storage/qr_codes/54a25a29fadd74320d40a8306c63551a.png"
+$qrBase64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKgAAACoCAYAA..."
+</pre>
+
+    <h2>Template Condition (8 templates):</h2>
+    <pre>
+@if($pengajuan->signature_token && 
+    $pengajuan->signature_generated_at && 
+    ((isset($qrBase64) && !empty($qrBase64)) || 
+     (isset($qrPath) && !empty($qrPath))))
+</pre>
+
+    <h2>Result:</h2>
+    <div style="border: 2px solid green; padding: 20px; margin: 20px 0;">
+        <h3>✅ Condition TRUE - QR Code Renders</h3>
+        <div style="margin: 8px 0 5px 0; text-align: center; border: 1px solid #ccc; padding: 10px;">
+            <!-- Simulated QR Code -->
+            <div style="display: inline-block; border: 1px solid #333; padding: 1px;">
+                <svg width="75" height="75" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="75" height="75" fill="white" />
+                    <g fill="black">
+                        <!-- QR Code pattern simulation -->
+                        <rect x="0" y="0" width="15" height="15" />
+                        <rect x="60" y="0" width="15" height="15" />
+                        <rect x="0" y="60" width="15" height="15" />
+                        <rect x="15" y="15" width="5" height="5" />
+                        <rect x="45" y="15" width="5" height="5" />
+                        <rect x="15" y="45" width="5" height="5" />
+                        <rect x="30" y="30" width="15" height="15" />
+                        <rect x="22" y="22" width="3" height="3" />
+                        <rect x="50" y="50" width="3" height="3" />
+                    </g>
+                </svg>
+            </div>
+            <div style="font-size: 8px; color: #333; margin-top: 8px;">Scan untuk verifikasi</div>
+        </div>
+    </div>
+
+    <h2>Fallback Logic (img src):</h2>
+    <pre>
+src="{{ $qrBase64 ?? asset($qrPath ?? "") }}"
+
+Logic:
+1. If $qrBase64 exists and non-empty → use base64 (PRIMARY)
+2. Else if $qrPath exists and non-empty → use asset path (FALLBACK)
+3. Else → empty src (will show broken image, but covered by @else placeholder)
+</pre>
+
+    <h2>Placeholder (when condition FALSE):</h2>
+    <div style="border: 2px solid orange; padding: 20px; margin: 20px 0;">
+        <h3>⚠️ Condition FALSE - Shows Placeholder</h3>
+        <div
+            style="width: 75px; height: 75px; margin: 8px auto 5px; border: 1px dashed #ccc; display: flex; align-items: center; justify-content: center;">
+            <div style="font-size: 8px; color: #999; text-align: center;">
+                QR Code<br />(belum<br />di-generate)
+            </div>
+        </div>
+    </div>
+
+    <h2>Summary of Fix:</h2>
+    <table border="1" cellpadding="10">
+        <tr>
+            <th>Aspect</th>
+            <th>Before (Broken)</th>
+            <th>After (Fixed)</th>
+        </tr>
+        <tr>
+            <td>@if Structure</td>
+            <td>Nested (2 levels)</td>
+            <td>Single level</td>
+        </tr>
+        <tr>
+            <td>Condition Check</td>
+            <td>isset() only (loose)</td>
+            <td>isset() && !empty() (strict)</td>
+        </tr>
+        <tr>
+            <td>img Tags</td>
+            <td>2 different tags (conflicting)</td>
+            <td>1 single tag (clear)</td>
+        </tr>
+        <tr>
+            <td>src Attribute</td>
+            <td>2 different values</td>
+            <td>1 with fallback logic</td>
+        </tr>
+        <tr>
+            <td>Result</td>
+            <td>Placeholder text shows (❌)</td>
+            <td>QR image displays (✅)</td>
+        </tr>
+    </table>
+
+    <h2>Applied to 8 Templates:</h2>
+    <ol>
+        <li>✅ Surat Warisan</li>
+        <li>✅ Surat Nikah</li>
+        <li>✅ Surat Tanah</li>
+        <li>✅ Surat Domisili</li>
+        <li>✅ Surat Akta Kelahiran</li>
+        <li>✅ Surat Akta Kematian</li>
+        <li>✅ Surat Keterangan Tidak Mampu</li>
+        <li>✅ Default</li>
+    </ol>
+
+    <h2>What This Means:</h2>
+    <ul style="font-size: 16px; line-height: 1.8;">
+        <li>✅ QR code barcode akan MUNCUL di preview surat</li>
+        <li>✅ QR code akan MUNCUL di PDF yang di-generate</li>
+        <li>✅ Pengguna dapat scan QR untuk verifikasi ttd kepala desa</li>
+        <li>✅ Placeholder "QR Code (belum di-generate)" hanya muncul jika belum ada signature</li>
+        <li>✅ Semua 8 jenis surat memiliki QR code yang sama</li>
+    </ul>
+
+</body>
+
+</html>

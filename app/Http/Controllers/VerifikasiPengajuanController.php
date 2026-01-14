@@ -172,7 +172,23 @@ class VerifikasiPengajuanController extends Controller
      */
     public function previewSurat(PengajuanSurat $pengajuan)
     {
-        return view('admin.pengajuan.preview-surat', compact('pengajuan'));
+        // Generate QR code jika belum ada signature token
+        if (!$pengajuan->signature_token) {
+            $signatureToken = \App\Helpers\QrCodeGenerator::generateSignatureToken($pengajuan->id, Auth::id());
+            $pengajuan->update([
+                'signature_token' => $signatureToken,
+                'signature_generated_at' => now()
+            ]);
+        }
+
+        // Generate QR SVG (on-demand, no file needed)
+        $qrSvg = null;
+        if ($pengajuan->signature_token && $pengajuan->signature_generated_at) {
+            $qrUrl = \App\Helpers\QrCodeGenerator::generateQrUrl($pengajuan->signature_token);
+            $qrSvg = \App\Helpers\QrCodeGenerator::generateSvgBase64($qrUrl);
+        }
+
+        return view('admin.pengajuan.preview-surat', compact('pengajuan', 'qrSvg'));
     }
 
     /**
@@ -222,8 +238,25 @@ class VerifikasiPengajuanController extends Controller
             return back()->with('error', 'PDF generator not available. Please install "barryvdh/laravel-dompdf" (run: composer require barryvdh/laravel-dompdf).');
         }
 
-        // Render HTML from Blade
-        $html = view('pengajuan.pdf', compact('pengajuan'))->render();
+        // Generate signature token untuk QR code ALWAYS (untuk memastikan ada)
+        if (!$pengajuan->signature_token) {
+            $signatureToken = \App\Helpers\QrCodeGenerator::generateSignatureToken($pengajuan->id, Auth::id());
+            $pengajuan->update([
+                'signature_token' => $signatureToken,
+                'signature_generated_at' => now()
+            ]);
+            // Refresh data dari database untuk memastikan token tersimpan
+            $pengajuan->refresh();
+        }
+
+        // Generate QR SVG (on-demand, no file needed)
+        $qrSvg = null;
+        $qrUrl = \App\Helpers\QrCodeGenerator::generateQrUrl($pengajuan->signature_token);
+        $qrSvg = \App\Helpers\QrCodeGenerator::generateSvgBase64($qrUrl);
+        
+        // Render HTML from Blade - gunakan data terbaru dari database
+        $pengajuanFresh = PengajuanSurat::find($pengajuan->id);
+        $html = view('pengajuan.pdf', ['pengajuan' => $pengajuanFresh, 'qrSvg' => $qrSvg])->render();
 
         $filename = time() . '_' . preg_replace('/[^A-Za-z0-9\-_]/', '_', $pengajuan->nomor_pengajuan) . '.pdf';
         $directory = 'surat_hasil';
@@ -291,8 +324,24 @@ class VerifikasiPengajuanController extends Controller
         $path = $fullDirectory . DIRECTORY_SEPARATOR . ($filename ?? '');
 
         if (!$filename || !file_exists($path)) {
+            // Generate signature token jika belum ada
+            if (!$pengajuan->signature_token) {
+                $signatureToken = \App\Helpers\QrCodeGenerator::generateSignatureToken($pengajuan->id, Auth::id());
+                $pengajuan->update([
+                    'signature_token' => $signatureToken,
+                    'signature_generated_at' => now()
+                ]);
+            }
+
+            // Generate QR SVG (on-demand, no file needed)
+            $qrSvg = null;
+            if ($pengajuan->signature_token && $pengajuan->signature_generated_at) {
+                $qrUrl = \App\Helpers\QrCodeGenerator::generateQrUrl($pengajuan->signature_token);
+                $qrSvg = \App\Helpers\QrCodeGenerator::generateSvgBase64($qrUrl);
+            }
+
             // Generate PDF (similar to generateSurat but without redirect)
-            $html = view('pengajuan.pdf', compact('pengajuan'))->render();
+            $html = view('pengajuan.pdf', ['pengajuan' => $pengajuan, 'qrSvg' => $qrSvg])->render();
             $filename = time() . '_' . preg_replace('/[^A-Za-z0-9\-_]/', '_', $pengajuan->nomor_pengajuan) . '.pdf';
 
             try {

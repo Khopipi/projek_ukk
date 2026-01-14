@@ -35,7 +35,9 @@ class PengajuanSurat extends Model
         'tanggal_ditolak',
         'tanggal_selesai',
         'diproses_oleh',
-        'file_surat_hasil'
+        'file_surat_hasil',
+        'signature_token',
+        'signature_generated_at'
     ];
 
     protected $casts = [
@@ -43,6 +45,7 @@ class PengajuanSurat extends Model
         'tanggal_disetujui' => 'datetime',
         'tanggal_ditolak' => 'datetime',
         'tanggal_selesai' => 'datetime',
+        'signature_generated_at' => 'datetime',
         'data_tambahan' => 'array'
     ];
 
@@ -94,7 +97,21 @@ class PengajuanSurat extends Model
             if (empty($model->nomor_pengajuan)) {
                 $model->nomor_pengajuan = self::generateNomorPengajuan();
             }
+            
+            // Auto-generate QR code token saat membuat pengajuan baru
+            if (empty($model->signature_token)) {
+                try {
+                    // Generate token yang akan di-encode ke QR SVG
+                    $userId = auth()?->id() ?? 1;
+                    $model->signature_token = \App\Helpers\QrCodeGenerator::generateSignatureToken($model->id ?? time(), $userId);
+                    $model->signature_generated_at = now();
+                } catch (\Exception $e) {
+                    // Silent fail - akan di-generate saat akses
+                }
+            }
         });
+
+        // Note: QR SVG di-generate on-demand di component, tidak perlu disimpan ke file
     }
 
     /**
@@ -313,5 +330,49 @@ class PengajuanSurat extends Model
         }
 
         return $docs;
+    }
+
+    /**
+     * Ensure QR code is generated - if token doesn't exist, generate it
+     * Safe to call multiple times (idempotent)
+     */
+    public function ensureQrCode()
+    {
+        if (empty($this->signature_token)) {
+            try {
+                $userId = auth()?->id() ?? $this->user_id ?? 1;
+                $this->signature_token = \App\Helpers\QrCodeGenerator::generateSignatureToken($this->id, $userId);
+                $this->signature_generated_at = now();
+                $this->save();
+                return true;
+            } catch (\Exception $e) {
+                return false;
+            }
+        }
+        return false; // Already exists
+    }
+
+    /**
+     * Get QR code SVG as base64 data URI
+     * Deprecated: Use qr-code-section component instead
+     * This method is kept for backward compatibility only
+     */
+    public function getQrCodePath()
+    {
+        // Ensure token exists first
+        if (empty($this->signature_token)) {
+            $this->ensureQrCode();
+        }
+
+        if ($this->signature_token) {
+            try {
+                $qrUrl = \App\Helpers\QrCodeGenerator::generateQrUrl($this->signature_token);
+                return \App\Helpers\QrCodeGenerator::generateSvgBase64($qrUrl);
+            } catch (\Exception $e) {
+                return null;
+            }
+        }
+
+        return null;
     }
 }

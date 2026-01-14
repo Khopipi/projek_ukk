@@ -1,6 +1,30 @@
 @extends('layouts.dashboard')
 @section('title', 'Tambah Data Kematian')
 @section('content')
+    <style>
+        /* Prevent horizontal scrollbar */
+        body, html {
+            overflow-x: hidden;
+            max-width: 100%;
+        }
+
+        .pc-container {
+            overflow-x: hidden !important;
+        }
+
+        @media (max-width: 1400px) {
+            .pc-container .pc-content {
+                padding-left: 20px !important;
+                padding-right: 20px !important;
+            }
+        }
+        @media (max-width: 992px) {
+            .pc-container .pc-content {
+                padding-left: 15px !important;
+                padding-right: 15px !important;
+            }
+        }
+    </style>
     <div class="pc-content">
         <!-- Breadcrumb -->
         <div class="page-header">

@@ -26,8 +26,7 @@ class UserProfileController extends Controller
         $user = Auth::user();
 
         $rules = [
-            'nik' => 'required|digits:16|unique:users,nik,' . $user->id,
-            'no_kk' => 'required|digits:16|unique:users,no_kk,' . $user->id,
+            // NIK dan No. KK TIDAK BISA di-update (readonly)
             'name' => 'required|string|max:255',
             'tempat_lahir' => 'required|string|max:255',
             'tanggal_lahir' => 'required|date|before:today',
@@ -55,6 +54,14 @@ class UserProfileController extends Controller
         // If password not provided or empty, remove it so it won't override existing password
         if (empty($data['password'] ?? null)) {
             unset($data['password']);
+        }
+
+        // Ensure NIK and No. KK cannot be modified (defense in depth)
+        if (isset($data['nik'])) {
+            unset($data['nik']);
+        }
+        if (isset($data['no_kk'])) {
+            unset($data['no_kk']);
         }
 
         // Update user (Eloquent)
