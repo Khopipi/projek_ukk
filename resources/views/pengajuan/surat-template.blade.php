@@ -5,9 +5,9 @@
 <div class="surat">
     <div class="content">
         <div class="header">
-            <div style="display: flex; align-items: flex-start; margin-bottom: 10px;">
-                <img src="{{ asset('assets/images/my/logo_Sidoarjo.svg.png') }}" alt="Logo Sidoarjo" style="width: 60px; height: 60px; margin-right: 15px; flex-shrink: 0;">
-                <div style="text-align: center; flex: 1;">
+            <div style="position: relative; text-align: center; margin-bottom: 10px;">
+                <img src="{{ asset('assets/images/my/logo_Sidoarjo.svg.png') }}" alt="Logo Sidoarjo" style="position: absolute; left: 0; top: 0; width: 60px; height: 60px;">
+                <div style="text-align: center;">
                     <div class="header-title">PEMERINTAH DESA SRUNI</div>
                     <div class="header-subtitle">SURAT KETERANGAN WARISAN</div>
                     <div class="nomor" style="font-size: 11px; margin-top: 3px;">No. {{ $pengajuan->nomor_pengajuan ?? 'Draft' }}</div>
@@ -93,9 +93,9 @@
 <div class="surat">
     <div class="content">
         <div class="header">
-            <div style="display: flex; align-items: flex-start; margin-bottom: 10px;">
-                <img src="{{ asset('assets/images/my/logo_Sidoarjo.svg.png') }}" alt="Logo Sidoarjo" style="width: 60px; height: 60px; margin-right: 15px; flex-shrink: 0;">
-                <div style="text-align: center; flex: 1;">
+            <div style="position: relative; text-align: center; margin-bottom: 10px;">
+                <img src="{{ asset('assets/images/my/logo_Sidoarjo.svg.png') }}" alt="Logo Sidoarjo" style="position: absolute; left: 0; top: 0; width: 60px; height: 60px;">
+                <div style="text-align: center;">
                     <div class="header-title">PEMERINTAH DESA SRUNI</div>
                     <div class="header-subtitle">SURAT KETERANGAN PENCATATAN PERKAWINAN</div>
                     <div class="nomor" style="font-size: 11px; margin-top: 3px;">No. {{ $pengajuan->nomor_pengajuan ?? 'Draft' }}</div>
@@ -188,9 +188,9 @@
 <div class="surat">
     <div class="content">
         <div class="header">
-            <div style="display: flex; align-items: flex-start; margin-bottom: 10px;">
-                <img src="{{ asset('assets/images/my/logo_Sidoarjo.svg.png') }}" alt="Logo Sidoarjo" style="width: 60px; height: 60px; margin-right: 15px; flex-shrink: 0;">
-                <div style="text-align: center; flex: 1;">
+            <div style="position: relative; text-align: center; margin-bottom: 10px;">
+                <img src="{{ asset('assets/images/my/logo_Sidoarjo.svg.png') }}" alt="Logo Sidoarjo" style="position: absolute; left: 0; top: 0; width: 60px; height: 60px;">
+                <div style="text-align: center;">
                     <div class="header-title">PEMERINTAH DESA SRUNI</div>
                     <div class="header-subtitle">SURAT KETERANGAN</div>
                     <div class="nomor" style="font-size: 11px; margin-top: 3px;">No. {{ $pengajuan->nomor_pengajuan ?? 'Draft' }}</div>
@@ -268,9 +268,9 @@
 <div class="surat">
     <div class="content">
         <div class="header">
-            <div style="display: flex; align-items: flex-start; margin-bottom: 10px;">
-                <img src="{{ asset('assets/images/my/logo_Sidoarjo.svg.png') }}" alt="Logo Sidoarjo" style="width: 60px; height: 60px; margin-right: 15px; flex-shrink: 0;">
-                <div style="text-align: center; flex: 1;">
+            <div style="position: relative; text-align: center; margin-bottom: 10px;">
+                <img src="{{ asset('assets/images/my/logo_Sidoarjo.svg.png') }}" alt="Logo Sidoarjo" style="position: absolute; left: 0; top: 0; width: 60px; height: 60px;">
+                <div style="text-align: center;">
                     <div class="header-title">PEMERINTAH DESA SRUNI</div>
                     <div class="header-subtitle">SURAT KETERANGAN DOMISILI</div>
                     <div class="nomor" style="font-size: 11px; margin-top: 3px;">No. {{ $pengajuan->nomor_pengajuan ?? 'Draft' }}</div>
@@ -353,9 +353,9 @@
 <div class="surat">
     <div class="content">
         <div class="header">
-            <div style="display: flex; align-items: flex-start; margin-bottom: 10px;">
-                <img src="{{ asset('assets/images/my/logo_Sidoarjo.svg.png') }}" alt="Logo Sidoarjo" style="width: 60px; height: 60px; margin-right: 15px; flex-shrink: 0;">
-                <div style="text-align: center; flex: 1;">
+            <div style="position: relative; text-align: center; margin-bottom: 10px;">
+                <img src="{{ asset('assets/images/my/logo_Sidoarjo.svg.png') }}" alt="Logo Sidoarjo" style="position: absolute; left: 0; top: 0; width: 60px; height: 60px;">
+                <div style="text-align: center;">
                     <div class="header-title">PEMERINTAH DESA SRUNI</div>
                     <div class="header-subtitle">SURAT KETERANGAN KELAHIRAN</div>
                     <div class="nomor" style="font-size: 11px; margin-top: 3px;">No. {{ $pengajuan->nomor_pengajuan ?? 'Draft' }}</div>
@@ -436,9 +436,9 @@
 <div class="surat">
     <div class="content">
         <div class="header">
-            <div style="display: flex; align-items: flex-start; margin-bottom: 10px;">
-                <img src="{{ asset('assets/images/my/logo_Sidoarjo.svg.png') }}" alt="Logo Sidoarjo" style="width: 60px; height: 60px; margin-right: 15px; flex-shrink: 0;">
-                <div style="text-align: center; flex: 1;">
+            <div style="position: relative; text-align: center; margin-bottom: 10px;">
+                <img src="{{ asset('assets/images/my/logo_Sidoarjo.svg.png') }}" alt="Logo Sidoarjo" style="position: absolute; left: 0; top: 0; width: 60px; height: 60px;">
+                <div style="text-align: center;">
                     <div class="header-title">PEMERINTAH DESA SRUNI</div>
                     <div class="header-subtitle">SURAT AKTA KEMATIAN</div>
                     <div class="nomor" style="font-size: 11px; margin-top: 3px;">No. {{ $pengajuan->nomor_pengajuan ?? 'Draft' }}</div>
@@ -510,9 +510,9 @@
 <div class="surat">
     <div class="content">
          <div class="header">
-            <div style="display: flex; align-items: flex-start; margin-bottom: 10px;">
-                <img src="{{ asset('assets/images/my/logo_Sidoarjo.svg.png') }}" alt="Logo Sidoarjo" style="width: 60px; height: 60px; margin-right: 15px; flex-shrink: 0;">
-                <div style="text-align: center; flex: 1;">
+            <div style="position: relative; text-align: center; margin-bottom: 10px;">
+                <img src="{{ asset('assets/images/my/logo_Sidoarjo.svg.png') }}" alt="Logo Sidoarjo" style="position: absolute; left: 0; top: 0; width: 60px; height: 60px;">
+                <div style="text-align: center;">
                     <div class="header-title">PEMERINTAH DESA SRUNI</div>
                     <div class="header-subtitle">SURAT KETERANGAN TIDAK MAMPU</div>
                     <div class="nomor" style="font-size: 11px; margin-top: 3px;">No. {{ $pengajuan->nomor_pengajuan ?? 'Draft' }}</div>
@@ -580,9 +580,9 @@
 <div class="surat">
     <div class="content">
         <div class="header">
-            <div style="display: flex; align-items: flex-start; margin-bottom: 10px;">
-                <img src="{{ asset('assets/images/my/logo_Sidoarjo.svg.png') }}" alt="Logo Sidoarjo" style="width: 60px; height: 60px; margin-right: 15px; flex-shrink: 0;">
-                <div style="text-align: center; flex: 1;">
+            <div style="position: relative; text-align: center; margin-bottom: 10px;">
+                <img src="{{ asset('assets/images/my/logo_Sidoarjo.svg.png') }}" alt="Logo Sidoarjo" style="position: absolute; left: 0; top: 0; width: 60px; height: 60px;">
+                <div style="text-align: center;">
                     <div class="header-title">PEMERINTAH DESA SRUNI</div>
                     <div class="header-subtitle">SURAT HASIL PENGAJUAN</div>
                     <div class="nomor" style="font-size: 11px; margin-top: 3px;">No. {{ $pengajuan->nomor_pengajuan ?? 'Draft' }}</div>

@@ -26,27 +26,27 @@
             margin-bottom: 20px; 
             border-bottom: 3px solid #000; 
             padding-bottom: 15px; 
+            position: relative;
+            text-align: center;
         }
         .header-row { 
-            display: table; 
+            position: relative;
             width: 100%; 
             margin-bottom: 10px;
+            text-align: center;
         }
         .header-logo { 
-            display: table-cell; 
-            width: 70px; 
-            text-align: center; 
-            vertical-align: top;
-            padding-right: 15px;
+            position: absolute;
+            left: 0; 
+            top: 0;
+            width: 70px;
         }
         .header-logo img { 
             width: 60px; 
             height: 60px; 
         }
         .header-text { 
-            display: table-cell; 
-            text-align: center; 
-            vertical-align: top;
+            text-align: center;
         }
         .header-title { 
             font-size: 13px; 
