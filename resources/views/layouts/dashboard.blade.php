@@ -219,6 +219,18 @@
                 right: 0 !important;
                 left: 260px !important;
                 z-index: 1000 !important;
+                overflow-x: hidden !important;
+                transition: left 0.15s ease !important;
+            }
+
+            /* Header responsive when sidebar is hidden */
+            .pc-sidebar.pc-sidebar-hide ~ .pc-header {
+                left: 0 !important;
+                width: 100% !important;
+            }
+
+            .pc-sidebar ~ .pc-header {
+                width: calc(100% - 260px) !important;
             }
 
             .pc-header .header-search input {

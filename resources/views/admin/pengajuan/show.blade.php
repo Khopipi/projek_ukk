@@ -270,31 +270,31 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="mb-1" style="color: #d0d7ff;">Nama Lengkap</label>
+                                <label class="mb-1" style="color: #808080;">Nama Lengkap</label>
                                 <p class="fw-bold">{{ $pengajuan->nama_pemohon }}</p>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="mb-1" style="color: #d0d7ff;">NIK</label>
+                                <label class="mb-1" style="color: #808080;">NIK</label>
                                 <p class="fw-bold">{{ $pengajuan->nik_pemohon }}</p>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="mb-1" style="color: #d0d7ff;">Tempat, Tanggal Lahir</label>
+                                <label class="mb-1" style="color: #808080;">Tempat, Tanggal Lahir</label>
                                 <p class="fw-bold">{{ $pengajuan->tempat_lahir_pemohon }}, {{ optional($pengajuan->tanggal_lahir_pemohon)->format('d F Y') ?? '-' }}</p>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="mb-1" style="color: #d0d7ff;">Jenis Kelamin</label>
+                                <label class="mb-1" style="color: #808080;">Jenis Kelamin</label>
                                 <p class="fw-bold">{{ $pengajuan->jenis_kelamin_pemohon }}</p>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="mb-1" style="color: #d0d7ff;">Pekerjaan</label>
+                                <label class="mb-1" style="color: #808080;">Pekerjaan</label>
                                 <p class="fw-bold">{{ $pengajuan->pekerjaan_pemohon }}</p>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="mb-1" style="color: #d0d7ff;">No. Telepon</label>
+                                <label class="mb-1" style="color: #808080;">No. Telepon</label>
                                 <p class="fw-bold">{{ $pengajuan->no_telepon_pemohon }}</p>
                             </div>
                             <div class="col-md-12 mb-0">
-                                <label class="mb-1" style="color: #d0d7ff;">Alamat</label>
+                                <label class="mb-1" style="color: #808080;">Alamat</label>
                                 <p class="fw-bold mb-0">{{ $pengajuan->alamat_pemohon }}</p>
                             </div>
                         </div>
@@ -311,7 +311,7 @@
                             <!-- Base Documents (KTP & KK) - Shown only for types that use them -->
                             @if(in_array($pengajuan->jenis_surat, ['Surat Tanah', 'Surat Domisili']))
                             <div class="col-md-6 mb-3">
-                                <label class="mb-2" style="color: #d0d7ff;">
+                                <label class="mb-2" style="color: #808080;">
                                     <i class="ti ti-id me-1"></i> Foto/Scan KTP
                                 </label>
                                 @if($pengajuan->file_ktp)
@@ -329,7 +329,7 @@
                             </div>
 
                             <div class="col-md-6 mb-3">
-                                <label class="mb-2" style="color: #d0d7ff;">
+                                <label class="mb-2" style="color: #808080;">
                                     <i class="ti ti-users me-1"></i> Foto/Scan KK
                                 </label>
                                 @if($pengajuan->file_kk)
@@ -355,12 +355,12 @@
                             @if(count($specialDocs) > 0)
                             <div class="col-md-12">
                                 <hr>
-                                <h6 class="mb-3" style="color: #d0d7ff;">Dokumen Khusus untuk {{ $pengajuan->data_tambahan['jenis_surat_asli'] ?? $pengajuan->jenis_surat }}</h6>
+                                <h6 class="mb-3" style="color: #808080;">Dokumen Khusus untuk {{ $pengajuan->data_tambahan['jenis_surat_asli'] ?? $pengajuan->jenis_surat }}</h6>
                             </div>
                             
                             @foreach($specialDocs as $fieldName => $doc)
                             <div class="col-lg-4 col-md-6 mb-3">
-                                <label class="mb-2" style="color: #d0d7ff;">
+                                <label class="mb-2" style="color: #808080;">
                                     <i class="ti ti-file me-1"></i> {{ $doc['label'] }}
                                 </label>
                                 <div>
@@ -379,12 +379,12 @@
                             @if($pengajuan->file_pendukung_1_url || $pengajuan->file_pendukung_2_url || $pengajuan->file_pendukung_3_url)
                             <div class="col-md-12">
                                 <hr>
-                                <h6 class="mb-3" style="color: #d0d7ff;">Dokumen Pendukung Tambahan</h6>
+                                <h6 class="mb-3" style="color: #808080;">Dokumen Pendukung Tambahan</h6>
                             </div>
                             
                             @if($pengajuan->file_pendukung_1_url)
                             <div class="col-md-4 mb-3">
-                                <label class="mb-2" style="color: #d0d7ff;">
+                                <label class="mb-2" style="color: #808080;">
                                     <i class="ti ti-file me-1"></i> Dokumen Pendukung 1
                                 </label>
                                 <div>
@@ -400,7 +400,7 @@
 
                             @if($pengajuan->file_pendukung_2_url)
                             <div class="col-md-4 mb-3">
-                                <label class="mb-2" style="color: #d0d7ff;">
+                                <label class="mb-2" style="color: #808080;">
                                     <i class="ti ti-file me-1"></i> Dokumen Pendukung 2
                                 </label>
                                 <div>
@@ -416,7 +416,7 @@
 
                             @if($pengajuan->file_pendukung_3_url)
                             <div class="col-md-4 mb-3">
-                                <label class="mb-2" style="color: #d0d7ff;">
+                                <label class="mb-2" style="color: #808080;">
                                     <i class="ti ti-file me-1"></i> Dokumen Pendukung 3
                                 </label>
                                 <div>

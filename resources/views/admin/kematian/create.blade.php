@@ -182,6 +182,59 @@
                                 });
                             </script>
 
+                            <!-- NIK -->
+                            <div class="mb-3">
+                                <label class="form-label">NIK <span class="text-danger">*</span></label>
+                                <input type="text" name="nik" class="form-control @error('nik') is-invalid @enderror" 
+                                       placeholder="Nomor Identitas (16 digit)" value="{{ old('nik') }}" maxlength="16" required>
+                                @error('nik')
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <!-- Tanggal Lahir -->
+                            <div class="mb-3">
+                                <label class="form-label">Tanggal Lahir <span class="text-danger">*</span></label>
+                                <input type="date" name="tanggal_lahir" class="form-control @error('tanggal_lahir') is-invalid @enderror" 
+                                       value="{{ old('tanggal_lahir') }}" required>
+                                @error('tanggal_lahir')
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <!-- Tempat Lahir -->
+                            <div class="mb-3">
+                                <label class="form-label">Tempat Lahir <span class="text-danger">*</span></label>
+                                <input type="text" name="tempat_lahir" class="form-control @error('tempat_lahir') is-invalid @enderror"
+                                       placeholder="Contoh: Kota, Kabupaten" value="{{ old('tempat_lahir') }}" required>
+                                @error('tempat_lahir')
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <!-- Jenis Kelamin -->
+                            <div class="mb-3">
+                                <label class="form-label">Jenis Kelamin <span class="text-danger">*</span></label>
+                                <select name="jenis_kelamin" class="form-select @error('jenis_kelamin') is-invalid @enderror" required>
+                                    <option value="">-- Pilih --</option>
+                                    <option value="Laki-laki" {{ old('jenis_kelamin') == 'Laki-laki' ? 'selected' : '' }}>Laki-laki</option>
+                                    <option value="Perempuan" {{ old('jenis_kelamin') == 'Perempuan' ? 'selected' : '' }}>Perempuan</option>
+                                </select>
+                                @error('jenis_kelamin')
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <!-- Alamat Lengkap -->
+                            <div class="mb-3">
+                                <label class="form-label">Alamat Lengkap <span class="text-danger">*</span></label>
+                                <textarea name="alamat_lengkap" class="form-control @error('alamat_lengkap') is-invalid @enderror" 
+                                          rows="3" placeholder="Jalan, nomor rumah, kelurahan, kecamatan, kota" required>{{ old('alamat_lengkap') }}</textarea>
+                                @error('alamat_lengkap')
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+                            </div>
+
                             <!-- Tanggal Kematian -->
                             <div class="mb-3">
                                 <label class="form-label">Tanggal Kematian <span class="text-danger">*</span></label>
@@ -212,16 +265,11 @@
                                 @enderror
                             </div>
 
-                            <!-- RS atau Rumah -->
+                            <!-- Lokasi Kematian -->
                             <div class="mb-3">
                                 <label class="form-label">Lokasi Kematian</label>
-                                <select name="rs_atau_rumah" class="form-select @error('rs_atau_rumah') is-invalid @enderror">
-                                    <option value="">-- Pilih --</option>
-                                    <option value="Rumah Sakit" {{ old('rs_atau_rumah') == 'Rumah Sakit' ? 'selected' : '' }}>Rumah Sakit</option>
-                                    <option value="Rumah" {{ old('rs_atau_rumah') == 'Rumah' ? 'selected' : '' }}>Rumah</option>
-                                    <option value="Jalan" {{ old('rs_atau_rumah') == 'Jalan' ? 'selected' : '' }}>Jalan</option>
-                                    <option value="Lainnya" {{ old('rs_atau_rumah') == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
-                                </select>
+                                <input type="text" name="rs_atau_rumah" class="form-control @error('rs_atau_rumah') is-invalid @enderror"
+                                       placeholder="Contoh: Rumah Sakit, Rumah, Jalan, Tempat Lainnya" value="{{ old('rs_atau_rumah') }}">
                                 @error('rs_atau_rumah')
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
@@ -233,16 +281,6 @@
                                 <input type="text" name="usia_saat_meninggal" class="form-control @error('usia_saat_meninggal') is-invalid @enderror"
                                        placeholder="Contoh: 45 tahun, 2 bulan, dll" value="{{ old('usia_saat_meninggal') }}">
                                 @error('usia_saat_meninggal')
-                                <div class="invalid-feedback d-block">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <!-- Nama Diperiksa Oleh -->
-                            <div class="mb-3">
-                                <label class="form-label">Diperiksa Oleh (Nama Dokter/Petugas)</label>
-                                <input type="text" name="nama_diperiksa_oleh" class="form-control @error('nama_diperiksa_oleh') is-invalid @enderror"
-                                       placeholder="Nama dokter atau petugas kesehatan" value="{{ old('nama_diperiksa_oleh') }}">
-                                @error('nama_diperiksa_oleh')
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
                             </div>

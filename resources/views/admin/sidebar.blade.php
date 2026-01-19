@@ -95,38 +95,7 @@
         font-size: 14px !important;
     }
 
-    /* ===== BADGE ICON ANIMATION ===== */
-    .badge-icon {
-        position: absolute !important;
-        font-size: 16px !important;
-        margin-left: 28px !important;
-        margin-top: -8px !important;
-        display: inline-block !important;
-        animation: float-elegant 2.5s ease-in-out infinite !important;
-    }
 
-    .pc-navbar .pc-item .pc-link.active .badge-icon,
-    .pc-navbar .pc-item.active .pc-link .badge-icon {
-        animation: float-active 2.5s ease-in-out infinite !important;
-    }
-
-    @keyframes float-elegant {
-        0% { transform: translateY(0) rotate(0) scale(1); opacity: 0.7; }
-        50% { transform: translateY(-6px) rotate(-3deg) scale(1.1); opacity: 1; }
-        100% { transform: translateY(0) rotate(0) scale(1); opacity: 0.7; }
-    }
-
-    @keyframes float-active {
-        0% { transform: translateY(0) rotate(0) scale(1.1); opacity: 1; }
-        50% { transform: translateY(-8px) rotate(5deg) scale(1.2); opacity: 1; }
-        100% { transform: translateY(0) rotate(0) scale(1.1); opacity: 1; }
-    }
-
-    /* ===== SIDEBAR SPECIFIC ANIMATIONS ===== */
-    .sidebar-penduduk .badge-icon { animation-delay: 0s; }
-    .sidebar-pengajuan .badge-icon { animation-delay: 0.3s; }
-    .sidebar-pengaduan .badge-icon { animation-delay: 0.6s; }
-    .sidebar-kematian .badge-icon { animation-delay: 0.9s; }
 
     /* ===== RESPONSIVE ===== */
     @media (max-width: 767px) {
@@ -227,7 +196,6 @@
     <a href="{{ route('penduduk.index') }}" class="pc-link sidebar-penduduk">
         <span class="pc-micon"><i class="ti ti-users"></i></span>
         <span class="pc-mtext">Data Penduduk</span>
-        <span class="badge-icon">👥</span>
     </a>
 </li>
 
@@ -241,7 +209,6 @@
         @if($pengajuanMenunggu > 0)
             <span class="badge badge-notification">{{ $pengajuanMenunggu }}</span>
         @endif
-        <span class="badge-icon">✅</span>
     </a>
 </li>
 
@@ -255,14 +222,12 @@
         @if($pengaduanMenunggu > 0)
             <span class="badge badge-notification">{{ $pengaduanMenunggu }}</span>
         @endif
-        <span class="badge-icon">💬</span>
     </a>
 </li>
 
 <li class="pc-item">
     <a href="{{ route('admin.kematian.index') }}" class="pc-link sidebar-kematian">
-        <span class="pc-micon"><i class="ti ti-death-icon"></i></span>
+        <span class="pc-micon"><i class="ti ti-coffin"></i></span>
         <span class="pc-mtext">Data Kematian</span>
-        <span class="badge-icon">⚰️</span>
     </a>
 </li>
