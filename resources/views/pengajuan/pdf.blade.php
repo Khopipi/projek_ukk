@@ -9,30 +9,30 @@
         body { 
             font-family: 'Calibri', 'Arial', sans-serif; 
             color: #000; 
-            font-size: 11px; 
-            line-height: 1.6; 
+            font-size: 14px; 
+            line-height: 1.5; 
             background: #fff;
         }
         .surat { 
             max-width: 800px; 
             margin: 0 auto; 
             background: #fff; 
-            padding: 30px 40px; 
+            padding: 20px 30px; 
             min-height: 100vh; 
         }
-        .content { margin-bottom: 20px; }
-        .footer-content { margin-top: 40px; }
+        .content { margin-bottom: 15px; }
+        .footer-content { margin-top: 30px; }
         .header { 
-            margin-bottom: 20px; 
+            margin-bottom: 15px; 
             border-bottom: 3px solid #000; 
-            padding-bottom: 15px; 
+            padding-bottom: 10px; 
             position: relative;
             text-align: center;
         }
         .header-row { 
             position: relative;
             width: 100%; 
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             text-align: center;
         }
         .header-logo { 
@@ -49,42 +49,42 @@
             text-align: center;
         }
         .header-title { 
-            font-size: 13px; 
+            font-size: 15px; 
             font-weight: bold; 
             color: #000; 
-            margin-bottom: 2px; 
+            margin-bottom: 1px; 
             letter-spacing: 0.5px; 
         }
         .header-subtitle { 
-            font-size: 12px; 
+            font-size: 14px; 
             font-weight: bold;
             color: #000; 
-            margin-bottom: 3px; 
+            margin-bottom: 2px; 
             letter-spacing: 0.3px; 
         }
         .nomor { 
-            font-size: 11px; 
+            font-size: 13px; 
             color: #333; 
-            margin-top: 3px; 
+            margin-top: 2px; 
         }
         table { 
             width: 100%; 
             border-collapse: collapse; 
-            margin: 10px 0;
+            margin: 8px 0;
         }
         td {
-            padding: 4px 0;
-            font-size: 11px;
-            line-height: 1.6;
+            padding: 3px 0;
+            font-size: 14px;
+            line-height: 1.5;
         }
         p {
-            margin: 10px 0;
-            font-size: 11px;
-            line-height: 1.8;
+            margin: 8px 0;
+            font-size: 14px;
+            line-height: 1.6;
             text-align: justify;
         }
         .signature-section { 
-            margin-top: 30px; 
+            margin-top: 25px; 
             text-align: right;
         }
         .signature-box { 
@@ -96,17 +96,23 @@
         .signature-line { 
             border-top: 1px solid #000; 
             width: 100%; 
-            margin: 40px 0 3px 0; 
+            margin: 35px 0 2px 0; 
         }
         .signature-name { 
             font-weight: bold; 
-            margin-top: 5px; 
-            font-size: 11px;
+            margin-top: 3px; 
+            font-size: 13px;
         }
         .qr-section {
             text-align: center;
-            margin: 10px 0;
+            margin: 8px 0;
         }
+        /* Global font size override untuk consistency */
+        * { font-size: 14px !important; }
+        .header-title { font-size: 15px !important; }
+        .header-subtitle { font-size: 14px !important; }
+        .nomor { font-size: 13px !important; }
+        .signature-name { font-size: 13px !important; }
     </style>
 </head>
 <body>
@@ -313,7 +319,7 @@
                 </div>
                 <div class="header-text">
                     <div class="header-title">PEMERINTAH DESA SRUNI</div>
-                    <div class="header-subtitle">SURAT KETERANGAN</div>
+                    <div class="header-subtitle">SURAT KEPEMILIKAN TANAH</div>
                     <div class="nomor">No. {{ $pengajuan->nomor_pengajuan ?? 'Draft' }}</div>
                 </div>
             </div>

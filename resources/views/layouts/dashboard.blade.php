@@ -208,6 +208,57 @@
                 transform: translateX(5px) !important;
             }
 
+            /* ===== SIDEBAR LOGOUT BUTTON ===== */
+            .pc-sidebar .navbar-content {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .pc-sidebar .pc-navbar {
+                flex: 1;
+            }
+
+            .sidebar-logout-container {
+                padding: 16px 20px;
+                border-top: 2px solid #e9ecef;
+                margin-top: auto;
+                background: linear-gradient(135deg, #fef5f7 0%, #fff8fa 100%);
+            }
+
+            .sidebar-logout-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 100%;
+                gap: 8px;
+                padding: 12px 16px;
+                background: linear-gradient(135deg, #f5365c 0%, #e91e63 100%);
+                color: white !important;
+                border: none;
+                border-radius: 8px;
+                font-weight: 700;
+                font-size: 13px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 12px rgba(245, 54, 92, 0.2);
+                text-decoration: none;
+            }
+
+            .sidebar-logout-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 20px rgba(245, 54, 92, 0.3);
+                color: white !important;
+                background: linear-gradient(135deg, #e91e63 0%, #d81b60 100%);
+            }
+
+            .sidebar-logout-btn:active {
+                transform: translateY(0px);
+            }
+
+            .sidebar-logout-btn i {
+                font-size: 16px;
+            }
+
             /* ===== HEADER PREMIUM ===== */
             .pc-header {
                 background: white !important;
@@ -219,7 +270,7 @@
                 right: 0 !important;
                 left: 260px !important;
                 z-index: 1000 !important;
-                overflow-x: hidden !important;
+                overflow: visible !important;
                 transition: left 0.15s ease !important;
             }
 
@@ -290,6 +341,54 @@
                 transform: translateY(-1px) !important;
                 box-shadow: 0 4px 12px rgba(91, 110, 245, 0.15) !important;
                 color: #5b6ef5 !important;
+            }
+
+            /* Dropdown menu styling - prevent cutoff */
+            .pc-header .dropdown-menu {
+                z-index: 10000 !important;
+                position: fixed !important;
+                min-width: 250px !important;
+                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15) !important;
+                border: 1px solid #e9ecef !important;
+                border-radius: 10px !important;
+            }
+
+            .pc-header .dropdown-menu-end {
+                right: 35px !important;
+                left: auto !important;
+            }
+
+            /* Logout button styling */
+            .dropdown-item {
+                padding: 10px 20px !important;
+                color: #2d3748 !important;
+                transition: all 0.3s ease !important;
+                font-weight: 500;
+            }
+
+            .dropdown-item:hover {
+                background: #f0f2ff !important;
+                color: #5b6ef5 !important;
+                transform: translateX(5px) !important;
+            }
+
+            .dropdown-item i {
+                margin-right: 10px;
+                font-size: 16px;
+            }
+
+            /* Logout button specific styling */
+            .dropdown-user-profile .dropdown-item[onclick*="logout"],
+            .dropdown-user-profile form .dropdown-item {
+                border-top: 1px solid #e9ecef;
+                margin-top: 10px;
+                padding-top: 12px !important;
+                color: #f5365c !important;
+            }
+
+            .dropdown-user-profile form .dropdown-item:hover {
+                background: #fff5f7 !important;
+                color: #f5365c !important;
             }
 
             /* ===== CONTAINER WITH FIXED HEADER ===== */
@@ -651,6 +750,18 @@
                             @endif
                         @endauth
                     </ul>
+                    
+                    @auth
+                    <div class="sidebar-logout-container">
+                        <form action="{{ route('logout') }}" method="POST" style="width: 100%;">
+                            @csrf
+                            <button type="submit" class="sidebar-logout-btn">
+                                <i class="ti ti-power"></i>
+                                <span>Logout</span>
+                            </button>
+                        </form>
+                    </div>
+                    @endauth
                 </div>
             </div>
         </nav>

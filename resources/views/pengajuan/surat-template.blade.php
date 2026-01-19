@@ -1,4 +1,16 @@
 <!-- Template Surat Hasil Profesional per Jenis Surat -->
+<style>
+    .surat { 
+        font-size: 14px !important; 
+        line-height: 1.5;
+    }
+    .surat table {
+        font-size: 14px !important;
+    }
+    .surat p, .surat div {
+        font-size: 14px !important;
+    }
+</style>
 
 @if($pengajuan->jenis_surat === 'Surat Warisan' || ($pengajuan->data_tambahan['jenis_surat_asli'] ?? '') === 'Surat Warisan')
 <!-- SURAT WARISAN -->
