@@ -64,6 +64,21 @@
 
                                 <div class="col-md-6">
                                     <div class="form-group">
+                                        <label class="form-label">Prioritas <span class="text-danger">*</span></label>
+                                        <select name="prioritas" class="form-select @error('prioritas') is-invalid @enderror" required>
+                                            <option value="">-- Pilih Prioritas --</option>
+                                            <option value="Rendah" {{ old('prioritas') == 'Rendah' ? 'selected' : '' }}>Biasa</option>
+                                            <option value="Sedang" {{ old('prioritas') == 'Sedang' ? 'selected' : '' }}>Mendesak</option>
+                                            <option value="Tinggi" {{ old('prioritas') == 'Tinggi' ? 'selected' : '' }}>Sangat Mendesak</option>
+                                        </select>
+                                        @error('prioritas')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
                                         <label class="form-label">Lokasi Kejadian</label>
                                         <input type="text" name="lokasi" class="form-control @error('lokasi') is-invalid @enderror"
                                                value="{{ old('lokasi') }}" placeholder="Contoh: Jl. Mangga RT 02/RW 03">

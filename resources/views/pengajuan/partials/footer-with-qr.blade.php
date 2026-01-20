@@ -17,8 +17,7 @@
             @endif
             
             <div style="border-top: 1px solid #000; width: 100%; margin: 15px 0 3px 0;"></div>
-            <div style="font-weight: bold; margin-top: 3px; font-size: 11px;">(________________________)</div>
-            <div style="font-size: 10px; color: #333; margin-top: 2px;">NIP: ........................</div>
+            <div style="font-weight: bold; margin-top: 3px; font-size: 11px;">(M.SAIFUL IMADUDDIN, S.KM.,M.KES.)</div>
         </div>
     </div>
 </div>

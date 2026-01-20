@@ -135,6 +135,76 @@
             border-color: #667eea;
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
+
+        /* Custom Pagination Styling */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: nowrap;
+            margin: 0;
+        }
+
+        .pagination .page-link {
+            border: 1px solid #ddd;
+            color: #667eea;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            min-width: 40px;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .pagination .page-link:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .pagination .page-item.active .page-link {
+            background: #667eea;
+            border-color: #667eea;
+            color: white;
+        }
+
+        .pagination .page-item.disabled .page-link {
+            color: #ccc;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        /* Hide all pagination items except first and last */
+        .pagination .page-item {
+            display: none !important;
+        }
+
+        .pagination .page-item:first-child {
+            display: inline-block !important;
+        }
+
+        .pagination .page-item:last-child {
+            display: inline-block !important;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: nowrap;
+        }
+
+        .pagination-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            gap: 8px;
+        }
     </style>
 
     <div class="pc-content">
@@ -392,99 +462,37 @@
                                                         @csrf
                                                         <button type="submit" 
                                                                 class="btn btn-sm btn-warning"
-                                                                title="Tandai Sedang Diproses"
-                                                                onclick="return confirm('Tandai pengajuan ini sedang diproses?')">
+                                                                title="Tandai Sedang Diproses">
                                                             <i class="ti ti-refresh"></i>
                                                         </button>
                                                     </form>
                                                     @endif
                                                     
                                                     @if(in_array($pengajuan->status, ['Menunggu', 'Diproses']))
-                                                    <button type="button" 
-                                                            class="btn btn-sm btn-success"
-                                                            data-bs-toggle="modal" 
-                                                            data-bs-target="#approveModal{{ $pengajuan->id }}"
-                                                            title="Setujui">
-                                                        <i class="ti ti-check"></i>
-                                                    </button>
+                                                    <form action="{{ route('admin.pengajuan.approve', $pengajuan->id) }}" 
+                                                          method="POST" class="d-inline">
+                                                        @csrf
+                                                        <button type="submit" 
+                                                                class="btn btn-sm btn-success"
+                                                                title="Setujui">
+                                                            <i class="ti ti-check"></i>
+                                                        </button>
+                                                    </form>
                                                     
-                                                    <button type="button" 
-                                                            class="btn btn-sm btn-danger"
-                                                            data-bs-toggle="modal" 
-                                                            data-bs-target="#rejectModal{{ $pengajuan->id }}"
-                                                            title="Tolak">
-                                                        <i class="ti ti-x"></i>
-                                                    </button>
+                                                    <form action="{{ route('admin.pengajuan.reject', $pengajuan->id) }}" 
+                                                          method="POST" class="d-inline">
+                                                        @csrf
+                                                        <input type="hidden" name="catatan_admin" value="Ditolak oleh admin">
+                                                        <button type="submit" 
+                                                                class="btn btn-sm btn-danger"
+                                                                title="Tolak">
+                                                            <i class="ti ti-x"></i>
+                                                        </button>
+                                                    </form>
                                                     @endif
                                                 </div>
                                             </td>
                                         </tr>
-
-                                        <!-- Approve Modal -->
-                                        <div class="modal fade" id="approveModal{{ $pengajuan->id }}" tabindex="-1">
-                                            <div class="modal-dialog">
-                                                <form action="{{ route('admin.pengajuan.approve', $pengajuan->id) }}" method="POST">
-                                                    @csrf
-                                                    <div class="modal-content">
-                                                        <div class="modal-header bg-success text-white">
-                                                            <h5 class="modal-title">Setujui Pengajuan</h5>
-                                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <div class="alert alert-info">
-                                                                <strong>{{ $pengajuan->nomor_pengajuan }}</strong><br>
-                                                                {{ $pengajuan->jenis_surat }}<br>
-                                                                Pemohon: {{ $pengajuan->nama_pemohon }}
-                                                            </div>
-                                                            <div class="form-group">
-                                                                <label class="form-label">Catatan (Opsional)</label>
-                                                                <textarea name="catatan_admin" class="form-control" rows="3" 
-                                                                          placeholder="Berikan catatan jika diperlukan..."></textarea>
-                                                            </div>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                                            <button type="submit" class="btn btn-success">
-                                                                <i class="ti ti-check me-1"></i> Ya, Setujui
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-
-                                        <!-- Reject Modal -->
-                                        <div class="modal fade" id="rejectModal{{ $pengajuan->id }}" tabindex="-1">
-                                            <div class="modal-dialog">
-                                                <form action="{{ route('admin.pengajuan.reject', $pengajuan->id) }}" method="POST">
-                                                    @csrf
-                                                    <div class="modal-content">
-                                                        <div class="modal-header bg-danger text-white">
-                                                            <h5 class="modal-title">Tolak Pengajuan</h5>
-                                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <div class="alert alert-warning">
-                                                                <strong>{{ $pengajuan->nomor_pengajuan }}</strong><br>
-                                                                {{ $pengajuan->jenis_surat }}<br>
-                                                                Pemohon: {{ $pengajuan->nama_pemohon }}
-                                                            </div>
-                                                            <div class="form-group">
-                                                                <label class="form-label">Alasan Penolakan <span class="text-danger">*</span></label>
-                                                                <textarea name="catatan_admin" class="form-control" rows="4" required
-                                                                          placeholder="Jelaskan alasan penolakan..."></textarea>
-                                                            </div>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                                            <button type="submit" class="btn btn-danger">
-                                                                <i class="ti ti-x me-1"></i> Ya, Tolak
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
 
                                     @empty
                                         <tr>
@@ -500,13 +508,16 @@
 
                         <!-- Pagination -->
                         @if($pengajuans->hasPages())
-                        <div class="d-flex justify-content-between align-items-center mt-3">
-                            <div>
-                                Menampilkan {{ $pengajuans->firstItem() ?? 0 }} - {{ $pengajuans->lastItem() ?? 0 }} 
-                                dari {{ $pengajuans->total() }} data
+                        <div class="row mt-4">
+                            <div class="col-md-6">
+                                <p class="text-muted mb-0">
+                                    Menampilkan {{ $pengajuans->firstItem() ?? 0 }} - {{ $pengajuans->lastItem() ?? 0 }} 
+                                    dari {{ $pengajuans->total() }} data
+                                </p>
                             </div>
-                            <div>
-                                {{ $pengajuans->links() }}
+                            <div class="col-md-6 text-end">      
+                            <div class="pagination-wrapper">
+                            {{ $pengajuans->links('vendor.pagination.modern') }}
                             </div>
                         </div>
                         @endif
@@ -587,6 +598,113 @@
 
 @section('scripts_content')
 <script>
+    // Show toast notification
+    function showCustomToast(message, icon = '✓') {
+        const existing = document.getElementById('custom-toast-popup');
+        if (existing) existing.remove();
+        
+        const popup = document.createElement('div');
+        popup.id = 'custom-toast-popup';
+        
+        let bgColor = '#3b82f6';
+        if (message.includes('Disetujui') || message.includes('Diselesaikan')) bgColor = '#10b981';
+        else if (message.includes('Ditolak')) bgColor = '#ef4444';
+        else if (message.includes('Dihapus')) bgColor = '#f59e0b';
+        
+        popup.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 40px 50px;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            z-index: 99999;
+            text-align: center;
+            min-width: 350px;
+            animation: popupIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        `;
+        
+        popup.innerHTML = `
+            <div style="font-size: 60px; margin-bottom: 20px; animation: bounce 0.6s ease-out;">${icon}</div>
+            <h3 style="color: #2d3748; font-size: 22px; font-weight: 700; margin: 0 0 30px 0;">${message}</h3>
+            <div style="width: 50px; height: 5px; background: linear-gradient(90deg, ${bgColor} 0%, ${bgColor} 100%); margin: 0 auto; border-radius: 3px;"></div>
+        `;
+        
+        document.body.appendChild(popup);
+        
+        let styleSheet = document.getElementById('toast-animations');
+        if (!styleSheet) {
+            styleSheet = document.createElement('style');
+            styleSheet.id = 'toast-animations';
+            styleSheet.textContent = `
+                @keyframes popupIn {
+                    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.3); }
+                    100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+                }
+                @keyframes bounce {
+                    0%, 100% { transform: scale(1); }
+                    50% { transform: scale(1.2); }
+                }
+                @keyframes popupOut {
+                    0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+                    100% { opacity: 0; transform: translate(-50%, -50%) scale(0.3); }
+                }
+            `;
+            document.head.appendChild(styleSheet);
+        }
+        
+        setTimeout(() => {
+            popup.style.animation = 'popupOut 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)';
+            setTimeout(() => popup.remove(), 400);
+        }, 2500);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const forms = document.querySelectorAll('form');
+        
+        forms.forEach(form => {
+            form.addEventListener('submit', function(e) {
+                if (this.dataset.submitted === 'true') {
+                    e.preventDefault();
+                    return;
+                }
+                
+                this.dataset.submitted = 'true';
+                
+                const submitBtn = document.activeElement;
+                let message = 'Memproses Data...';
+                let icon = '⏳';
+                
+                if (submitBtn && submitBtn.type === 'submit') {
+                    const btnText = submitBtn.textContent.trim();
+                    if (btnText.includes('Setuju')) {
+                        message = '✓ Pengajuan Disetujui!';
+                        icon = '✓';
+                    } else if (btnText.includes('Tolak')) {
+                        message = '✗ Pengajuan Ditolak!';
+                        icon = '✗';
+                    } else if (btnText.includes('Tanggapi')) {
+                        message = '📝 Tanggapan Diproses...';
+                        icon = '📝';
+                    } else if (btnText.includes('Selesai')) {
+                        message = '✓ Pengaduan Diselesaikan!';
+                        icon = '✓';
+                    } else if (btnText.includes('Hapus')) {
+                        message = '🗑️ Data Dihapus!';
+                        icon = '🗑️';
+                    }
+                }
+                
+                showCustomToast(message, icon);
+                
+                const buttons = this.querySelectorAll('button[type="submit"]');
+                buttons.forEach(btn => btn.disabled = true);
+            });
+        });
+    });
+
     // Auto-hide alerts
     setTimeout(function() {
         const alerts = document.querySelectorAll('.alert-dismissible');

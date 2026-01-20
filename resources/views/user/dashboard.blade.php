@@ -226,15 +226,6 @@
 
 <div class="row g-4">
 
-    <!-- Tombol Profil -->
-    <div class="col-12">
-        <div class="d-flex justify-content-end mb-3">
-            <a href="{{ route('user.profile.show') }}" class="elegant-btn elegant-btn-primary px-4 py-2">
-                <i class="ti ti-user me-2"></i> Profil Saya
-            </a>
-        </div>
-    </div>
-
     <!-- STATISTIK -->
     @php
         $stats = [

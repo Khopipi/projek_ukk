@@ -94,11 +94,25 @@ class Pengaduan extends Model
     public function getPrioritasBadgeAttribute()
     {
         return match($this->prioritas) {
-            'Rendah' => 'bg-secondary',
-            'Sedang' => 'bg-info',
-            'Tinggi' => 'bg-warning',
+            'Rendah' => 'bg-success',
+            'Sedang' => 'bg-warning',
+            'Tinggi' => 'bg-danger',
             'Mendesak' => 'bg-danger',
             default => 'bg-secondary'
+        };
+    }
+
+    /**
+     * Get prioritas display label (user-friendly)
+     */
+    public function getPrioritasLabelAttribute()
+    {
+        return match($this->prioritas) {
+            'Rendah' => 'Biasa',
+            'Sedang' => 'Mendesak',
+            'Tinggi' => 'Sangat Mendesak',
+            'Mendesak' => 'Sangat Mendesak',
+            default => $this->prioritas
         };
     }
 

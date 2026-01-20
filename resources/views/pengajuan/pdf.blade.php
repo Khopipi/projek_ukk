@@ -203,7 +203,7 @@
                     @include("pengajuan.components.qr-code-section", ["pengajuan" => $pengajuan])
                 </div>
                 <div class="signature-line"></div>
-                <div class="signature-name">(________________________)</div>
+                <div class="signature-name">(H.SAIFUL IMADUDDIN,S.KM.,M.KES.)</div>
             </div>
         </div>
     </div>
@@ -302,7 +302,7 @@
                     @include("pengajuan.components.qr-code-section", ["pengajuan" => $pengajuan])
                 </div>
                 <div class="signature-line"></div>
-                <div class="signature-name">(________________________)</div>
+                <div class="signature-name">(H.SAIFUL IMADUDDIN,S.KM.,M.KES.)</div>
             </div>
         </div>
     </div>
@@ -385,7 +385,7 @@
                     @include("pengajuan.components.qr-code-section", ["pengajuan" => $pengajuan])
                 </div>
                 <div class="signature-line"></div>
-                <div class="signature-name">(________________________)</div>
+                <div class="signature-name">(H.SAIFUL IMADUDDIN,S.KM.,M.KES.)</div>
             </div>
         </div>
     </div>
@@ -476,7 +476,7 @@
                     @include("pengajuan.components.qr-code-section", ["pengajuan" => $pengajuan])
                 </div>
                 <div class="signature-line"></div>
-                <div class="signature-name">(________________________)</div>
+                <div class="signature-name">(H.SAIFUL IMADUDDIN,S.KM.,M.KES.)</div>
             </div>
         </div>
     </div>
@@ -563,7 +563,7 @@
                     @include("pengajuan.components.qr-code-section", ["pengajuan" => $pengajuan])
                 </div>
                 <div class="signature-line"></div>
-                <div class="signature-name">(________________________)</div>
+                <div class="signature-name">(H.SAIFUL IMADUDDIN,S.KM.,M.KES.)</div>
             </div>
         </div>
     </div>
@@ -650,7 +650,7 @@
                     @include("pengajuan.components.qr-code-section", ["pengajuan" => $pengajuan])
                 </div>
                 <div class="signature-line"></div>
-                <div class="signature-name">(________________________)</div>
+                <div class="signature-name">(H.SAIFUL IMADUDDIN,S.KM.,M.KES.)</div>
             </div>
         </div>
     </div>
@@ -726,7 +726,7 @@
                     @include("pengajuan.components.qr-code-section", ["pengajuan" => $pengajuan])
                 </div>
                 <div class="signature-line"></div>
-                <div class="signature-name">(________________________)</div>
+                <div class="signature-name">(H.SAIFUL IMADUDDIN,S.KM.,M.KES.)</div>
             </div>
         </div>
     </div>
@@ -798,7 +798,7 @@
                     @include("pengajuan.components.qr-code-section", ["pengajuan" => $pengajuan])
                 </div>
                 <div class="signature-line"></div>
-                <div class="signature-name">(________________________)</div>
+                <div class="signature-name">(H.SAIFUL IMADUDDIN,S.KM.,M.KES.)</div>
             </div>
         </div>
     </div>

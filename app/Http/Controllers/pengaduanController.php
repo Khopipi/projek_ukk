@@ -58,6 +58,7 @@ class PengaduanController extends Controller
 			'kategori' => 'required|in:Infrastruktur,Kebersihan,Keamanan,Pelayanan Publik,Kesehatan,Pendidikan,Lainnya',
 			'judul' => 'required|string|max:255',
 			'isi_pengaduan' => 'required|string',
+			'prioritas' => 'required|in:Rendah,Sedang,Tinggi',
 			'lokasi' => 'nullable|string|max:255',
 			'foto_1' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
 			'foto_2' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',

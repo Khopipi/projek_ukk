@@ -93,8 +93,8 @@
             <div style="text-align: center; width: 220px;">
                 <div style="font-size: 11px; margin-bottom: 5px;">LURAH DESA SRUNI</div>
                 @include("pengajuan.components.qr-code-section", ["pengajuan" => $pengajuan])
-                <div style="border-top: 1px solid #000; width: 100%; margin: 15px 0 3px 0;"></div>
-                <div style="font-weight: bold; margin-top: 3px; font-size: 11px;">(________________________)</div>
+                <div style="border-top: 1px solid #000; width: 100%; margin: 5px 0 3px 0;"></div>
+                <div style="font-weight: bold; margin-top: 3px; font-size: 8px;">(M.SAIFUL IMADUDDIN, S.KM.,M.KES.)</div>
             </div>
         </div>
     </div>
@@ -188,8 +188,8 @@
             <div style="text-align: center; width: 220px;">
                 <div style="font-size: 11px; margin-bottom: 5px;">LURAH DESA SRUNI</div>
                 @include("pengajuan.components.qr-code-section", ["pengajuan" => $pengajuan])
-                <div style="border-top: 1px solid #000; width: 100%; margin: 15px 0 3px 0;"></div>
-                <div style="font-weight: bold; margin-top: 3px; font-size: 11px;">(________________________)</div>
+                <div style="border-top: 1px solid #000; width: 100%; margin: 5px 0 3px 0;"></div>
+                <div style="font-weight: bold; margin-top: 3px; font-size: 8px;">(M.SAIFUL IMADUDDIN, S.KM.,M.KES.)</div>
             </div>
         </div>
     </div>
@@ -204,7 +204,7 @@
                 <img src="{{ asset('assets/images/my/logo_Sidoarjo.svg.png') }}" alt="Logo Sidoarjo" style="position: absolute; left: 0; top: 0; width: 60px; height: 60px;">
                 <div style="text-align: center;">
                     <div class="header-title">PEMERINTAH DESA SRUNI</div>
-                    <div class="header-subtitle">SURAT KETERANGAN</div>
+                    <div class="header-subtitle">SURAT KEPEMILIKAN TANAH</div>
                     <div class="nomor" style="font-size: 11px; margin-top: 3px;">No. {{ $pengajuan->nomor_pengajuan ?? 'Draft' }}</div>
                 </div>
             </div>
@@ -267,8 +267,8 @@
             <div style="text-align: center; width: 220px;">
                 <div style="font-size: 11px; margin-bottom: 5px;">LURAH DESA SRUNI</div>
                 @include("pengajuan.components.qr-code-section", ["pengajuan" => $pengajuan])
-                <div style="border-top: 1px solid #000; width: 100%; margin: 15px 0 3px 0;"></div>
-                <div style="font-weight: bold; margin-top: 3px; font-size: 11px;">(________________________)</div>
+                <div style="border-top: 1px solid #000; width: 100%; margin: 5px 0 3px 0;"></div>
+                <div style="font-weight: bold; margin-top: 3px; font-size: 8px;">(H.SAIFUL IMADUDDIN,S.KM.,M.KES.)</div>
             </div>
         </div>
     </div>
@@ -355,8 +355,8 @@
             <div style="text-align: center; width: 220px;">
                 <div style="font-size: 11px; margin-bottom: 5px;">LURAH DESA SRUNI</div>
                 @include("pengajuan.components.qr-code-section", ["pengajuan" => $pengajuan])
-                <div style="border-top: 1px solid #000; width: 100%; margin: 15px 0 3px 0;"></div>
-                <div style="font-weight: bold; margin-top: 3px; font-size: 11px;">(________________________)</div>
+                <div style="border-top: 1px solid #000; width: 100%; margin: 5px 0 3px 0;"></div>
+                <div style="font-weight: bold; margin-top: 3px; font-size: 8px;">(H.SAIFUL IMADUDDIN,S.KM.,M.KES.)</div>
             </div>
         </div>
 
@@ -436,8 +436,8 @@
             <div style="text-align: center; width: 220px;">
                 <div style="font-size: 11px; margin-bottom: 5px;">LURAH DESA SRUNI,</div>
                 @include("pengajuan.components.qr-code-section", ["pengajuan" => $pengajuan])
-                <div style="border-top: 1px solid #000; width: 100%; margin: 15px 0 3px 0;"></div>
-                <div style="font-weight: bold; margin-top: 3px; font-size: 11px;">(________________________)</div>
+                <div style="border-top: 1px solid #000; width: 100%; margin: 5px 0 3px 0;"></div>
+                <div style="font-weight: bold; margin-top: 3px; font-size: 8px;">(H.SAIFUL IMADUDDIN,S.KM.,M.KES.)</div>
             </div>
         </div>
     </div>
@@ -510,8 +510,8 @@
             <div style="text-align: center; width: 220px;">
                 <div style="font-size: 11px; margin-bottom: 5px;">LURAH DESA SRUNI,</div>
                 @include("pengajuan.components.qr-code-section", ["pengajuan" => $pengajuan])
-                <div style="border-top: 1px solid #000; width: 100%; margin: 15px 0 3px 0;"></div>
-                <div style="font-weight: bold; margin-top: 3px; font-size: 11px;">(________________________)</div>
+                <div style="border-top: 1px solid #000; width: 100%; margin: 5px 0 3px 0;"></div>
+                <div style="font-weight: bold; margin-top: 3px; font-size: 8px;">(H.SAIFUL IMADUDDIN,S.KM.,M.KES.)</div>
             </div>
         </div>
     </div>
@@ -583,8 +583,8 @@
             <div style="text-align: center; width: 220px;">
                 <div style="font-size: 11px; margin-bottom: 5px;">LURAH DESA SRUNI,</div>
                 @include("pengajuan.components.qr-code-section", ["pengajuan" => $pengajuan])
-                <div style="border-top: 1px solid #000; width: 100%; margin: 15px 0 3px 0;"></div>
-                <div style="font-weight: bold; margin-top: 3px; font-size: 11px;">(________________________)</div>
+                <div style="border-top: 1px solid #000; width: 100%; margin: 5px 0 3px 0;"></div>
+                <div style="font-weight: bold; margin-top: 3px; font-size: 8px;">(H.SAIFUL IMADUDDIN,S.KM.,M.KES.)</div>
             </div>
         </div>
     </div>
@@ -649,7 +649,7 @@
                 <div style="font-size: 11px; margin-bottom: 5px;">LURAH DESA SRUNI,</div>
                 @include("pengajuan.components.qr-code-section", ["pengajuan" => $pengajuan])
                 <div style="border-top: 1px solid #000; width: 100%; margin: 15px 0 3px 0;"></div>
-                <div style="font-weight: bold; margin-top: 3px; font-size: 11px;">(________________________)</div>
+                <div style="font-weight: bold; margin-top: 3px; font-size: 8px;">(M.SAIFUL IMADUDDIN, S.KM.,M.KES.)</div>
             </div>
         </div>
     </div>

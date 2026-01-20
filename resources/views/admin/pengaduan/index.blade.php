@@ -151,6 +151,76 @@
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
+        /* Custom Pagination Styling */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: nowrap;
+            margin: 0;
+        }
+
+        .pagination .page-link {
+            border: 1px solid #ddd;
+            color: #667eea;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            min-width: 40px;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .pagination .page-link:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .pagination .page-item.active .page-link {
+            background: #667eea;
+            border-color: #667eea;
+            color: white;
+        }
+
+        .pagination .page-item.disabled .page-link {
+            color: #ccc;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        /* Hide all pagination items except first and last */
+        .pagination .page-item {
+            display: none !important;
+        }
+
+        .pagination .page-item:first-child {
+            display: inline-block !important;
+        }
+
+        .pagination .page-item:last-child {
+            display: inline-block !important;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: nowrap;
+        }
+
+        .pagination-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            gap: 8px;
+        }
+
         .badge-custom {
             border-radius: 6px;
             padding: 6px 12px;
@@ -177,6 +247,39 @@
         .badge-danger-custom {
             background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
             color: white;
+        }
+
+        /* Priority Badge Styles */
+        .badge-rendah-custom {
+            background-color: #28a745 !important;
+            color: white !important;
+            font-weight: 700;
+            padding: 6px 12px;
+            border-radius: 6px;
+        }
+
+        .badge-sedang-custom {
+            background-color: #ffc107 !important;
+            color: #333 !important;
+            font-weight: 700;
+            padding: 6px 12px;
+            border-radius: 6px;
+        }
+
+        .badge-tinggi-custom {
+            background-color: #dc3545 !important;
+            color: white !important;
+            font-weight: 700;
+            padding: 6px 12px;
+            border-radius: 6px;
+        }
+
+        .badge-mendesak-custom {
+            background-color: #dc3545 !important;
+            color: white !important;
+            font-weight: 700;
+            padding: 6px 12px;
+            border-radius: 6px;
         }
     </style>
 
@@ -400,9 +503,15 @@
                                             </td>
                                             <td>{{ $pengaduan->created_at->format('d M Y') }}</td>
                                             <td>
-                                                <span class="badge badge-custom {{ 'badge-' . Str::lower(str_replace(' ', '-', $pengaduan->prioritas)) . '-custom' }}">
-                                                    {{ $pengaduan->prioritas }}
-                                                </span>
+                                                @php
+                                                    $badgeClass = match($pengaduan->prioritas) {
+                                                        'Rendah' => 'badge-rendah-custom',
+                                                        'Sedang' => 'badge-sedang-custom',
+                                                        'Tinggi', 'Mendesak' => 'badge-tinggi-custom',
+                                                        default => 'badge-sedang-custom'
+                                                    };
+                                                @endphp
+                                                <span class="badge {{ $badgeClass }}">{{ $pengaduan->prioritas_label }}</span>
                                             </td>
                                             <td>
                                                 <span class="badge {{ $pengaduan->status_badge }}">
@@ -423,155 +532,53 @@
                                                         @csrf
                                                         <button type="submit"
                                                                 class="btn btn-sm btn-warning"
-                                                                title="Tandai Sedang Diproses"
-                                                                onclick="return confirm('Tandai pengaduan ini sedang diproses?')">
+                                                                title="Tandai Sedang Diproses">
                                                             <i class="ti ti-refresh"></i>
                                                         </button>
                                                     </form>
                                                     @endif
 
                                                     @if(in_array($pengaduan->status, ['Menunggu', 'Diproses']))
-                                                    <button type="button"
-                                                            class="btn btn-sm btn-success"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target="#tanggapiModal{{ $pengaduan->id }}"
-                                                            title="Tanggapi">
-                                                        <i class="ti ti-message-circle"></i>
-                                                    </button>
+                                                    <form action="{{ route('admin.pengaduan.tanggapi', $pengaduan->id) }}" method="POST" style="display: inline;">
+                                                        @csrf
+                                                        <input type="hidden" name="tanggapan_admin" value="Pengaduan ditanggapi">
+                                                        <input type="hidden" name="prioritas" value="{{ $pengaduan->prioritas }}">
+                                                        <button type="submit"
+                                                                class="btn btn-sm btn-success"
+                                                                title="Tanggapi">
+                                                            <i class="ti ti-message-circle"></i>
+                                                        </button>
+                                                    </form>
                                                     @endif
 
                                                     @if($pengaduan->status == 'Diproses')
-                                                    <button type="button"
-                                                            class="btn btn-sm btn-success"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target="#selesaiModal{{ $pengaduan->id }}"
-                                                            title="Selesaikan">
-                                                        <i class="ti ti-check"></i>
-                                                    </button>
+                                                    <form action="{{ route('admin.pengaduan.selesai', $pengaduan->id) }}" method="POST" style="display: inline;">
+                                                        @csrf
+                                                        <input type="hidden" name="tanggapan_admin" value="Pengaduan diselesaikan">
+                                                        <button type="submit"
+                                                                class="btn btn-sm btn-success"
+                                                                title="Selesaikan">
+                                                            <i class="ti ti-check"></i>
+                                                        </button>
+                                                    </form>
                                                     @endif
 
                                                     @if(in_array($pengaduan->status, ['Menunggu', 'Diproses']))
-                                                    <button type="button"
-                                                            class="btn btn-sm btn-danger"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target="#tolakModal{{ $pengaduan->id }}"
-                                                            title="Tolak">
-                                                        <i class="ti ti-x"></i>
-                                                    </button>
+                                                    <form action="{{ route('admin.pengaduan.tolak', $pengaduan->id) }}" method="POST" style="display: inline;">
+                                                        @csrf
+                                                        <input type="hidden" name="tanggapan_admin" value="Pengaduan ditolak">
+                                                        <button type="submit"
+                                                                class="btn btn-sm btn-danger"
+                                                                title="Tolak">
+                                                            <i class="ti ti-x"></i>
+                                                        </button>
+                                                    </form>
                                                     @endif
                                                 </div>
                                             </td>
                                         </tr>
 
-                                        <!-- Tanggapi Modal -->
-                                        <div class="modal fade" id="tanggapiModal{{ $pengaduan->id }}" tabindex="-1">
-                                            <div class="modal-dialog">
-                                                <form action="{{ route('admin.pengaduan.tanggapi', $pengaduan->id) }}" method="POST">
-                                                    @csrf
-                                                    <div class="modal-content" style="border-radius: 12px; border: none; box-shadow: 0 8px 24px rgba(0,0,0,0.15);">
-                                                        <div class="modal-header" style="background: var(--success-gradient); color: white; border: none;">
-                                                            <h5 class="modal-title" style="font-weight: 800;">Tanggapi Pengaduan</h5>
-                                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <div class="alert" style="background: rgba(67, 233, 123, 0.1); border: 1px solid rgba(67, 233, 123, 0.3); border-radius: 8px;">
-                                                                <strong>{{ $pengaduan->nomor_pengaduan }}</strong><br>
-                                                                {{ $pengaduan->judul }}<br>
-                                                                Pelapor: {{ $pengaduan->user->name }}
-                                                            </div>
-                                                            <div class="form-group mb-3">
-                                                                <label class="form-label" style="font-weight: 700;">Prioritas</label>
-                                                                <select name="prioritas" class="form-select" style="border-radius: 8px; border: 1px solid #eef2f9;">
-                                                                    <option value="Rendah" {{ $pengaduan->prioritas == 'Rendah' ? 'selected' : '' }}>Rendah</option>
-                                                                    <option value="Sedang" {{ $pengaduan->prioritas == 'Sedang' ? 'selected' : '' }}>Sedang</option>
-                                                                    <option value="Tinggi" {{ $pengaduan->prioritas == 'Tinggi' ? 'selected' : '' }}>Tinggi</option>
-                                                                    <option value="Mendesak" {{ $pengaduan->prioritas == 'Mendesak' ? 'selected' : '' }}>Mendesak</option>
-                                                                </select>
-                                                            </div>
-                                                            <div class="form-group">
-                                                                <label class="form-label" style="font-weight: 700;">Tanggapan <span class="text-danger">*</span></label>
-                                                                <textarea name="tanggapan_admin" class="form-control" rows="4" required
-                                                                          placeholder="Berikan tanggapan..." style="border-radius: 8px; border: 1px solid #eef2f9;">{{ $pengaduan->tanggapan_admin }}</textarea>
-                                                            </div>
-                                                        </div>
-                                                        <div class="modal-footer" style="border-top: 1px solid #eef2f9;">
-                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="border-radius: 8px;">Batal</button>
-                                                            <button type="submit" class="btn elegant-btn elegant-btn-primary">
-                                                                <i class="ti ti-send me-1"></i> Kirim Tanggapan
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-
-                                        <!-- Selesai Modal -->
-                                        @if($pengaduan->status == 'Diproses')
-                                        <div class="modal fade" id="selesaiModal{{ $pengaduan->id }}" tabindex="-1">
-                                            <div class="modal-dialog">
-                                                <form action="{{ route('admin.pengaduan.selesai', $pengaduan->id) }}" method="POST">
-                                                    @csrf
-                                                    <div class="modal-content" style="border-radius: 12px; border: none; box-shadow: 0 8px 24px rgba(0,0,0,0.15);">
-                                                        <div class="modal-header" style="background: var(--primary-gradient); color: white; border: none;">
-                                                            <h5 class="modal-title" style="font-weight: 800;">Selesaikan Pengaduan</h5>
-                                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <div class="alert" style="background: rgba(67, 233, 123, 0.1); border: 1px solid rgba(67, 233, 123, 0.3); border-radius: 8px;">
-                                                                <strong>{{ $pengaduan->nomor_pengaduan }}</strong><br>
-                                                                {{ $pengaduan->judul }}
-                                                            </div>
-                                                            <div class="form-group">
-                                                                <label class="form-label" style="font-weight: 700;">Laporan Penyelesaian <span class="text-danger">*</span></label>
-                                                                <textarea name="tanggapan_admin" class="form-control" rows="4" required
-                                                                          placeholder="Jelaskan hasil penyelesaian pengaduan..." style="border-radius: 8px; border: 1px solid #eef2f9;"></textarea>
-                                                            </div>
-                                                        </div>
-                                                        <div class="modal-footer" style="border-top: 1px solid #eef2f9;">
-                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="border-radius: 8px;">Batal</button>
-                                                            <button type="submit" class="btn elegant-btn elegant-btn-primary">
-                                                                <i class="ti ti-check me-1"></i> Selesaikan
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                        @endif
-
-                                        <!-- Tolak Modal -->
-                                        <div class="modal fade" id="tolakModal{{ $pengaduan->id }}" tabindex="-1">
-                                            <div class="modal-dialog">
-                                                <form action="{{ route('admin.pengaduan.tolak', $pengaduan->id) }}" method="POST">
-                                                    @csrf
-                                                    <div class="modal-content" style="border-radius: 12px; border: none; box-shadow: 0 8px 24px rgba(0,0,0,0.15);">
-                                                        <div class="modal-header" style="background: var(--danger-gradient); color: white; border: none;">
-                                                            <h5 class="modal-title" style="font-weight: 800;">Tolak Pengaduan</h5>
-                                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <div class="alert" style="background: rgba(250, 112, 154, 0.1); border: 1px solid rgba(250, 112, 154, 0.3); border-radius: 8px;">
-                                                                <strong>{{ $pengaduan->nomor_pengaduan }}</strong><br>
-                                                                {{ $pengaduan->judul }}
-                                                            </div>
-                                                            <div class="form-group">
-                                                                <label class="form-label" style="font-weight: 700;">Alasan Penolakan <span class="text-danger">*</span></label>
-                                                                <textarea name="tanggapan_admin" class="form-control" rows="4" required
-                                                                          placeholder="Jelaskan alasan penolakan..." style="border-radius: 8px; border: 1px solid #eef2f9;"></textarea>
-                                                            </div>
-                                                        </div>
-                                                        <div class="modal-footer" style="border-top: 1px solid #eef2f9;">
-                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="border-radius: 8px;">Batal</button>
-                                                            <button type="submit" class="btn elegant-btn elegant-btn-primary">
-                                                                <i class="ti ti-x me-1"></i> Ya, Tolak
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-
-                                    @empty
+                                        @empty
                                         <tr>
                                             <td colspan="9" class="text-center py-5">
                                                 <i class="ti ti-inbox f-36 text-muted"></i>
@@ -584,9 +591,21 @@
                         </div>
 
                         <!-- Pagination -->
-                        <div class="mt-4">
-                            {{ $pengaduans->links() }}
+                        @if($pengaduans->hasPages())
+                        <div class="row mt-4">
+                            <div class="col-md-6">
+                                <p class="text-muted mb-0">
+                                    Menampilkan {{ $pengaduans->firstItem() ?? 0 }} - {{ $pengaduans->lastItem() ?? 0 }} 
+                                    dari {{ $pengaduans->total() }} data
+                                </p>
+                            </div>
+                            <div class="col-md-6 text-end">
+                                <div class="pagination-wrapper">
+                                    {{ $pengaduans->links() }}
+                                </div>
+                            </div>
                         </div>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -648,6 +667,112 @@
 
 @section('scripts_content')
 <script>
+    function showCustomToast(message, icon = '✓') {
+        const existing = document.getElementById('custom-toast-popup');
+        if (existing) existing.remove();
+        
+        const popup = document.createElement('div');
+        popup.id = 'custom-toast-popup';
+        
+        let bgColor = '#3b82f6';
+        if (message.includes('Disetujui') || message.includes('Diselesaikan')) bgColor = '#10b981';
+        else if (message.includes('Ditolak')) bgColor = '#ef4444';
+        else if (message.includes('Dihapus')) bgColor = '#f59e0b';
+        
+        popup.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 40px 50px;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            z-index: 99999;
+            text-align: center;
+            min-width: 350px;
+            animation: popupIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        `;
+        
+        popup.innerHTML = `
+            <div style="font-size: 60px; margin-bottom: 20px; animation: bounce 0.6s ease-out;">${icon}</div>
+            <h3 style="color: #2d3748; font-size: 22px; font-weight: 700; margin: 0 0 30px 0;">${message}</h3>
+            <div style="width: 50px; height: 5px; background: linear-gradient(90deg, ${bgColor} 0%, ${bgColor} 100%); margin: 0 auto; border-radius: 3px;"></div>
+        `;
+        
+        document.body.appendChild(popup);
+        
+        let styleSheet = document.getElementById('toast-animations');
+        if (!styleSheet) {
+            styleSheet = document.createElement('style');
+            styleSheet.id = 'toast-animations';
+            styleSheet.textContent = `
+                @keyframes popupIn {
+                    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.3); }
+                    100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+                }
+                @keyframes bounce {
+                    0%, 100% { transform: scale(1); }
+                    50% { transform: scale(1.2); }
+                }
+                @keyframes popupOut {
+                    0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+                    100% { opacity: 0; transform: translate(-50%, -50%) scale(0.3); }
+                }
+            `;
+            document.head.appendChild(styleSheet);
+        }
+        
+        setTimeout(() => {
+            popup.style.animation = 'popupOut 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)';
+            setTimeout(() => popup.remove(), 400);
+        }, 2500);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const forms = document.querySelectorAll('form');
+        
+        forms.forEach(form => {
+            form.addEventListener('submit', function(e) {
+                if (this.dataset.submitted === 'true') {
+                    e.preventDefault();
+                    return;
+                }
+                
+                this.dataset.submitted = 'true';
+                
+                const submitBtn = document.activeElement;
+                let message = 'Memproses Data...';
+                let icon = '⏳';
+                
+                if (submitBtn && submitBtn.type === 'submit') {
+                    const btnText = submitBtn.textContent.trim();
+                    if (btnText.includes('Setuju')) {
+                        message = '✓ Pengajuan Disetujui!';
+                        icon = '✓';
+                    } else if (btnText.includes('Tolak')) {
+                        message = '✗ Pengajuan Ditolak!';
+                        icon = '✗';
+                    } else if (btnText.includes('Tanggapi')) {
+                        message = '📝 Tanggapan Diproses...';
+                        icon = '📝';
+                    } else if (btnText.includes('Selesai')) {
+                        message = '✓ Pengaduan Diselesaikan!';
+                        icon = '✓';
+                    } else if (btnText.includes('Hapus')) {
+                        message = '🗑️ Data Dihapus!';
+                        icon = '🗑️';
+                    }
+                }
+                
+                showCustomToast(message, icon);
+                
+                const buttons = this.querySelectorAll('button[type="submit"]');
+                buttons.forEach(btn => btn.disabled = true);
+            });
+        });
+    });
+
     // Auto-hide alerts
     setTimeout(function() {
         const alerts = document.querySelectorAll('.alert-dismissible');

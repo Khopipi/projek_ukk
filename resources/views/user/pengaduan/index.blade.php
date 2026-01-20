@@ -225,7 +225,6 @@
                                                     @if(in_array($pengaduan->status, ['Menunggu', 'Ditolak']))
                                                     <form action="{{ route('pengaduan.destroy', $pengaduan->id) }}" 
                                                           method="POST" 
-                                                          onsubmit="return confirm('Yakin ingin menghapus pengaduan ini?')" 
                                                           class="d-inline">
                                                         @csrf
                                                         @method('DELETE')
@@ -269,4 +268,111 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('scripts_content')
+<script>
+    // Show toast notification
+    function showCustomToast(message, icon = '✓') {
+        const existing = document.getElementById('custom-toast-popup');
+        if (existing) existing.remove();
+        
+        const popup = document.createElement('div');
+        popup.id = 'custom-toast-popup';
+        
+        let bgColor = '#3b82f6';
+        if (message.includes('Selesai') || message.includes('berhasil')) bgColor = '#10b981';
+        else if (message.includes('Dihapus') || message.includes('Hapus')) bgColor = '#ef4444';
+        
+        popup.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 40px 50px;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            z-index: 99999;
+            text-align: center;
+            min-width: 350px;
+            animation: popupIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        `;
+        
+        popup.innerHTML = `
+            <div style="font-size: 60px; margin-bottom: 20px; animation: bounce 0.6s ease-out;">${icon}</div>
+            <h3 style="color: #2d3748; font-size: 22px; font-weight: 700; margin: 0 0 30px 0;">${message}</h3>
+            <div style="width: 50px; height: 5px; background: linear-gradient(90deg, ${bgColor} 0%, ${bgColor} 100%); margin: 0 auto; border-radius: 3px;"></div>
+        `;
+        
+        document.body.appendChild(popup);
+        
+        let styleSheet = document.getElementById('toast-animations');
+        if (!styleSheet) {
+            styleSheet = document.createElement('style');
+            styleSheet.id = 'toast-animations';
+            styleSheet.textContent = `
+                @keyframes popupIn {
+                    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.3); }
+                    100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+                }
+                @keyframes bounce {
+                    0%, 100% { transform: scale(1); }
+                    50% { transform: scale(1.2); }
+                }
+                @keyframes popupOut {
+                    0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+                    100% { opacity: 0; transform: translate(-50%, -50%) scale(0.3); }
+                }
+            `;
+            document.head.appendChild(styleSheet);
+        }
+        
+        setTimeout(() => {
+            popup.style.animation = 'popupOut 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)';
+            setTimeout(() => popup.remove(), 400);
+        }, 2500);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const forms = document.querySelectorAll('form');
+        
+        forms.forEach(form => {
+            form.addEventListener('submit', function(e) {
+                if (this.dataset.submitted === 'true') {
+                    e.preventDefault();
+                    return;
+                }
+                
+                this.dataset.submitted = 'true';
+                
+                const submitBtn = document.activeElement;
+                let message = 'Memproses Data...';
+                let icon = '⏳';
+                
+                if (submitBtn && submitBtn.type === 'submit') {
+                    const btnText = submitBtn.textContent.trim();
+                    if (btnText.includes('Hapus')) {
+                        message = '🗑️ Pengaduan Dihapus!';
+                        icon = '🗑️';
+                    }
+                }
+                
+                showCustomToast(message, icon);
+                
+                const buttons = this.querySelectorAll('button[type="submit"]');
+                buttons.forEach(btn => btn.disabled = true);
+            });
+        });
+    });
+
+    // Auto-hide alerts
+    setTimeout(function() {
+        const alerts = document.querySelectorAll('.alert-dismissible');
+        alerts.forEach(alert => {
+            const bsAlert = new bootstrap.Alert(alert);
+            bsAlert.close();
+        });
+    }, 5000);
+</script>
 @endsection

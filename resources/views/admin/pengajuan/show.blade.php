@@ -181,20 +181,28 @@
                             @if($pengajuan->status == 'Menunggu')
                             <form action="{{ route('admin.pengajuan.proses', $pengajuan->id) }}" method="POST">
                                 @csrf
-                                <button type="submit" class="btn btn-warning w-100" onclick="return confirm('Tandai pengajuan ini sedang diproses?')">
-                                    <i class="ti ti-refresh me-1"></i> Tandai Diproses
+                                <button type="submit" class="btn btn-warning w-100 process-btn" onclick="this.disabled = true; this.querySelector('.btn-text').classList.add('d-none'); this.querySelector('.spinner-border').classList.remove('d-none');">
+                                    <span class="btn-text"><i class="ti ti-refresh me-1"></i> Tandai Diproses</span>
+                                    <span class="spinner-border spinner-border-sm ms-2 d-none" role="status" aria-hidden="true"></span>
                                 </button>
                             </form>
                             @endif
 
                             @if(in_array($pengajuan->status, ['Menunggu', 'Diproses']))
-                            <button type="button" class="btn btn-success w-100" data-bs-toggle="modal" data-bs-target="#approveModal">
-                                <i class="ti ti-check me-1"></i> Setujui Pengajuan
-                            </button>
+                            <form action="{{ route('admin.pengajuan.approve', $pengajuan->id) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="btn btn-success w-100">
+                                    <i class="ti ti-check me-1"></i> Setujui Pengajuan
+                                </button>
+                            </form>
                             
-                            <button type="button" class="btn btn-danger w-100" data-bs-toggle="modal" data-bs-target="#rejectModal">
-                                <i class="ti ti-x me-1"></i> Tolak Pengajuan
-                            </button>
+                            <form action="{{ route('admin.pengajuan.reject', $pengajuan->id) }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="catatan_admin" value="Ditolak oleh admin">
+                                <button type="submit" class="btn btn-danger w-100">
+                                    <i class="ti ti-x me-1"></i> Tolak Pengajuan
+                                </button>
+                            </form>
                             @endif
 
                             @if($pengajuan->status == 'Disetujui')
@@ -212,8 +220,9 @@
                             <form action="{{ route('admin.pengajuan.delete-surat', $pengajuan->id) }}" method="POST" onsubmit="return confirm('Yakin hapus file surat?')">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-outline-danger w-100">
-                                    <i class="ti ti-trash me-1"></i> Hapus File Surat
+                                <button type="submit" class="btn btn-outline-danger w-100 delete-btn" onclick="this.disabled = true; this.querySelector('.btn-text')?.classList.add('d-none'); this.querySelector('.spinner-border')?.classList.remove('d-none');">
+                                    <span class="btn-text"><i class="ti ti-trash me-1"></i> Hapus File Surat</span>
+                                    <span class="spinner-border spinner-border-sm ms-2 d-none" role="status" aria-hidden="true"></span>
                                 </button>
                             </form>
                             @endif
@@ -443,74 +452,6 @@
         </div>
     </div>
 
-    <!-- Approve Modal -->
-    <div class="modal fade" id="approveModal" tabindex="-1">
-        <div class="modal-dialog">
-            <form action="{{ route('admin.pengajuan.approve', $pengajuan->id) }}" method="POST">
-                @csrf
-                <div class="modal-content">
-                    <div class="modal-header bg-success text-white">
-                        <h5 class="modal-title">Setujui Pengajuan</h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <p>Apakah Anda yakin ingin menyetujui pengajuan ini?</p>
-                        <div class="alert alert-info">
-                            <strong>{{ $pengajuan->nomor_pengajuan }}</strong><br>
-                            {{ $pengajuan->data_tambahan['jenis_surat_asli'] ?? $pengajuan->jenis_surat }}<br>
-                            Pemohon: {{ $pengajuan->nama_pemohon }}
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Catatan (Opsional)</label>
-                            <textarea name="catatan_admin" class="form-control" rows="3" 
-                                      placeholder="Berikan catatan jika diperlukan..."></textarea>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-success">
-                            <i class="ti ti-check me-1"></i> Ya, Setujui
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Reject Modal -->
-    <div class="modal fade" id="rejectModal" tabindex="-1">
-        <div class="modal-dialog">
-            <form action="{{ route('admin.pengajuan.reject', $pengajuan->id) }}" method="POST">
-                @csrf
-                <div class="modal-content">
-                    <div class="modal-header bg-danger text-white">
-                        <h5 class="modal-title">Tolak Pengajuan</h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <p>Apakah Anda yakin ingin menolak pengajuan ini?</p>
-                        <div class="alert alert-warning">
-                            <strong>{{ $pengajuan->nomor_pengajuan }}</strong><br>
-                            {{ $pengajuan->data_tambahan['jenis_surat_asli'] ?? $pengajuan->jenis_surat }}<br>
-                            Pemohon: {{ $pengajuan->nama_pemohon }}
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Alasan Penolakan <span class="text-danger">*</span></label>
-                            <textarea name="catatan_admin" class="form-control" rows="4" required
-                                      placeholder="Jelaskan alasan penolakan..."></textarea>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-danger">
-                            <i class="ti ti-x me-1"></i> Ya, Tolak
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-
     <!-- Upload Surat Modal -->
     <div class="modal fade" id="uploadModal" tabindex="-1">
         <div class="modal-dialog">
@@ -534,8 +475,9 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="ti ti-upload me-1"></i> Upload
+                        <button type="submit" class="btn btn-primary submit-btn">
+                            <span class="btn-text"><i class="ti ti-upload me-1"></i> Upload</span>
+                            <span class="spinner-border spinner-border-sm ms-2 d-none" role="status" aria-hidden="true"></span>
                         </button>
                     </div>
                 </div>
@@ -546,7 +488,128 @@
 
 @section('scripts_content')
 <script>
-    // Auto-hide alerts (guard if Bootstrap JS isn't loaded)
+    // Create beautiful modern popup
+    function showCustomToast(message, icon = '✓') {
+        const existing = document.getElementById('custom-toast-popup');
+        if (existing) existing.remove();
+        
+        const popup = document.createElement('div');
+        popup.id = 'custom-toast-popup';
+        
+        let bgColor = '#3b82f6';
+        if (message.includes('Disetujui') || message.includes('Diselesaikan')) bgColor = '#10b981';
+        else if (message.includes('Ditolak')) bgColor = '#ef4444';
+        else if (message.includes('Dihapus')) bgColor = '#f59e0b';
+        
+        popup.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 40px 50px;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            z-index: 99999;
+            text-align: center;
+            min-width: 350px;
+            animation: popupIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        `;
+        
+        popup.innerHTML = `
+            <div style="font-size: 60px; margin-bottom: 20px; animation: bounce 0.6s ease-out;">${icon}</div>
+            <h3 style="color: #2d3748; font-size: 22px; font-weight: 700; margin: 0 0 30px 0;">${message}</h3>
+            <div style="width: 50px; height: 5px; background: linear-gradient(90deg, ${bgColor} 0%, ${bgColor} 100%); margin: 0 auto; border-radius: 3px;"></div>
+        `;
+        
+        document.body.appendChild(popup);
+        
+        // Add animations if not exists
+        let styleSheet = document.getElementById('toast-animations');
+        if (!styleSheet) {
+            styleSheet = document.createElement('style');
+            styleSheet.id = 'toast-animations';
+            styleSheet.textContent = `
+                @keyframes popupIn {
+                    0% {
+                        opacity: 0;
+                        transform: translate(-50%, -50%) scale(0.3);
+                    }
+                    100% {
+                        opacity: 1;
+                        transform: translate(-50%, -50%) scale(1);
+                    }
+                }
+                @keyframes bounce {
+                    0%, 100% { transform: scale(1); }
+                    50% { transform: scale(1.2); }
+                }
+                @keyframes popupOut {
+                    0% {
+                        opacity: 1;
+                        transform: translate(-50%, -50%) scale(1);
+                    }
+                    100% {
+                        opacity: 0;
+                        transform: translate(-50%, -50%) scale(0.3);
+                    }
+                }
+            `;
+            document.head.appendChild(styleSheet);
+        }
+        
+        // Auto remove
+        setTimeout(() => {
+            popup.style.animation = 'popupOut 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)';
+            setTimeout(() => popup.remove(), 400);
+        }, 2500);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const forms = document.querySelectorAll('form');
+        
+        forms.forEach(form => {
+            form.addEventListener('submit', function(e) {
+                if (this.dataset.submitted === 'true') {
+                    e.preventDefault();
+                    return;
+                }
+                
+                this.dataset.submitted = 'true';
+                
+                const submitBtn = document.activeElement;
+                let message = 'Memproses Data...';
+                let icon = '⏳';
+                
+                if (submitBtn && submitBtn.type === 'submit') {
+                    const btnText = submitBtn.textContent.trim();
+                    if (btnText.includes('Setuju')) {
+                        message = '✓ Pengajuan Disetujui!';
+                        icon = '✓';
+                    } else if (btnText.includes('Tolak')) {
+                        message = '✗ Pengajuan Ditolak!';
+                        icon = '✗';
+                    } else if (btnText.includes('Tanggapi')) {
+                        message = '📝 Tanggapan Diproses...';
+                        icon = '📝';
+                    } else if (btnText.includes('Selesai')) {
+                        message = '✓ Pengaduan Diselesaikan!';
+                        icon = '✓';
+                    } else if (btnText.includes('Hapus')) {
+                        message = '🗑️ Data Dihapus!';
+                        icon = '🗑️';
+                    }
+                }
+                
+                showCustomToast(message, icon);
+                
+                const buttons = this.querySelectorAll('button[type="submit"]');
+                buttons.forEach(btn => btn.disabled = true);
+            });
+        });
+    });
+
+    // Auto-hide alerts
     setTimeout(function() {
         if (typeof bootstrap === 'undefined') return;
         const alerts = document.querySelectorAll('.alert-dismissible');
@@ -554,10 +617,9 @@
             try {
                 const bsAlert = new bootstrap.Alert(alert);
                 bsAlert.close();
-            } catch (e) {
-                // fail silently
-            }
+            } catch (e) {}
         });
     }, 5000);
+</script>
 </script>
 @endsection

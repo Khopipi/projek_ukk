@@ -80,16 +80,6 @@
                             </p>
                             @endif
                         </div>
-
-                        @if($pengaduan->tanggapan_admin)
-                        <div class="alert alert-success text-start mt-3">
-                            <strong><i class="ti ti-message-circle me-1"></i> Tanggapan Admin:</strong>
-                            <p class="mb-0 mt-2">{{ $pengaduan->tanggapan_admin }}</p>
-                            @if($pengaduan->admin)
-                            <small class="text-muted">Oleh: {{ $pengaduan->admin->name }}</small>
-                            @endif
-                        </div>
-                        @endif
                     </div>
                 </div>
 
