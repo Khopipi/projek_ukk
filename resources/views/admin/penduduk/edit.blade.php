@@ -214,9 +214,9 @@
                                 <!-- Kode Pos -->
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="form-label">Kode Pos <span class="text-danger">*</span></label>
+                                        <label class="form-label">Kode Pos</label>
                                         <input type="text" name="kode_pos" class="form-control @error('kode_pos') is-invalid @enderror" 
-                                               value="{{ old('kode_pos', $penduduk->kode_pos) }}" maxlength="5" required>
+                                               value="{{ old('kode_pos', $penduduk->kode_pos) }}" maxlength="5" placeholder="Contoh: 61254">
                                         @error('kode_pos')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror

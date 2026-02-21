@@ -539,16 +539,17 @@
                                                     @endif
 
                                                     @if(in_array($pengaduan->status, ['Menunggu', 'Diproses']))
-                                                    <form action="{{ route('admin.pengaduan.tanggapi', $pengaduan->id) }}" method="POST" style="display: inline;">
-                                                        @csrf
-                                                        <input type="hidden" name="tanggapan_admin" value="Pengaduan ditanggapi">
-                                                        <input type="hidden" name="prioritas" value="{{ $pengaduan->prioritas }}">
-                                                        <button type="submit"
-                                                                class="btn btn-sm btn-success"
-                                                                title="Tanggapi">
+                                                    <button type="button"
+                                                            class="btn btn-sm btn-success"
+                                                            title="Tanggapi"
+                                                            onclick="openTanggapiModal({{ $pengaduan->id }})"
+                                                            data-pengaduan-id="{{ $pengaduan->id }}"
+                                                            data-pengaduan-judul="{{ $pengaduan->judul }}"
+                                                            data-pengaduan-nomor="{{ $pengaduan->nomor_pengaduan }}"
+                                                            data-pengaduan-kategori="{{ $pengaduan->kategori }}"
+                                                            data-pengaduan-prioritas="{{ $pengaduan->prioritas }}">
                                                             <i class="ti ti-message-circle"></i>
-                                                        </button>
-                                                    </form>
+                                                    </button>
                                                     @endif
 
                                                     @if($pengaduan->status == 'Diproses')
@@ -781,5 +782,111 @@
             bsAlert.close();
         });
     }, 5000);
+
+    // Update character counter di modal
+    const tanggapanInput = document.getElementById('tanggapan_admin_modal');
+    const charCounter = document.getElementById('charCounter');
+    if (tanggapanInput && charCounter) {
+        tanggapanInput.addEventListener('input', function() {
+            charCounter.textContent = this.value.length;
+        });
+    }
+
+    // Set pengaduan ID untuk modal tanggapan cepat
+    function openTanggapiModal(pengaduanId) {
+        const modal = new bootstrap.Modal(document.getElementById('tanggapiModalIndex'));
+        document.getElementById('formTanggapiIndex').action = `/admin/pengaduan/${pengaduanId}/tanggapi`;
+        modal.show();
+    }
 </script>
+
+<!-- Modal Tanggapan Cepat dari Index -->
+<div class="modal fade" id="tanggapiModalIndex" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" style="border-radius: 12px; border: none; box-shadow: 0 8px 24px rgba(0,0,0,0.15);">
+            <div class="modal-header" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: white; border: none;">
+                <h5 class="modal-title" style="font-weight: 800;"><i class="ti ti-message-circle me-2"></i>Beri Tanggapan Pengaduan</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="formTanggapiIndex" method="POST">
+                @csrf
+                <div class="modal-body" style="background: #f8f9fa; max-height: 70vh; overflow-y: auto;">
+                    <!-- Info Pengaduan -->
+                    <div class="card mb-3" style="border: 1px solid #eef2f9; box-shadow: none;">
+                        <div class="card-body">
+                            <div class="row mb-2">
+                                <div class="col-sm-4 text-muted"><strong>Nomor Pengaduan:</strong></div>
+                                <div class="col-sm-8"><span id="infoNomor" class="font-monospace">-</span></div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm-4 text-muted"><strong>Judul:</strong></div>
+                                <div class="col-sm-8"><span id="infoJudul">-</span></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4 text-muted"><strong>Kategori:</strong></div>
+                                <div class="col-sm-8">
+                                    <span id="infoKategori" class="badge" style="background: #667eea; color: white;">-</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form Tanggapan -->
+                    <div class="form-group mb-3">
+                        <label class="form-label fw-bold">Pesan Tanggapan <span class="text-danger">*</span></label>
+                        <textarea id="tanggapan_admin_modal" name="tanggapan_admin" class="form-control" 
+                                  rows="6" 
+                                  placeholder="Tulis tanggapan Anda kepada pelapor pengaduan...&#10;&#10;Contoh: Terima kasih telah melaporkan masalah ini. Kami sudah menerima laporan Anda dan akan segera menindaklanjuti dalam 2x24 jam."
+                                  maxlength="2000" required></textarea>
+                        <div class="form-text mt-2">
+                            <small>Karakter: <span id="charCounter">0</span>/2000</small>
+                        </div>
+                    </div>
+
+                    <!-- Prioritas -->
+                    <div class="form-group mb-3">
+                        <label class="form-label fw-bold">Prioritas Penanganan</label>
+                        <select id="prioritasSelect" name="prioritas" class="form-select">
+                            <option value="">-- Pertahankan Prioritas Saat Ini --</option>
+                            <option value="Rendah">Rendah</option>
+                            <option value="Sedang">Sedang</option>
+                            <option value="Tinggi">Tinggi</option>
+                            <option value="Mendesak">Mendesak</option>
+                        </select>
+                    </div>
+
+                    <!-- Info Tips -->
+                    <div class="alert alert-info" style="border-radius: 8px; border: 1px solid rgba(102, 126, 234, 0.3); background: rgba(102, 126, 234, 0.05);">
+                        <i class="ti ti-info-circle me-2" style="color: #667eea;"></i>
+                        <small style="color: #495057;">
+                            <strong>Tips:</strong> Berikan tanggapan yang jelas dan profesional. Jelaskan tindakan yang akan diambil dan estimasi waktu penyelesaian.
+                        </small>
+                    </div>
+                </div>
+                <div class="modal-footer" style="border-top: 1px solid #eef2f9; background: #f8f9fa;">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="border-radius: 8px;">Batal</button>
+                    <button type="submit" class="btn text-white" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); border: none; border-radius: 8px; font-weight: 700;">
+                        <i class="ti ti-send me-1"></i> Kirim Tanggapan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Update modal saat dibuka
+    document.getElementById('tanggapiModalIndex').addEventListener('show.bs.modal', function() {
+        const button = event.relatedTarget;
+        if (button) {
+            document.getElementById('infoNomor').textContent = button.dataset.pengaduanNomor || '-';
+            document.getElementById('infoJudul').textContent = button.dataset.pengaduanJudul || '-';
+            document.getElementById('infoKategori').textContent = button.dataset.pengaduanKategori || '-';
+            document.getElementById('prioritasSelect').value = button.dataset.pengaduanPrioritas || '';
+            document.getElementById('tanggapan_admin_modal').value = '';
+            document.getElementById('charCounter').textContent = '0';
+        }
+    });
+</script>
+
 @endsection

@@ -673,11 +673,11 @@
                 
                 this.dataset.submitted = 'true';
                 
-                const submitBtn = document.activeElement;
+                const submitBtn = this.querySelector('button[type="submit"]');
                 let message = 'Memproses Data...';
                 let icon = '⏳';
                 
-                if (submitBtn && submitBtn.type === 'submit') {
+                if (submitBtn) {
                     const btnText = submitBtn.textContent.trim();
                     if (btnText.includes('Setuju')) {
                         message = '✓ Pengajuan Disetujui!';
@@ -685,6 +685,9 @@
                     } else if (btnText.includes('Tolak')) {
                         message = '✗ Pengajuan Ditolak!';
                         icon = '✗';
+                    } else if (btnText.includes('Diproses')) {
+                        message = '⏳ Pengajuan Sedang Diproses...';
+                        icon = '⏳';
                     } else if (btnText.includes('Tanggapi')) {
                         message = '📝 Tanggapan Diproses...';
                         icon = '📝';
@@ -695,12 +698,11 @@
                         message = '🗑️ Data Dihapus!';
                         icon = '🗑️';
                     }
+                    
+                    submitBtn.disabled = true;
                 }
                 
                 showCustomToast(message, icon);
-                
-                const buttons = this.querySelectorAll('button[type="submit"]');
-                buttons.forEach(btn => btn.disabled = true);
             });
         });
     });

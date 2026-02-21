@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Penduduk;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class PendudukController extends Controller
 {
@@ -67,7 +70,7 @@ class PendudukController extends Controller
             'kecamatan' => 'required|string|max:255',
             'kabupaten' => 'required|string|max:255',
             'provinsi' => 'required|string|max:255',
-            'kode_pos' => 'required|string|size:5',
+            'kode_pos' => 'nullable|string|max:5',
             'agama' => 'required|in:Islam,Kristen,Katolik,Hindu,Buddha,Konghucu',
             'status_perkawinan' => 'required|in:Belum Kawin,Kawin,Cerai Hidup,Cerai Mati',
             'pekerjaan' => 'required|string|max:255',
@@ -132,7 +135,7 @@ class PendudukController extends Controller
             'kecamatan' => 'required|string|max:255',
             'kabupaten' => 'required|string|max:255',
             'provinsi' => 'required|string|max:255',
-            'kode_pos' => 'required|string|size:5',
+            'kode_pos' => 'nullable|string|max:5',
             'agama' => 'required|in:Islam,Kristen,Katolik,Hindu,Buddha,Konghucu',
             'status_perkawinan' => 'required|in:Belum Kawin,Kawin,Cerai Hidup,Cerai Mati',
             'pekerjaan' => 'required|string|max:255',
@@ -190,5 +193,81 @@ class PendudukController extends Controller
     {
         // Implementation for export functionality
         // You can use packages like maatwebsite/excel or barryvdh/laravel-dompdf
+    }
+
+    /**
+     * Show form to create account from penduduk data
+     */
+    public function createAccount($id)
+    {
+        $penduduk = Penduduk::findOrFail($id);
+        return view('admin.penduduk.create-account', compact('penduduk'));
+    }
+
+    /**
+     * Store new user account from penduduk data
+     */
+    public function storeAccount(Request $request, $id)
+    {
+        $penduduk = Penduduk::findOrFail($id);
+
+        // Validasi input
+        $validator = Validator::make($request->all(), [
+            'nik' => 'required|string|size:16',
+            'no_kk' => 'required|string|size:16',
+            'name' => 'required|string|max:255',
+            'tempat_lahir' => 'required|string|max:100',
+            'tanggal_lahir' => 'required|date',
+            'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
+            'agama' => 'required|string',
+            'status_perkawinan' => 'required|string',
+            'pekerjaan' => 'required|string|max:100',
+            'pendidikan_terakhir' => 'nullable|string|max:50',
+            'alamat' => 'required|string|max:255',
+            'rt' => 'required|string|max:3',
+            'rw' => 'required|string|max:3',
+            'desa' => 'required|string|max:100',
+            'kecamatan' => 'required|string|max:100',
+            'kabupaten' => 'required|string|max:100',
+            'provinsi' => 'required|string|max:100',
+            'kode_pos' => 'nullable|string|max:5',
+            'no_telepon' => 'required|string|max:12|unique:users,no_telepon',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:8|confirmed',
+            'agreement' => 'required|accepted'
+        ], [
+            'no_telepon.unique' => 'Nomor telepon ini sudah terdaftar di sistem',
+            'email.unique' => 'Email ini sudah terdaftar di sistem',
+            'password.confirmed' => 'Password dan konfirmasi password tidak sama',
+            'agreement.accepted' => 'Anda harus menyetujui pernyataan data'
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                           ->withErrors($validator)
+                           ->withInput();
+        }
+
+        // Cek apakah email sudah ada di User
+        if (User::where('email', $request->email)->exists()) {
+            return redirect()->back()
+                           ->withErrors(['email' => 'Email sudah terdaftar di sistem'])
+                           ->withInput();
+        }
+
+        // Create user
+        $user = User::create([
+            'nik' => $request->nik,
+            'name' => $request->name,
+            'email' => $request->email,
+            'no_telepon' => $request->no_telepon,
+            'password' => Hash::make($request->password),
+            'role' => 'user',
+            'is_verified' => false,
+            'email_verified_at' => null, // Email belum terverifikasi
+        ]);
+
+        return redirect()->route('penduduk.show', $id)
+                       ->with('success', 'Akun user berhasil dibuat! User harus melakukan verifikasi email untuk mengaktifkan akun.');
     }
 }

@@ -212,14 +212,15 @@
                                 <!-- Kode Pos -->
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="form-label">Kode Pos <span class="text-danger">*</span></label>
+                                        <label class="form-label">Kode Pos</label>
                                         <input type="text" name="kode_pos" class="form-control @error('kode_pos') is-invalid @enderror" 
-                                               value="{{ old('kode_pos') }}" maxlength="5" required>
+                                               value="{{ old('kode_pos') }}" maxlength="5" placeholder="Contoh: 61254">
                                         @error('kode_pos')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
                                 </div>
+
                             </div>
                         </div>
                     </div>
@@ -313,13 +314,6 @@
                                             <option value="Kepala Keluarga" {{ old('status_dalam_keluarga') == 'Kepala Keluarga' ? 'selected' : '' }}>Kepala Keluarga</option>
                                             <option value="Istri" {{ old('status_dalam_keluarga') == 'Istri' ? 'selected' : '' }}>Istri</option>
                                             <option value="Anak" {{ old('status_dalam_keluarga') == 'Anak' ? 'selected' : '' }}>Anak</option>
-                                            <option value="Menantu" {{ old('status_dalam_keluarga') == 'Menantu' ? 'selected' : '' }}>Menantu</option>
-                                            <option value="Cucu" {{ old('status_dalam_keluarga') == 'Cucu' ? 'selected' : '' }}>Cucu</option>
-                                            <option value="Orang Tua" {{ old('status_dalam_keluarga') == 'Orang Tua' ? 'selected' : '' }}>Orang Tua</option>
-                                            <option value="Mertua" {{ old('status_dalam_keluarga') == 'Mertua' ? 'selected' : '' }}>Mertua</option>
-                                            <option value="Famili Lain" {{ old('status_dalam_keluarga') == 'Famili Lain' ? 'selected' : '' }}>Famili Lain</option>
-                                            <option value="Pembantu" {{ old('status_dalam_keluarga') == 'Pembantu' ? 'selected' : '' }}>Pembantu</option>
-                                            <option value="Lainnya" {{ old('status_dalam_keluarga') == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
                                         </select>
                                         @error('status_dalam_keluarga')
                                             <div class="invalid-feedback">{{ $message }}</div>

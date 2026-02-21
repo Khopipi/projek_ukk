@@ -166,10 +166,6 @@
                                 <label class="text-muted mb-1">Provinsi</label>
                                 <p class="fw-bold">{{ $penduduk->provinsi }}</p>
                             </div>
-                            <div class="col-md-6 mb-2">
-                                <label class="text-muted mb-1">Kode Pos</label>
-                                <p class="fw-bold">{{ $penduduk->kode_pos }}</p>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -231,6 +227,9 @@
                             <div class="btn-group" role="group">
                                 <a href="{{ route('penduduk.index') }}" class="btn btn-secondary">
                                     <i class="ti ti-arrow-left me-1"></i> Kembali
+                                </a>
+                                <a href="{{ route('penduduk.create-account', $penduduk->id) }}" class="btn btn-success">
+                                    <i class="ti ti-user-plus me-1"></i> Buat Akun User
                                 </a>
                                 <a href="{{ route('penduduk.edit', $penduduk->id) }}" class="btn btn-warning">
                                     <i class="ti ti-edit me-1"></i> Edit Data

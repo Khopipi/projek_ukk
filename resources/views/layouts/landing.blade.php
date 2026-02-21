@@ -236,7 +236,6 @@
                         <ul class="footer-link">
                             <li><a href="/">Beranda</a></li>
                             <li><a href="/#features">Jelajahi Layanan</a></li>
-                            <li><a href="#">Pengumuman</a></li>
                         </ul>
                     </div>
 
@@ -253,13 +252,13 @@
                             <li>
                                 <a href="mailto:info@desasruni.sch.id">
                                     <i class="ti ti-mail"></i>
-                                    <span>info@desasruni.sch.id</span>
+                                    <span>desasruni@gmail.com</span>
                                 </a>
                             </li>
                             <li>
                                 <a href="tel:+62211234567">
                                     <i class="ti ti-phone"></i>
-                                    <span>(021) 123-4567</span>
+                                    <span>081232980153</span>
                                 </a>
                             </li>
                         </ul>

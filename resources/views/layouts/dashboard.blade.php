@@ -55,7 +55,7 @@
             }
 
             body {
-                background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 50%, #f3f4f6 100%) !important;
+                background: linear-gradient(135deg, #1e3c72 0%, #2a5298 25%, #4a90e2 50%, #5fa3f0 75%, #7eb3f5 100%) !important;
                 background-attachment: fixed !important;
                 color: #2d3748 !important;
                 font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
@@ -64,9 +64,9 @@
 
             /* ===== SIDEBAR PREMIUM ===== */
             .pc-sidebar {
-                background: #ffffff !important;
+                background: linear-gradient(135deg, #90caf9 0%, #a5d6ff 100%) !important;
                 box-shadow: 2px 0 12px rgba(91, 110, 245, 0.12) !important;
-                border-right: 1px solid #e9ecef !important;
+                border-right: 2px solid #64b5f6 !important;
             }
 
             .pc-sidebar .m-header {
@@ -261,9 +261,9 @@
 
             /* ===== HEADER PREMIUM ===== */
             .pc-header {
-                background: white !important;
-                border-bottom: 1px solid #e9ecef !important;
-                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+                background: linear-gradient(135deg, #90caf9 0%, #b3d9ff 100%) !important;
+                border-bottom: 2px solid #64b5f6 !important;
+                box-shadow: 0 2px 8px rgba(91, 110, 245, 0.12) !important;
                 padding: 16px 35px !important;
                 position: fixed !important;
                 top: 0 !important;
@@ -730,7 +730,7 @@
                 <div class="m-header">
                     <a href="/" class="b-brand text-dark text-capitalize fw-bold">
                         <!-- ========   Change your logo from here   ============ -->
-                        <span class="fs-5">{{ Auth::check() ? Auth::user()->role === 'admin' ? '🏢 Admin' : '👤 User' : 'Dashboard' }}</span>
+                        <span class="fs-5">{{ Auth::check() ? Auth::user()->role === 'admin' ? '🏢 ADMIN DESA' : '👤 WARGA' : 'Dashboard' }}</span>
                     </a>
                 </div>
                 <div class="navbar-content">

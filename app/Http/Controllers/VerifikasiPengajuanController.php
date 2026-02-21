@@ -136,7 +136,7 @@ class VerifikasiPengajuanController extends Controller
     }
 
     /**
-     * Upload surat hasil & set status Selesai
+     * Upload surat hasil (TIDAK ubah status, tunggu sampai email dikirim)
      */
     public function uploadSurat(Request $request, PengajuanSurat $pengajuan)
     {
@@ -158,13 +158,13 @@ class VerifikasiPengajuanController extends Controller
         $filename = time() . '_' . $pengajuan->nomor_pengajuan . '.pdf';
         $file->storeAs('public/surat_hasil', $filename);
 
+        // Update HANYA file_surat_hasil, TIDAK ubah status
+        // Status akan berubah ke Selesai saat email dikirim via sendPdf()
         $pengajuan->update([
-            'file_surat_hasil' => $filename,
-            'status' => 'Selesai',
-            'tanggal_selesai' => now()
+            'file_surat_hasil' => $filename
         ]);
 
-        return back()->with('success', 'Surat hasil berhasil diupload! Status pengajuan: Selesai.');
+        return back()->with('success', 'Surat hasil berhasil diupload! Silakan klik tombol "Kirim Email ke User" untuk mengirim ke user.');
     }
 
     /**
@@ -316,82 +316,37 @@ class VerifikasiPengajuanController extends Controller
      */
     public function sendPdf(PengajuanSurat $pengajuan)
     {
+        // Ensure pengajuan status is Disetujui (must upload surat first via uploadSurat)
+        if ($pengajuan->status !== 'Disetujui') {
+            return back()->with('error', 'Pengajuan harus berstatus "Disetujui" terlebih dahulu. Silakan upload surat melalui tombol "Upload Surat Hasil".');
+        }
+
         // Ensure user has email
         $userEmail = $pengajuan->user->email ?? null;
         if (!$userEmail) {
             return back()->with('error', 'User tidak memiliki email terdaftar.');
         }
 
-        // Ensure PDF exists; if not, generate it here
+        // Ensure PDF exists (must already be uploaded)
         $filename = $pengajuan->file_surat_hasil;
         $fullDirectory = storage_path('app/public/surat_hasil');
         $path = $fullDirectory . DIRECTORY_SEPARATOR . ($filename ?? '');
 
         if (!$filename || !file_exists($path)) {
-            // Generate signature token jika belum ada
-            if (!$pengajuan->signature_token) {
-                $signatureToken = \App\Helpers\QrCodeGenerator::generateSignatureToken($pengajuan->id, Auth::id());
-                $pengajuan->update([
-                    'signature_token' => $signatureToken,
-                    'signature_generated_at' => now()
-                ]);
-            }
-
-            // Generate QR SVG (on-demand, no file needed)
-            $qrSvg = null;
-            if ($pengajuan->signature_token && $pengajuan->signature_generated_at) {
-                $qrUrl = \App\Helpers\QrCodeGenerator::generateQrUrl($pengajuan->signature_token);
-                $qrSvg = \App\Helpers\QrCodeGenerator::generateSvgBase64($qrUrl);
-            }
-
-            // Generate PDF (similar to generateSurat but without redirect)
-            $html = view('pengajuan.pdf', ['pengajuan' => $pengajuan, 'qrSvg' => $qrSvg])->render();
-            $filename = time() . '_' . preg_replace('/[^A-Za-z0-9\-_]/', '_', $pengajuan->nomor_pengajuan) . '.pdf';
-
-            try {
-                // Ensure directory exists
-                if (!is_dir($fullDirectory)) {
-                    mkdir($fullDirectory, 0755, true);
-                }
-
-                // Generate PDF content
-                $pdfContent = null;
-                if (class_exists(\Barryvdh\DomPDF\Facade::class)) {
-                    $pdf = \PDF::loadHTML($html)->setPaper('a4', 'portrait');
-                    $pdfContent = $pdf->output();
-                } else {
-                    $dompdf = new \Dompdf\Dompdf();
-                    $dompdf->loadHtml($html);
-                    $dompdf->setPaper('A4', 'portrait');
-                    $dompdf->render();
-                    $pdfContent = $dompdf->output();
-                }
-
-                // Store to disk
-                $diskPath = $fullDirectory . DIRECTORY_SEPARATOR . $filename;
-                file_put_contents($diskPath, $pdfContent);
-
-                if (!file_exists($diskPath)) {
-                    throw new \Exception('File PDF gagal disimpan ke disk di: ' . $diskPath);
-                }
-
-                $pengajuan->update([
-                    'file_surat_hasil' => $filename,
-                    'status' => 'Selesai',
-                    'tanggal_selesai' => now()
-                ]);
-
-                Log::info('PDF generated successfully in sendPdf: ' . $diskPath);
-            } catch (\Throwable $e) {
-                Log::error('Generate surat (from sendPdf) failed: ' . $e->getMessage());
-                return back()->with('error', 'Gagal generate PDF: ' . $e->getMessage());
-            }
+            return back()->with('error', 'File surat hasil belum diupload. Silakan upload terlebih dahulu melalui tombol "Upload Surat Hasil".');
         }
 
         // Send email with attachment
         try {
             Mail::to($userEmail)->send(new PengajuanHasilMail($pengajuan->fresh()));
-            return back()->with('success', 'Surat hasil berhasil dikirim ke ' . $userEmail);
+
+            // Update status to Selesai and tanggal_selesai only after email is sent successfully
+            $pengajuan->update([
+                'status' => 'Selesai',
+                'tanggal_selesai' => now()
+            ]);
+
+            return back()->with('success', 'Surat hasil berhasil dikirim ke ' . $userEmail . ' dan status pengajuan berubah menjadi Selesai.');
         } catch (\Throwable $e) {
             Log::error('Send surat email failed: ' . $e->getMessage());
             return back()->with('error', 'Gagal mengirim email: ' . $e->getMessage());

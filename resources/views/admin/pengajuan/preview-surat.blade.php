@@ -40,9 +40,9 @@
                     <div class="card-body">
                         <div class="row g-2">
                             <div class="col-md-3">
-                                <form action="{{ route('admin.pengajuan.generate-surat', $pengajuan->id) }}" method="POST" class="d-grid">
+                                <form action="{{ route('admin.pengajuan.generate-surat', $pengajuan->id) }}" method="POST" class="d-grid" onsubmit="return showConfirmPopup(event, 'Generate PDF dari preview ini?', '🖨️', '#3b82f6')">
                                     @csrf
-                                    <button type="submit" class="btn btn-primary" onclick="return confirm('Generate PDF dari preview ini?')">
+                                    <button type="submit" class="btn btn-primary">
                                         <i class="ti ti-printer me-1"></i> Generate PDF
                                     </button>
                                 </form>
@@ -59,9 +59,9 @@
                                 @endif
                             </div>
                             <div class="col-md-3">
-                                <form action="{{ route('admin.pengajuan.send-pdf', $pengajuan->id) }}" method="POST" class="d-grid">
+                                <form action="{{ route('admin.pengajuan.send-pdf', $pengajuan->id) }}" method="POST" class="d-grid" onsubmit="return showConfirmPopup(event, 'Kirim PDF ke email user?', '📧', '#f59e0b')">
                                     @csrf
-                                    <button type="submit" class="btn btn-warning" onclick="return confirm('Kirim PDF ke email user?')">
+                                    <button type="submit" class="btn btn-warning">
                                         <i class="ti ti-mail-forward me-1"></i> Kirim Email
                                     </button>
                                 </form>
@@ -217,6 +217,99 @@
 
 @section('scripts_content')
 <script>
+    // Confirmation popup dengan custom dialog
+    function showConfirmPopup(event, message, icon = '❓', bgColor = '#3b82f6') {
+        event.preventDefault();
+        const form = event.target;
+        
+        // Hapus popup lama jika ada
+        const existingModal = document.getElementById('custom-confirm-popup');
+        if (existingModal) existingModal.remove();
+        
+        // Buat backdrop
+        const backdrop = document.createElement('div');
+        backdrop.id = 'custom-confirm-popup';
+        backdrop.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 99998;
+            animation: fadeIn 0.3s ease-out;
+        `;
+        
+        // Buat modal
+        const modal = document.createElement('div');
+        modal.style.cssText = `
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            animation: popupIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        `;
+        
+        modal.innerHTML = `
+            <div style="font-size: 48px; margin-bottom: 20px; animation: bounce 0.6s ease-out;">${icon}</div>
+            <h3 style="color: #2d3748; font-size: 20px; font-weight: 700; margin: 0 0 12px 0;">${message}</h3>
+            <p style="color: #718096; margin: 0 0 30px 0; line-height: 1.5; font-size: 14px;">Anda yakin dengan tindakan ini?</p>
+            <div style="display: flex; gap: 12px;">
+                <button id="cancelBtn" type="button" style="flex: 1; padding: 10px; border: 1px solid #ccc; background: white; color: #2d3748; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s ease;">
+                    Batal
+                </button>
+                <button id="confirmBtn" type="button" style="flex: 1; padding: 10px; border: none; background: ${bgColor}; color: white; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s ease;">
+                    Ya, Lanjutkan
+                </button>
+            </div>
+        `;
+        
+        backdrop.appendChild(modal);
+        document.body.appendChild(backdrop);
+        
+        // Add animations if not exists
+        let styleSheet = document.getElementById('popup-animations');
+        if (!styleSheet) {
+            styleSheet = document.createElement('style');
+            styleSheet.id = 'popup-animations';
+            styleSheet.textContent = `
+                @keyframes fadeIn {
+                    from { opacity: 0; }
+                    to { opacity: 1; }
+                }
+                @keyframes popupIn {
+                    0% { opacity: 0; transform: scale(0.3); }
+                    100% { opacity: 1; transform: scale(1); }
+                }
+                @keyframes bounce {
+                    0%, 100% { transform: scale(1); }
+                    50% { transform: scale(1.2); }
+                }
+            `;
+            document.head.appendChild(styleSheet);
+        }
+        
+        const cancelBtn = document.getElementById('cancelBtn');
+        const confirmBtn = document.getElementById('confirmBtn');
+        
+        cancelBtn.addEventListener('click', function() {
+            backdrop.remove();
+        });
+        
+        confirmBtn.addEventListener('click', function() {
+            backdrop.remove();
+            form.submit();
+        });
+        
+        return false;
+    }
+
     // Auto-hide alerts
     setTimeout(function() {
         const alerts = document.querySelectorAll('.alert-dismissible');

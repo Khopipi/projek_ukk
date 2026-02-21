@@ -114,6 +114,100 @@
                     </div>
                 </div>
 
+                <!-- Tanggapan dari Admin -->
+                @if($pengaduan->tanggapan_admin)
+                <div class="card" style="border: 1px solid #43e97b; border-left: 4px solid #43e97b; box-shadow: 0 2px 8px rgba(67, 233, 123, 0.1);">
+                    <div class="card-header" style="background: linear-gradient(135deg, rgba(67, 233, 123, 0.1) 0%, rgba(56, 249, 215, 0.1) 100%); border-bottom: 1px solid rgba(67, 233, 123, 0.2);">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <h5 class="mb-0" style="color: #43e97b;">
+                                <i class="ti ti-message-circle me-2"></i>Tanggapan dari Admin
+                            </h5>
+                            <span class="badge" style="background: #43e97b; color: white;">
+                                <i class="ti ti-check me-1"></i> Sudah Ditanggapi
+                            </span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <!-- Info Admin -->
+                        @if($pengaduan->admin)
+                        <div class="d-flex align-items-center mb-4 pb-3" style="border-bottom: 1px solid #eef2f9;">
+                            <div class="flex-shrink-0">
+                                <div class="avtar avtar-sm bg-light-success" style="width: 40px; height: 40px;">
+                                    <i class="ti ti-user-check text-success" style="font-size: 20px;"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-0" style="color: #2d3748;">{{ $pengaduan->admin->name }}</h6>
+                                <small class="text-muted">
+                                    <i class="ti ti-calendar-event me-1"></i>
+                                    {{ $pengaduan->tanggal_ditanggapi->format('d F Y, H:i') }}
+                                </small>
+                            </div>
+                        </div>
+                        @endif
+
+                        <!-- Isi Tanggapan -->
+                        <div class="mb-4">
+                            <p class="mb-0" style="white-space: pre-line; color: #2d3748; line-height: 1.8;">{{ $pengaduan->tanggapan_admin }}</p>
+                        </div>
+
+                        <!-- Info Prioritas -->
+                        @if($pengaduan->prioritas)
+                        <div class="mt-4 pt-3" style="border-top: 1px solid #eef2f9;">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <small class="text-muted d-block mb-2"><strong>Prioritas Penanganan:</strong></small>
+                                    @php
+                                        $priorityColor = match($pengaduan->prioritas) {
+                                            'Rendah' => '#28a745',
+                                            'Sedang' => '#ffc107',
+                                            'Tinggi' => '#dc3545',
+                                            'Mendesak' => '#dc3545',
+                                            default => '#6c757d'
+                                        };
+                                        $priorityIcon = match($pengaduan->prioritas) {
+                                            'Rendah' => 'ti-alert-circle',
+                                            'Sedang' => 'ti-alert-triangle',
+                                            'Tinggi' => 'ti-alert',
+                                            'Mendesak' => 'ti-alert',
+                                            default => 'ti-info-circle'
+                                        };
+                                    @endphp
+                                    <span class="badge" style="background: {{ $priorityColor }}; color: white; padding: 6px 12px; font-weight: 700;">
+                                        <i class="ti {{ $priorityIcon }} me-1"></i>
+                                        {{ $pengaduan->prioritas }}
+                                    </span>
+                                </div>
+                                <div class="col-md-6">
+                                    <small class="text-muted d-block mb-2"><strong>Status Saat Ini:</strong></small>
+                                    <span class="badge {{ $pengaduan->status_badge }}" style="padding: 6px 12px; font-weight: 700;">
+                                        {{ $pengaduan->status }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        @endif
+                    </div>
+                </div>
+                @else
+                <!-- Card Menunggu Tanggapan -->
+                @if(in_array($pengaduan->status, ['Menunggu', 'Diproses']))
+                <div class="card" style="border: 1px solid #ffc107; border-left: 4px solid #ffc107; box-shadow: 0 2px 8px rgba(255, 193, 7, 0.1);">
+                    <div class="card-header" style="background: linear-gradient(135deg, rgba(255, 193, 7, 0.1) 0%, rgba(255, 179, 0, 0.1) 100%); border-bottom: 1px solid rgba(255, 193, 7, 0.2);">
+                        <h5 class="mb-0" style="color: #ff9500;">
+                            <i class="ti ti-hourglass-empty me-2"></i>Menunggu Tanggapan Admin
+                        </h5>
+                    </div>
+                    <div class="card-body text-center py-4">
+                        <i class="ti ti-clock" style="font-size: 48px; color: #ffc107; opacity: 0.5;"></i>
+                        <p class="mt-3 mb-0 text-muted">
+                            Pengaduan Anda sedang diproses oleh admin. Kami akan segera memberikan tanggapan.
+                        </p>
+                    </div>
+                </div>
+                @endif
+                @endif
+
                 <!-- Foto-foto -->
                 @if($pengaduan->foto_1 || $pengaduan->foto_2 || $pengaduan->foto_3)
                 <div class="card">
@@ -190,34 +284,48 @@
                                         </div>
                                     </div>
                                     <div class="flex-grow-1 ms-3">
-                                        <h6 class="mb-0">User Mengirim</h6>
+                                        <h6 class="mb-0">Pengaduan Dikirim</h6>
                                         <small class="text-muted">{{ $pengaduan->created_at->format('d F Y, H:i') }}</small>
                                     </div>
                                 </div>
                             </li>
 
-                            <!-- User Diproses -->
+                            <!-- Ditanggapi Admin -->
+                            @if($pengaduan->tanggal_ditanggapi)
                             <li class="list-group-item px-0">
                                 <div class="d-flex align-items-start">
                                     <div class="flex-shrink-0">
-                                        <div class="avtar avtar-s bg-light-info">
-                                            <i class="ti ti-hourglass text-info"></i>
+                                        <div class="avtar avtar-s bg-light-success">
+                                            <i class="ti ti-message-circle text-success"></i>
                                         </div>
                                     </div>
                                     <div class="flex-grow-1 ms-3">
-                                        <h6 class="mb-0">User Diproses</h6>
-                                        <small class="text-muted">
-                                            @if($pengaduan->tanggal_diproses)
-                                                {{ $pengaduan->tanggal_diproses->format('d F Y, H:i') }}
-                                            @else
-                                                <em>Belum diproses</em>
-                                            @endif
-                                        </small>
+                                        <h6 class="mb-0">Ditanggapi Admin</h6>
+                                        <small class="text-muted">{{ $pengaduan->tanggal_ditanggapi->format('d F Y, H:i') }}</small>
+                                        @if($pengaduan->admin)
+                                        <br><small class="text-muted">Oleh: <strong>{{ $pengaduan->admin->name }}</strong></small>
+                                        @endif
                                     </div>
                                 </div>
                             </li>
+                            @else
+                            <li class="list-group-item px-0">
+                                <div class="d-flex align-items-start">
+                                    <div class="flex-shrink-0">
+                                        <div class="avtar avtar-s bg-light-warning">
+                                            <i class="ti ti-hourglass text-warning"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h6 class="mb-0">Menunggu Tanggapan</h6>
+                                        <small class="text-muted"><em>Pengaduan sedang diproses...</em></small>
+                                    </div>
+                                </div>
+                            </li>
+                            @endif
 
-                            <!-- User Selesai -->
+                            <!-- Pengaduan Selesai -->
+                            @if($pengaduan->tanggal_selesai)
                             <li class="list-group-item px-0">
                                 <div class="d-flex align-items-start">
                                     <div class="flex-shrink-0">
@@ -226,17 +334,28 @@
                                         </div>
                                     </div>
                                     <div class="flex-grow-1 ms-3">
-                                        <h6 class="mb-0">User Selesai</h6>
-                                        <small class="text-muted">
-                                            @if($pengaduan->tanggal_selesai)
-                                                {{ $pengaduan->tanggal_selesai->format('d F Y, H:i') }}
-                                            @else
-                                                <em>Belum selesai</em>
-                                            @endif
-                                        </small>
+                                        <h6 class="mb-0">Pengaduan Selesai</h6>
+                                        <small class="text-muted">{{ $pengaduan->tanggal_selesai->format('d F Y, H:i') }}</small>
                                     </div>
                                 </div>
                             </li>
+                            @else
+                            @if($pengaduan->status === 'Diproses')
+                            <li class="list-group-item px-0">
+                                <div class="d-flex align-items-start">
+                                    <div class="flex-shrink-0">
+                                        <div class="avtar avtar-s bg-light-info">
+                                            <i class="ti ti-refresh text-info"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h6 class="mb-0">Sedang Diproses</h6>
+                                        <small class="text-muted"><em>Admin sedang menangani pengaduan Anda...</em></small>
+                                    </div>
+                                </div>
+                            </li>
+                            @endif
+                            @endif
                         </ul>
                     </div>
                 </div>

@@ -364,6 +364,8 @@
                 docs: [
                     { label: 'Kartu Keluarga (KK) Pewaris / Pemohon', name: 'doc_kk_domisili', required: true },
                     { label: 'KTP Asli Pemohon (verifikasi)', name: 'doc_ktp_domisili', required: true },
+                    { label: 'Foto Surat Pengantar dari RT', name: 'doc_foto_pengantar_rt', required: true },
+                    { label: 'Foto Surat Pengantar dari RW', name: 'doc_foto_pengantar_rw', required: true },
                     { label: 'Formulir Permohonan F-1.03 (Disdukcapil)', name: 'doc_form_f103', required: true },
                     { label: 'Akta Kelahiran (jika belum punya KTP)', name: 'doc_akta_kelahiran_domisili', required: false },
                     { label: 'Surat Nikah / Cerai wajib (jika ada)', name: 'doc_surat_nikah_cerai', required: false }

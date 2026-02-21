@@ -192,42 +192,44 @@
     }
 </style>
 
-<li class="pc-item">
-    <a href="{{ route('penduduk.index') }}" class="pc-link sidebar-penduduk">
-        <span class="pc-micon"><i class="ti ti-users"></i></span>
-        <span class="pc-mtext">Data Penduduk</span>
-    </a>
-</li>
 
 <li class="pc-item">
-    <a href="{{ route('admin.pengajuan.index') }}" class="pc-link sidebar-pengajuan">
+    <a href="{{ route('admin.pengajuan.index') }}" class="pc-link sidebar-pengajuan" style="position: relative;">
         <span class="pc-micon"><i class="ti ti-file-check"></i></span>
         <span class="pc-mtext">Verifikasi Pengajuan</span>
         @php
             $pengajuanMenunggu = \App\Models\PengajuanSurat::where('status', 'Menunggu')->count();
         @endphp
         @if($pengajuanMenunggu > 0)
-            <span class="badge badge-notification">{{ $pengajuanMenunggu }}</span>
+            <span class="badge-notification" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: linear-gradient(135deg, #ff4444 0%, #ff1744 100%); color: white; border-radius: 50%; min-width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 11px; box-shadow: 0 4px 12px rgba(255, 17, 68, 0.4); z-index: 10;">{{ $pengajuanMenunggu }}</span>
         @endif
     </a>
 </li>
 
 <li class="pc-item">
-    <a href="{{ route('admin.pengaduan.index') }}" class="pc-link sidebar-pengaduan">
+    <a href="{{ route('admin.pengaduan.index') }}" class="pc-link sidebar-pengaduan" style="position: relative;">
         <span class="pc-micon"><i class="ti ti-message-circle"></i></span>
         <span class="pc-mtext">Verifikasi Pengaduan</span>
         @php
             $pengaduanMenunggu = \App\Models\Pengaduan::where('status', 'Menunggu')->count();
         @endphp
         @if($pengaduanMenunggu > 0)
-            <span class="badge badge-notification">{{ $pengaduanMenunggu }}</span>
+            <span class="badge-notification" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: linear-gradient(135deg, #ff4444 0%, #ff1744 100%); color: white; border-radius: 50%; min-width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 11px; box-shadow: 0 4px 12px rgba(255, 17, 68, 0.4); z-index: 10;">{{ $pengaduanMenunggu }}</span>
         @endif
+    </a>
+</li>
+
+
+<li class="pc-item">
+    <a href="{{ route('penduduk.index') }}" class="pc-link sidebar-penduduk">
+        <span class="pc-micon"><i class="ti ti-users"></i></span>
+        <span class="pc-mtext">pendataan Penduduk</span>
     </a>
 </li>
 
 <li class="pc-item">
     <a href="{{ route('admin.kematian.index') }}" class="pc-link sidebar-kematian">
         <span class="pc-micon"><i class="ti ti-coffin"></i></span>
-        <span class="pc-mtext">Data Kematian</span>
+        <span class="pc-mtext">pendataan Kematian</span>
     </a>
 </li>

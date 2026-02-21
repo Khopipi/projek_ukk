@@ -171,6 +171,55 @@
                 </div>
                 @endif
 
+                @if($pengajuan->jenis_surat === 'Surat Domisili')
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="ti ti-file-text me-2"></i>Surat Pengantar RT/RW</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            @if($pengajuan->data_tambahan['doc_foto_pengantar_rt'] ?? null)
+                            <div class="col-md-6 mb-3">
+                                <div class="border rounded p-3 text-center" style="background-color: #f8f9fa;">
+                                    <div class="mb-3">
+                                        <i class="ti ti-file-pdf" style="font-size: 48px; color: #ef4444;"></i>
+                                    </div>
+                                    <h6 class="mb-2">Foto Surat Pengantar dari RT</h6>
+                                    <div class="d-flex gap-2 justify-content-center">
+                                        <a href="{{ asset('storage/' . $pengajuan->data_tambahan['doc_foto_pengantar_rt']) }}" class="btn btn-sm btn-outline-primary" target="_blank">
+                                            <i class="ti ti-eye me-1"></i> Lihat
+                                        </a>
+                                        <a href="{{ asset('storage/' . $pengajuan->data_tambahan['doc_foto_pengantar_rt']) }}" class="btn btn-sm btn-outline-success" download>
+                                            <i class="ti ti-download me-1"></i> Download
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            @endif
+
+                            @if($pengajuan->data_tambahan['doc_foto_pengantar_rw'] ?? null)
+                            <div class="col-md-6 mb-3">
+                                <div class="border rounded p-3 text-center" style="background-color: #f8f9fa;">
+                                    <div class="mb-3">
+                                        <i class="ti ti-file-pdf" style="font-size: 48px; color: #ef4444;"></i>
+                                    </div>
+                                    <h6 class="mb-2">Foto Surat Pengantar dari RW</h6>
+                                    <div class="d-flex gap-2 justify-content-center">
+                                        <a href="{{ asset('storage/' . $pengajuan->data_tambahan['doc_foto_pengantar_rw']) }}" class="btn btn-sm btn-outline-primary" target="_blank">
+                                            <i class="ti ti-eye me-1"></i> Lihat
+                                        </a>
+                                        <a href="{{ asset('storage/' . $pengajuan->data_tambahan['doc_foto_pengantar_rw']) }}" class="btn btn-sm btn-outline-success" download>
+                                            <i class="ti ti-download me-1"></i> Download
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+                @endif
+
                 <!-- Action Buttons -->
                 <div class="card">
                     <div class="card-header">
@@ -179,9 +228,9 @@
                     <div class="card-body">
                         <div class="d-grid gap-2">
                             @if($pengajuan->status == 'Menunggu')
-                            <form action="{{ route('admin.pengajuan.proses', $pengajuan->id) }}" method="POST">
+                            <form action="{{ route('admin.pengajuan.proses', $pengajuan->id) }}" method="POST" class="process-form">
                                 @csrf
-                                <button type="submit" class="btn btn-warning w-100 process-btn" onclick="this.disabled = true; this.querySelector('.btn-text').classList.add('d-none'); this.querySelector('.spinner-border').classList.remove('d-none');">
+                                <button type="submit" class="btn btn-warning w-100 process-btn">
                                     <span class="btn-text"><i class="ti ti-refresh me-1"></i> Tandai Diproses</span>
                                     <span class="spinner-border spinner-border-sm ms-2 d-none" role="status" aria-hidden="true"></span>
                                 </button>
@@ -211,13 +260,22 @@
                             </button>
                             @endif
 
+                            @if($pengajuan->file_surat_hasil && $pengajuan->status == 'Disetujui')
+                            <form action="{{ route('admin.pengajuan.send-pdf', $pengajuan->id) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="btn btn-success w-100 mb-2">
+                                    <i class="ti ti-mail me-1"></i> Kirim Email ke User
+                                </button>
+                            </form>
+                            @endif
+
                             {{-- Preview Surat & Generate PDF --}}
                             <a href="{{ route('admin.pengajuan.preview-surat', $pengajuan->id) }}" class="btn btn-outline-primary w-100 mb-2">
                                 <i class="ti ti-eye me-1"></i> Preview Surat
                             </a>
 
                             @if($pengajuan->file_surat_hasil)
-                            <form action="{{ route('admin.pengajuan.delete-surat', $pengajuan->id) }}" method="POST" onsubmit="return confirm('Yakin hapus file surat?')">
+                            <form action="{{ route('admin.pengajuan.delete-surat', $pengajuan->id) }}" method="POST" onsubmit="return confirmDelete(event)">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-outline-danger w-100 delete-btn" onclick="this.disabled = true; this.querySelector('.btn-text')?.classList.add('d-none'); this.querySelector('.spinner-border')?.classList.remove('d-none');">
@@ -488,6 +546,98 @@
 
 @section('scripts_content')
 <script>
+    // Confirmation modal dengan popup custom
+    function confirmDelete(event) {
+        event.preventDefault();
+        const form = event.target;
+        
+        // Tampilkan popup konfirmasi
+        const existingModal = document.getElementById('custom-confirm-modal');
+        if (existingModal) existingModal.remove();
+        
+        const backdrop = document.createElement('div');
+        backdrop.id = 'custom-confirm-modal';
+        backdrop.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 99998;
+            animation: fadeIn 0.3s ease-out;
+        `;
+        
+        const modal = document.createElement('div');
+        modal.style.cssText = `
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            animation: popupIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        `;
+        
+        modal.innerHTML = `
+            <div style="font-size: 48px; margin-bottom: 20px;">⚠️</div>
+            <h3 style="color: #2d3748; font-size: 20px; font-weight: 700; margin: 0 0 12px 0;">Hapus File Surat?</h3>
+            <p style="color: #718096; margin: 0 0 30px 0; line-height: 1.5;">Anda yakin ingin menghapus file surat hasil ini? Tindakan ini tidak dapat dibatalkan.</p>
+            <div style="display: flex; gap: 12px;">
+                <button id="cancelBtn" type="button" style="flex: 1; padding: 10px; border: 1px solid #ccc; background: white; color: #2d3748; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s ease;">
+                    Batal
+                </button>
+                <button id="confirmBtn" type="button" style="flex: 1; padding: 10px; border: none; background: #ef4444; color: white; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s ease;">
+                    Ya, Hapus
+                </button>
+            </div>
+        `;
+        
+        backdrop.appendChild(modal);
+        document.body.appendChild(backdrop);
+        
+        // Add animations if not exists
+        let styleSheet = document.getElementById('confirm-animations');
+        if (!styleSheet) {
+            styleSheet = document.createElement('style');
+            styleSheet.id = 'confirm-animations';
+            styleSheet.textContent = `
+                @keyframes fadeIn {
+                    from { opacity: 0; }
+                    to { opacity: 1; }
+                }
+                @keyframes popupIn {
+                    0% { opacity: 0; transform: scale(0.3); }
+                    100% { opacity: 1; transform: scale(1); }
+                }
+                @keyframes popupOut {
+                    0% { opacity: 1; transform: scale(1); }
+                    100% { opacity: 0; transform: scale(0.3); }
+                }
+            `;
+            document.head.appendChild(styleSheet);
+        }
+        
+        const cancelBtn = document.getElementById('cancelBtn');
+        const confirmBtn = document.getElementById('confirmBtn');
+        
+        cancelBtn.addEventListener('click', function() {
+            backdrop.style.opacity = '0';
+            setTimeout(() => backdrop.remove(), 300);
+        });
+        
+        confirmBtn.addEventListener('click', function() {
+            backdrop.remove();
+            form.submit();
+        });
+        
+        return false;
+    }
+
     // Create beautiful modern popup
     function showCustomToast(message, icon = '✓') {
         const existing = document.getElementById('custom-toast-popup');
@@ -577,11 +727,11 @@
                 
                 this.dataset.submitted = 'true';
                 
-                const submitBtn = document.activeElement;
+                const submitBtn = this.querySelector('button[type="submit"]');
                 let message = 'Memproses Data...';
                 let icon = '⏳';
                 
-                if (submitBtn && submitBtn.type === 'submit') {
+                if (submitBtn) {
                     const btnText = submitBtn.textContent.trim();
                     if (btnText.includes('Setuju')) {
                         message = '✓ Pengajuan Disetujui!';
@@ -589,6 +739,9 @@
                     } else if (btnText.includes('Tolak')) {
                         message = '✗ Pengajuan Ditolak!';
                         icon = '✗';
+                    } else if (btnText.includes('Diproses')) {
+                        message = '⏳ Pengajuan Sedang Diproses...';
+                        icon = '⏳';
                     } else if (btnText.includes('Tanggapi')) {
                         message = '📝 Tanggapan Diproses...';
                         icon = '📝';
@@ -598,13 +751,26 @@
                     } else if (btnText.includes('Hapus')) {
                         message = '🗑️ Data Dihapus!';
                         icon = '🗑️';
+                    } else if (btnText.includes('Upload')) {
+                        message = '📤 File Terupload!';
+                        icon = '📤';
+                    } else if (btnText.includes('Kirim')) {
+                        message = '✉️ Email Terkirim!';
+                        icon = '✉️';
                     }
+                    
+                    // Tampilkan spinner dan sembunyikan teks
+                    const btnText_el = submitBtn.querySelector('.btn-text');
+                    const spinner = submitBtn.querySelector('.spinner-border');
+                    if (btnText_el && spinner) {
+                        btnText_el.classList.add('d-none');
+                        spinner.classList.remove('d-none');
+                    }
+                    
+                    submitBtn.disabled = true;
                 }
                 
                 showCustomToast(message, icon);
-                
-                const buttons = this.querySelectorAll('button[type="submit"]');
-                buttons.forEach(btn => btn.disabled = true);
             });
         });
     });

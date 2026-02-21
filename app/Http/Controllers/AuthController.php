@@ -28,11 +28,14 @@ class AuthController extends Controller
         $request->validate([
             'nik' => 'required|string|size:16',
             'password' => 'required|min:6',
+            'captcha_answer' => 'required|numeric',
         ], [
             'nik.required' => 'NIK wajib diisi',
             'nik.size' => 'NIK harus 16 digit',
             'password.required' => 'Password wajib diisi',
             'password.min' => 'Password minimal 6 karakter',
+            'captcha_answer.required' => 'Jawaban CAPTCHA wajib diisi',
+            'captcha_answer.numeric' => 'Jawaban CAPTCHA harus berupa angka',
         ]);
 
         $credentials = [
@@ -148,6 +151,16 @@ class AuthController extends Controller
             'agreement.required' => 'Anda harus menyetujui pernyataan data',
             'agreement.accepted' => 'Anda harus menyetujui pernyataan data',
         ]);
+
+        // Validasi umur minimal 18 tahun
+        $tanggal_lahir = \Carbon\Carbon::parse($request->tanggal_lahir);
+        $usia = $tanggal_lahir->age;
+        
+        if ($usia < 18) {
+            return back()
+                ->withErrors(['tanggal_lahir' => 'Anda harus minimal berusia 18 tahun untuk melakukan registrasi.'])
+                ->withInput($request->all());
+        }
 
         // Buat user baru
         $user = User::create([

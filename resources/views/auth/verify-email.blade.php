@@ -3,83 +3,165 @@
 @section('title', 'Verify Email')
 
 @section('content')
-    <div class="card my-5">
+
+    <style>
+        .verify-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .verify-header h3 {
+            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 26px !important;
+            margin-bottom: 8px;
+        }
+
+        .verify-header p {
+            color: #64748b;
+            font-weight: 500;
+            margin-bottom: 0;
+        }
+
+        .otp-container {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+            margin: 30px 0;
+        }
+
+        .otp-input {
+            width: 100% !important;
+            height: 50px !important;
+            font-size: 20px !important;
+            font-weight: 700;
+            text-align: center;
+            border: 2px solid #dbeafe !important;
+            border-radius: 10px !important;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%) !important;
+            color: #1e3c72 !important;
+            transition: all 0.3s ease;
+        }
+
+        .otp-input:focus {
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1) !important;
+            outline: none;
+        }
+
+        .otp-input::-webkit-outer-spin-button,
+        .otp-input::-webkit-inner-spin-button {
+            display: none;
+        }
+
+        .resend-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 20px;
+            border-top: 1px solid #dbeafe;
+            margin-top: 24px;
+        }
+
+        .resend-section p {
+            font-size: 13px;
+            margin-bottom: 0;
+        }
+
+        #resendBtn {
+            font-size: 13px !important;
+            padding: 6px 12px !important;
+            transition: all 0.3s ease;
+        }
+
+        #resendBtn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+    </style>
+
+    <div class="card">
         @if (session('verify_email'))
             <div class="card-body">
-                <div class="mb-4">
-                    <h3 class="mb-2"><b>Enter Verification Code</b></h3>
+                <div class="verify-header">
+                    <h3><i class="ti ti-mail-check me-2"></i>Verifikasi Email</h3>
+                    <p>Masukkan kode verifikasi yang dikirim ke email Anda</p>
+                </div>
 
-                    @if (session('success'))
-                        <div class="alert alert-success">
-                            {{ session('success') }}
-                        </div>
-                    @else
+                @if (session('success'))
+                    <div class="alert alert-success">
+                        <i class="ti ti-check"></i>
+                        <div>{{ session('success') }}</div>
+                    </div>
+                @else
+                    <div class="alert alert-info">
+                        <i class="ti ti-info-circle"></i>
+                        <div>Kami telah mengirimkan kode verifikasi ke <b>{{ session('verify_email') }}</b></div>
+                    </div>
+                @endif
+
+                @if ($errors->any())
+                    <div class="alert alert-danger mt-3">
+                        <i class="ti ti-alert-circle"></i>
                         <div>
-                            We`ve send you code on {{ session('verify_email') }}
-                        </div>
-                    @endif
-
-                    @if ($errors->any())
-                        <div class="alert alert-danger my-2">
-
                             @foreach ($errors->all() as $error)
                                 <div>{{ $error }}</div>
                             @endforeach
-
                         </div>
-                    @endif
-                </div>
+                    </div>
+                @endif
 
                 {{-- Form Verifikasi OTP --}}
-
                 <form action="{{ route('verify.otp') }}" method="POST" id="verifyForm">
                     @csrf
                     <input type="hidden" name="email" value="{{ session('verify_email') }}">
-                    <div class="row text-center">
+                    
+                    <label class="form-label text-center d-block mb-3"><i class="ti ti-key me-1"></i>Kode Verifikasi (6 digit)</label>
+                    
+                    <div class="otp-container">
                         @for ($i = 0; $i < 6; $i++)
-                            <div class="col">
-                                <input type="text" maxlength="1" class="form-control text-center otp-input"
-                                    style="font-size:16px;" name="otp[]" required>
-                            </div>
+                            <input type="text" maxlength="1" class="form-control otp-input" name="otp[]" required>
                         @endfor
                     </div>
 
                     <div class="d-grid mt-4">
-                        <button type="submit" class="btn btn-primary">Continue</button>
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="ti ti-check me-2"></i>Verifikasi
+                        </button>
                     </div>
                 </form>
 
-
                 {{-- Resend OTP --}}
-
-                <div class="d-flex justify-content-between align-items-end mt-3">
-                    <p class="mb-0" style="font-size:12px;">Did not receive the email? Check your spam filter, or</p>
+                <div class="resend-section">
+                    <p class="text-muted">Tidak menerima kode? Cek folder spam atau</p>
                     <form action="{{ route('send.otp') }}" method="POST" id="resendForm">
                         @csrf
                         <input type="hidden" name="email" value="{{ session('verify_email') }}">
-                        <button style="font-size:12px;" type="submit" id="resendBtn" class="btn btn-link p-0"
-                            disabled>Resend
-                            code (<span id="timer"></span>s)</button>
+                        <button type="submit" id="resendBtn" class="btn btn-link p-0" disabled>
+                            <i class="ti ti-refresh me-1"></i>Kirim ulang (<span id="timer"></span>s)
+                        </button>
                     </form>
                 </div>
-
             </div>
         @else
             <div class="card-body">
-                {{-- buat pesan bahwa ini halaman untuk memverifikasi email melalui , jadi anda harus melakukan register email dulu baru nanti bisa mengakses konten halaman ini --}}
-                <div class="alert alert-warning">
-                    This page is for email verification. Please register your email first before accessing this content.
-                </div>
-                <div class="d-flex justify-content-center">
-                    <a href="{{ route('register') }}" class="btn btn-primary">Go to Register</a>
+                <div style="text-align: center; padding: 40px 20px;">
+                    <div style="font-size: 48px; color: #ffa500; margin-bottom: 20px;">
+                        <i class="ti ti-alert-triangle"></i>
+                    </div>
+                    <h4 style="color: #1e3c72; margin-bottom: 12px;">Akses Ditolak</h4>
+                    <p class="text-muted mb-4">Halaman ini khusus untuk verifikasi email. Silakan lakukan registrasi terlebih dahulu.</p>
+                    <a href="{{ route('register') }}" class="btn btn-primary">
+                        <i class="ti ti-user-plus me-2"></i>Ke Halaman Registrasi
+                    </a>
                 </div>
             </div>
         @endif
     </div>
 
-
 @endsection
-
 
 @section('scripts_content')
 
@@ -90,10 +172,8 @@
                 // -------------------
                 // 1. Handle Input OTP
                 // -------------------
-                // Ambil semua elemen input OTP
                 const inputs = document.querySelectorAll(".otp-input");
                 inputs.forEach((input, index) => {
-                    // Hanya boleh angka
                     input.addEventListener("input", (e) => {
                         e.target.value = e.target.value.replace(/[^0-9]/g, "");
 
@@ -102,14 +182,12 @@
                         }
                     });
 
-                    // Fokus ke input sebelumnya kalau backspace
                     input.addEventListener("keydown", (e) => {
                         if (e.key === "Backspace" && !e.target.value && index > 0) {
                             inputs[index - 1].focus();
                         }
                     });
 
-                    // Kalau paste langsung isi ke semua kotak
                     input.addEventListener("paste", (e) => {
                         e.preventDefault();
                         const pasteData = (e.clipboardData || window.clipboardData).getData("text");
@@ -121,12 +199,11 @@
                             }
                         });
 
-                        // Fokus ke input terakhir yang terisi
                         const filledIndex = Math.min(digits.length, inputs.length) - 1;
                         if (filledIndex >= 0) inputs[filledIndex].focus();
                     });
                 });
-                // Gabungkan OTP sebelum submit
+
                 document.getElementById("verifyForm").addEventListener("submit", function(e) {
                     e.preventDefault();
                     let otpValue = "";
@@ -139,29 +216,22 @@
                     this.submit();
                 });
 
-
                 // -------------------
-                // 2. Countdown Timer (localStorage)
+                // 2. Countdown Timer
                 // -------------------
                 let resendBtn = document.getElementById("resendBtn");
                 let timerSpan = document.getElementById("timer");
 
-                // Ambil waktu akhir dari localStorage
                 let endTime = localStorage.getItem("otp_end_time");
-
-
                 let setResendOtp = {{ $timeResendOtp }}
                 let timer = {{ $cooldown }} < setResendOtp ? setResendOtp : 0
-                console.log(timer)
+
                 if (!endTime) {
-                    console.log('masuk a')
                     endTime = Date.now() + (timer * 1000);
                     localStorage.setItem("otp_end_time", endTime);
                 } else {
-                    console.log('masuk b')
                     endTime = parseInt(endTime);
                 }
-
 
                 let countdown = setInterval(() => {
                     let remaining = Math.floor((endTime - Date.now()) / 1000);
@@ -169,21 +239,17 @@
                     if (remaining <= 0) {
                         clearInterval(countdown);
                         resendBtn.disabled = false;
-                        resendBtn.textContent = "Resend code";
+                        resendBtn.innerHTML = '<i class="ti ti-refresh me-1"></i>Kirim ulang';
                         localStorage.removeItem("otp_end_time");
                     } else {
                         timerSpan.textContent = remaining;
                         resendBtn.disabled = true;
-                        resendBtn.innerHTML = `Resend code (<span id="timer">${remaining}</span>s)`;
+                        resendBtn.innerHTML = `<i class="ti ti-refresh me-1"></i>Kirim ulang (<span id="timer">${remaining}</span>s)`;
                     }
                 }, 1000);
 
-
-                // -------------------
-                // 3. Reset Timer saat Resend
-                // -------------------
                 document.getElementById("resendForm").addEventListener("submit", function() {
-                    let newEndTime = Date.now() + (setResendOtp * 1000); // selalu reset ke 60 detik
+                    let newEndTime = Date.now() + (setResendOtp * 1000);
                     localStorage.setItem("otp_end_time", newEndTime);
                 });
             });

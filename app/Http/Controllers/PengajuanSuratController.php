@@ -725,4 +725,28 @@ class PengajuanSuratController extends Controller
             'pengajuan' => $pengajuan
         ]);
     }
+
+    /**
+     * Close notification and save to session
+     */
+    public function closeNotification(Request $request)
+    {
+        $notificationId = $request->input('notification_id');
+        
+        // Get closed notifications from session
+        $closedNotifications = session()->get('closed_notifications', []);
+        
+        // Add new notification ID if not already in the list
+        if (!in_array($notificationId, $closedNotifications)) {
+            $closedNotifications[] = $notificationId;
+        }
+        
+        // Save back to session
+        session()->put('closed_notifications', $closedNotifications);
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Notifikasi ditutup dan tidak akan ditampilkan lagi'
+        ]);
+    }
 }

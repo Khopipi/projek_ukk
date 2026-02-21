@@ -89,6 +89,10 @@ Route::middleware(['auth'])->group(function () {
             return view('dashboard', compact('name', 'role', 'avatar'));
         })->name('admin.dashboard');
 
+        // Create account for penduduk (harus SEBELUM resource routes agar tidak bentrok)
+        Route::get('/penduduk/{id}/create-account', [PendudukController::class, 'createAccount'])->name('penduduk.create-account');
+        Route::post('/penduduk/{id}/store-account', [PendudukController::class, 'storeAccount'])->name('penduduk.store-account');
+
         // Data Penduduk CRUD (tanpa prefix - route utama untuk admin)
         Route::resource('penduduk', PendudukController::class);
 
@@ -152,7 +156,7 @@ Route::middleware(['auth'])->group(function () {
     // ============================================
     // USER ROUTES
     // ============================================
-    Route::middleware(['cekRole:user'])->group(function () {
+    Route::middleware(['cekRole:user', 'check.email.verified'])->group(function () {
 
         // Pengajuan Surat CRUD
         Route::resource('pengajuan', PengajuanSuratController::class);
@@ -177,6 +181,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/profile/edit', [UserProfileController::class, 'edit'])->name('user.profile.edit');
         // Update profile
         Route::post('/profile', [UserProfileController::class, 'update'])->name('user.profile.update');
+
+        // Notification close
+        Route::post('/notification/close', [PengajuanSuratController::class, 'closeNotification'])->name('notification.close');
     });
 
     // Dashboard - Untuk user biasa (setelah admin routes agar tidak bentrok)

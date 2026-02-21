@@ -32,6 +32,24 @@
             color: #ffffff;
             font-weight: 500;
         }
+
+        /* Statistik Cards - Ensure numbers are visible */
+        .card h3 {
+            font-size: 32px !important;
+            font-weight: 700 !important;
+            margin: 0 0 5px 0 !important;
+            color: white !important;
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            line-height: 1 !important;
+        }
+
+        .card p {
+            font-size: 14px !important;
+            margin: 0 !important;
+            color: rgba(255, 255, 255, 0.9) !important;
+        }
     </style>
 
     <div class="pc-content">

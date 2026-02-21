@@ -226,7 +226,127 @@
 
 <div class="row g-4">
 
-    <!-- STATISTIK -->
+    <!-- WARNING: EMAIL NOT VERIFIED -->
+    @if (session('warning'))
+    <div class="col-12 mb-4" id="warningContainer">
+        <div class="alert alert-warning alert-dismissible fade show" role="alert" style="border-radius: 12px; border-left: 4px solid #ffc107; background: linear-gradient(135deg, rgba(255, 193, 7, 0.08) 0%, rgba(255, 193, 7, 0.04) 100%); border: 1px solid rgba(255, 193, 7, 0.2);">
+            <div class="d-flex align-items-start">
+                <div style="width: 50px; height: 50px; background: var(--warning-gradient); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; flex-shrink: 0; margin-top: 0;">
+                    <i class="ti ti-alert-triangle"></i>
+                </div>
+                <div class="ms-3 flex-grow-1">
+                    <h6 class="mb-1" style="color: #856404; font-weight: 800;">⚠ Email Belum Diverifikasi</h6>
+                    <p class="mb-2" style="color: #856404; font-size: 14px;">
+                        {{ session('warning') }}
+                    </p>
+                    <a href="{{ route('verify.form') }}" class="btn btn-sm" style="background: var(--warning-gradient); color: white; border: none; font-weight: 600;">
+                        <i class="ti ti-shield-check me-1"></i> Verifikasi Email Sekarang
+                    </a>
+                </div>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    </div>
+    @endif
+
+    <!-- NOTIFIKASI PENGAJUAN/PENGADUAN SELESAI -->
+    @php
+        // Ambil notifikasi yang sudah di-close dari session
+        $closedNotifications = session()->get('closed_notifications', []);
+        
+        // Ambil pengajuan selesai yang belum di-close
+        $pengajuanSelesai = Auth::user()->pengajuanSurat()
+            ->where('status', 'Selesai')
+            ->latest()
+            ->take(3)
+            ->get()
+            ->filter(function($p) use ($closedNotifications) {
+                return !in_array('pengajuan_' . $p->id, $closedNotifications);
+            });
+        
+        // Ambil pengaduan selesai yang belum di-close
+        $pengaduanSelesai = Auth::user()->pengaduans()
+            ->where('status', 'Selesai')
+            ->latest()
+            ->take(3)
+            ->get()
+            ->filter(function($pd) use ($closedNotifications) {
+                return !in_array('pengaduan_' . $pd->id, $closedNotifications);
+            });
+    @endphp
+
+    @if($pengajuanSelesai->count() > 0 || $pengaduanSelesai->count() > 0)
+    <div class="col-12 mb-4" id="notificationContainer">
+        @foreach($pengajuanSelesai as $p)
+        <div class="alert alert-success alert-dismissible fade show mb-3" role="alert" data-notification-id="pengajuan_{{ $p->id }}" style="border-radius: 12px; border-left: 4px solid #2dce89; background: linear-gradient(135deg, rgba(45, 206, 137, 0.08) 0%, rgba(45, 206, 137, 0.04) 100%); border: 1px solid rgba(45, 206, 137, 0.2);">
+            <div class="d-flex align-items-center">
+                <div style="width: 50px; height: 50px; background: var(--success-gradient); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; flex-shrink: 0;">
+                    <i class="ti ti-check"></i>
+                </div>
+                <div class="ms-3 flex-grow-1">
+                    <h6 class="mb-1" style="color: #1e7e34; font-weight: 800;">✓ Pengajuan Surat {{ $p->jenis_surat }} Selesai!</h6>
+                    <p class="mb-0" style="color: #2d5f2d; font-size: 14px;">
+                        Pengajuan Anda dengan nomor <strong>{{ $p->nomor_pengajuan }}</strong> telah selesai diproses. 
+                        <a href="{{ route('pengajuan.show', $p->id) }}" style="color: #1e7e34; text-decoration: none; font-weight: 600;">Lihat detail →</a>
+                    </p>
+                </div>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        @endforeach
+
+        @foreach($pengaduanSelesai as $pd)
+        <div class="alert alert-success alert-dismissible fade show mb-3" role="alert" data-notification-id="pengaduan_{{ $pd->id }}" style="border-radius: 12px; border-left: 4px solid #2dce89; background: linear-gradient(135deg, rgba(45, 206, 137, 0.08) 0%, rgba(45, 206, 137, 0.04) 100%); border: 1px solid rgba(45, 206, 137, 0.2);">
+            <div class="d-flex align-items-center">
+                <div style="width: 50px; height: 50px; background: var(--success-gradient); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; flex-shrink: 0;">
+                    <i class="ti ti-message-circle-check"></i>
+                </div>
+                <div class="ms-3 flex-grow-1">
+                    <h6 class="mb-1" style="color: #1e7e34; font-weight: 800;">✓ Pengaduan Anda Selesai Ditanggapi!</h6>
+                    <p class="mb-0" style="color: #2d5f2d; font-size: 14px;">
+                        Pengaduan "<strong>{{ Str::limit($pd->judul, 40) }}</strong>" telah selesai ditanggapi oleh admin. 
+                        <a href="{{ route('pengaduan.show', $pd->id) }}" style="color: #1e7e34; text-decoration: none; font-weight: 600;">Lihat tanggapan →</a>
+                    </p>
+                </div>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        @endforeach
+    </div>
+    @endif
+
+    <script>
+        // Handle notification close dengan session storage
+        document.addEventListener('DOMContentLoaded', function() {
+            const alerts = document.querySelectorAll('[data-notification-id]');
+            
+            alerts.forEach(alert => {
+                const closeBtn = alert.querySelector('.btn-close');
+                const notificationId = alert.getAttribute('data-notification-id');
+                
+                closeBtn.addEventListener('click', function() {
+                    // Simpan ke localStorage untuk persistent storage
+                    const closedNotifications = JSON.parse(localStorage.getItem('closed_notifications') || '[]');
+                    if (!closedNotifications.includes(notificationId)) {
+                        closedNotifications.push(notificationId);
+                        localStorage.setItem('closed_notifications', JSON.stringify(closedNotifications));
+                    }
+                    
+                    // Kirim ke server untuk disimpan di session
+                    fetch('{{ route("notification.close") }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({
+                            notification_id: notificationId
+                        })
+                    }).catch(error => console.log('Notification closed locally'));
+                });
+            });
+        });
+    </script>
     @php
         $stats = [
             [
@@ -469,7 +589,7 @@
                         'gradient' => 'var(--primary-gradient)',
                         'icon'=>'clock',
                         'title'=>'Waktu Proses',
-                        'text'=>'Pengajuan surat diproses 3-5 hari kerja'
+                        'text'=>'waktu proses 1-2 hari kerja'
                     ],
                     [
                         'color'=>'success',

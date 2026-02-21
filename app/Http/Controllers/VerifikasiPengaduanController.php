@@ -89,11 +89,12 @@ class VerifikasiPengaduanController extends Controller
     public function tanggapi(Request $request, Pengaduan $pengaduan)
     {
         $request->validate([
-            'tanggapan_admin' => 'required|string|min:10',
+            'tanggapan_admin' => 'required|string|min:10|max:2000',
             'prioritas' => 'nullable|in:Rendah,Sedang,Tinggi,Mendesak',
         ], [
             'tanggapan_admin.required' => 'Tanggapan wajib diisi',
             'tanggapan_admin.min' => 'Tanggapan minimal 10 karakter',
+            'tanggapan_admin.max' => 'Tanggapan maksimal 2000 karakter',
         ]);
 
         if (!in_array($pengaduan->status, ['Menunggu', 'Diproses'])) {
@@ -113,7 +114,7 @@ class VerifikasiPengaduanController extends Controller
 
         $pengaduan->update($updateData);
 
-        return redirect()->back()->with('success', 'Tanggapan berhasil dikirim.');
+        return redirect()->back()->with('success', 'Tanggapan berhasil dikirim kepada pelapor.');
     }
 
     /**

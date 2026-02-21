@@ -588,6 +588,9 @@
             </div>
         </div>
     </div>
+</div>
+
+@else
 <!-- DEFAULT - SURAT UMUM -->
 <div class="surat">
     <div class="content">
