@@ -260,7 +260,7 @@
                             </button>
                             @endif
 
-                            @if($pengajuan->file_surat_hasil && $pengajuan->status == 'Disetujui')
+                            @if($pengajuan->status == 'Disetujui')
                             <form action="{{ route('admin.pengajuan.send-pdf', $pengajuan->id) }}" method="POST">
                                 @csrf
                                 <button type="submit" class="btn btn-success w-100 mb-2">

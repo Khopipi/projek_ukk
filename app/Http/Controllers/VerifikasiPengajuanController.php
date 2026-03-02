@@ -296,15 +296,14 @@ class VerifikasiPengajuanController extends Controller
                 throw new \Exception('File PDF gagal disimpan ke disk di: ' . $diskPath);
             }
 
-            // Update database
+            // Update database - HANYA simpan file, JANGAN ubah status
+            // Status akan berubah ke 'Selesai' hanya setelah email dikirim via sendPdf()
             $pengajuan->update([
-                'file_surat_hasil' => $filename,
-                'status' => 'Selesai',
-                'tanggal_selesai' => now()
+                'file_surat_hasil' => $filename
             ]);
 
             Log::info('PDF generated successfully: ' . $diskPath);
-            return back()->with('success', 'Surat hasil berhasil digenerate dan disimpan.');
+            return back()->with('success', 'Surat hasil berhasil digenerate dan disimpan. Sekarang Anda bisa upload surat atau langsung kirim email ke user.');
         } catch (\Throwable $e) {
             Log::error('Generate surat failed: ' . $e->getMessage() . ' | Trace: ' . $e->getTraceAsString());
             return back()->with('error', 'Gagal generate PDF: ' . $e->getMessage());
@@ -312,13 +311,13 @@ class VerifikasiPengajuanController extends Controller
     }
 
     /**
-     * Send the generated PDF to the user via email. If PDF does not exist, generate it first.
+     * Send email to user. If PDF does not exist, generate it first automatically.
      */
     public function sendPdf(PengajuanSurat $pengajuan)
     {
-        // Ensure pengajuan status is Disetujui (must upload surat first via uploadSurat)
+        // Ensure pengajuan status is Disetujui
         if ($pengajuan->status !== 'Disetujui') {
-            return back()->with('error', 'Pengajuan harus berstatus "Disetujui" terlebih dahulu. Silakan upload surat melalui tombol "Upload Surat Hasil".');
+            return back()->with('error', 'Pengajuan harus berstatus "Disetujui" terlebih dahulu.');
         }
 
         // Ensure user has email
@@ -327,17 +326,70 @@ class VerifikasiPengajuanController extends Controller
             return back()->with('error', 'User tidak memiliki email terdaftar.');
         }
 
-        // Ensure PDF exists (must already be uploaded)
-        $filename = $pengajuan->file_surat_hasil;
-        $fullDirectory = storage_path('app/public/surat_hasil');
-        $path = $fullDirectory . DIRECTORY_SEPARATOR . ($filename ?? '');
-
-        if (!$filename || !file_exists($path)) {
-            return back()->with('error', 'File surat hasil belum diupload. Silakan upload terlebih dahulu melalui tombol "Upload Surat Hasil".');
-        }
-
-        // Send email with attachment
         try {
+            // If PDF doesn't exist, generate it automatically
+            if (!$pengajuan->file_surat_hasil) {
+                // Generate signature token jika belum ada
+                if (!$pengajuan->signature_token) {
+                    $signatureToken = \App\Helpers\QrCodeGenerator::generateSignatureToken($pengajuan->id, Auth::id());
+                    $pengajuan->update([
+                        'signature_token' => $signatureToken,
+                        'signature_generated_at' => now()
+                    ]);
+                    $pengajuan->refresh();
+                }
+
+                // Generate QR SVG
+                $qrUrl = \App\Helpers\QrCodeGenerator::generateQrUrl($pengajuan->signature_token);
+                $qrSvg = \App\Helpers\QrCodeGenerator::generateSvgBase64($qrUrl);
+                
+                // Convert logo to base64
+                $logoBase64 = \App\Helpers\ImageHelper::imageToDataUri('assets/images/my/logo_Sidoarjo.svg.png');
+                
+                // Render HTML from Blade
+                $pengajuanFresh = PengajuanSurat::find($pengajuan->id);
+                $html = view('pengajuan.pdf', ['pengajuan' => $pengajuanFresh, 'qrSvg' => $qrSvg, 'logoBase64' => $logoBase64])->render();
+
+                $filename = time() . '_' . preg_replace('/[^A-Za-z0-9\-_]/', '_', $pengajuan->nomor_pengajuan) . '.pdf';
+                $directory = 'surat_hasil';
+
+                // Ensure directory exists
+                $fullDirectory = storage_path('app/public/' . $directory);
+                if (!is_dir($fullDirectory)) {
+                    mkdir($fullDirectory, 0755, true);
+                }
+
+                // Generate PDF content
+                $pdfContent = null;
+                if (class_exists(\Barryvdh\DomPDF\Facade::class)) {
+                    $pdf = \PDF::loadHTML($html)->setPaper('a4', 'portrait');
+                    $pdfContent = $pdf->output();
+                } else {
+                    $dompdf = new \Dompdf\Dompdf();
+                    $dompdf->loadHtml($html);
+                    $dompdf->setPaper('A4', 'portrait');
+                    $dompdf->render();
+                    $pdfContent = $dompdf->output();
+                }
+
+                $diskPath = $fullDirectory . DIRECTORY_SEPARATOR . $filename;
+                file_put_contents($diskPath, $pdfContent);
+
+                // Verify file was created
+                if (!file_exists($diskPath)) {
+                    throw new \Exception('File PDF gagal disimpan ke disk.');
+                }
+
+                // Update database with generated file
+                $pengajuan->update([
+                    'file_surat_hasil' => $filename
+                ]);
+                $pengajuan->refresh();
+
+                Log::info('PDF auto-generated for email: ' . $diskPath);
+            }
+
+            // Send email with attachment (if exists)
             Mail::to($userEmail)->send(new PengajuanHasilMail($pengajuan->fresh()));
 
             // Update status to Selesai and tanggal_selesai only after email is sent successfully
